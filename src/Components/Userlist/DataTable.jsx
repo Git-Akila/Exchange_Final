@@ -6,7 +6,7 @@ import { FaRegEdit } from "react-icons/fa";
 //npm install mui-datatables @mui/material react-icons
 //npm install @emotion/react @emotion/styled
 //npm install @mui/icons-material
-
+import {useNavigate} from 'react-router-dom';
 const HideScrollbarDiv = styled.div`
   overflow-x: hidden;
   * {
@@ -20,6 +20,12 @@ const HideScrollbarDiv = styled.div`
 
 const DataTable = forwardRef(({ initialData }, ref) => {
   const [tableData, setTableData] = useState(initialData || []);
+  const navigate=useNavigate();
+
+  const handleRowClick=(rowData)=>{
+    const userId = rowData[0]; 
+    navigate(`/userdetails/${userId}`);
+  }
 
   useImperativeHandle(ref, () => ({
     updateData(newData) {
@@ -28,6 +34,7 @@ const DataTable = forwardRef(({ initialData }, ref) => {
   }));
 
   const columns = [
+    { name: "_id", options: { display: false } },
     { name: "S.No", options: { customBodyRender: (value, tableMeta) => tableMeta.rowIndex + 1 } },
     { name: "email", label: "Email", options: { customBodyRender: (value) => value } },
     { name: "username", label: "Username", options: { customBodyRender: (value) => value } },
@@ -42,6 +49,7 @@ const DataTable = forwardRef(({ initialData }, ref) => {
   ];
 
   const options = {
+    onRowClick:handleRowClick,
     selectableRows: false,
     elevation: 0,
     rowsPerPage: 5,

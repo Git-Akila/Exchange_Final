@@ -22,7 +22,8 @@ const App = () => {
             path="/"
             element={token ? <Dashboard /> : <Navigate to="/login" />}
           />
-          <Route path="/kycdetails" element={<KycUserDetails />} />
+          <Route path="/userdetails/:_id" element={<KycUserDetails />} />
+          
         </Routes>
       </Layout>
     </Router>

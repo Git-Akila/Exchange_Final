@@ -1,13 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
-
-
 //import {loginUser} from '../Data/fetchUserData';
 
 
 export const loginUser = createAsyncThunk('loginUser', async ({ email, password, pattern }, thunkAPI) => {
     try {
-        
         const response = await fetch("https://demoback.kairaaexchange.com/api/v1/admin/login", {
             method: 'POST',
             headers: {
@@ -15,7 +11,10 @@ export const loginUser = createAsyncThunk('loginUser', async ({ email, password,
                 'Tag': 'admin',
                 'Authorization': 'token',
             },
-            body: JSON.stringify({ email, password, pattern, 
+            body: JSON.stringify({ 
+                email, 
+                password, 
+                pattern, 
                 deviceInfo: {
                     "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
                     "os": "Windows",
@@ -33,20 +32,20 @@ export const loginUser = createAsyncThunk('loginUser', async ({ email, password,
         if (!response.ok) {
             const errorData = await response.json();
             const errorMessage = errorData.message || "Failed to log in";
+            console.error("Response Error: ", errorData); 
             return thunkAPI.rejectWithValue(errorMessage);
         }
 
         const data = await response.json();
-
-        
+        console.log("Login Successful. Data: ", data); 
         localStorage.setItem("token", data.token); 
         return data;  
-
     } catch (error) {
-        console.error("Error during login:", error);
+        console.error("Error during login:", error); 
         return thunkAPI.rejectWithValue(error.message);
     }
 });
+
 
 
 

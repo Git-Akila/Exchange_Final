@@ -13,7 +13,7 @@ import { loginUser } from "../../Data/fetchUserData";
 // import { loginUser } from "../../Slicers/loginSlice";
 
 
-const Login = () => {
+const Login = ({token1}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [pattern, setPattern] = useState([]);
@@ -23,33 +23,72 @@ const Login = () => {
 
   const { isLoading, isError, data } = useSelector((state) => state.login);
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
+//   const handleRegister = async (e) => {
+//     e.preventDefault();
 
-    if (!isPatternLocked) {
-      toast.error("Please set a pattern first!");
-      return;
-    }
+//     if (!isPatternLocked) {
+//       toast.error("Please set a pattern first!");
+//       return;
+//     }
 
-    try {
-      await dispatch(
-        loginUser({ email, password, pattern: pattern.join("") })
+//     try {
+//       const result = await dispatch(
+//         loginUser({ email, password, pattern: pattern.join("") })
+//       ).unwrap();
+// console.log("Tokennnn"+result);
+//       if (result.token === token1) {
+//         toast.success("Login successful!");
+//         setEmail("");
+//         setPassword("");
+//         setPattern([]);
+//         setIsPatternLocked(false);
+//         navigate("/"); 
+//       } else {
+//         toast.error("Invalid token.");
+//       }
+//     } catch (error) {
+//       toast.error(error.message || "An error occurred during login.");
+//       setIsPatternLocked(false);
+//     }
+//   };
 
-      ).unwrap(); 
 
+const handleRegister = async (e) => {
+  e.preventDefault();
 
+  if (!isPatternLocked) {
+    toast.error("Please set a pattern first!");
+    return;
+  }
 
+  try {
+    const result = await dispatch(
+      loginUser({ email, password, pattern: pattern.join("") })
+    ).unwrap();
+
+    
+    if (result.token) {
+      
+      localStorage.setItem("token", result.token);
+      
       toast.success("Login successful!");
       setEmail("");
       setPassword("");
       setPattern([]);
       setIsPatternLocked(false);
+
+      
       navigate("/"); 
-    } catch (error) {
-      toast.error(error.message || "An error occurred during login.");
-      setIsPatternLocked(false);
+    } else {
+      toast.error("Invalid token.");
     }
-  };
+  } catch (error) {
+    toast.error(error.message || "An error occurred during login.");
+    setIsPatternLocked(false);
+  }
+};
+
+
 
   const handlePatternChange = (newPattern) => {
     setPattern(newPattern);
