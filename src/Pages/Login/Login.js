@@ -1,6 +1,5 @@
 //npm i react-toastify react-pattern-lock
 
-
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -10,10 +9,7 @@ import PatternLock from "react-pattern-lock";
 
 import { loginUser } from "../../Data/fetchUserData";
 
-// import { loginUser } from "../../Slicers/loginSlice";
-
-
-const Login = ({token1}) => {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [pattern, setPattern] = useState([]);
@@ -23,72 +19,44 @@ const Login = ({token1}) => {
 
   const { isLoading, isError, data } = useSelector((state) => state.login);
 
-//   const handleRegister = async (e) => {
-//     e.preventDefault();
-
-//     if (!isPatternLocked) {
-//       toast.error("Please set a pattern first!");
-//       return;
-//     }
-
-//     try {
-//       const result = await dispatch(
-//         loginUser({ email, password, pattern: pattern.join("") })
-//       ).unwrap();
-// console.log("Tokennnn"+result);
-//       if (result.token === token1) {
-//         toast.success("Login successful!");
-//         setEmail("");
-//         setPassword("");
-//         setPattern([]);
-//         setIsPatternLocked(false);
-//         navigate("/"); 
-//       } else {
-//         toast.error("Invalid token.");
-//       }
-//     } catch (error) {
-//       toast.error(error.message || "An error occurred during login.");
-//       setIsPatternLocked(false);
-//     }
-//   };
-
-
-const handleRegister = async (e) => {
-  e.preventDefault();
-
-  if (!isPatternLocked) {
-    toast.error("Please set a pattern first!");
-    return;
+  if (isLoading) {
+    return <p>...Loading</p>;
+  }
+  if (isError) {
+    return <p>There was an error fetching the details...</p>;
   }
 
-  try {
-    const result = await dispatch(
-      loginUser({ email, password, pattern: pattern.join("") })
-    ).unwrap();
+  const handleRegister = async (e) => {
+    e.preventDefault();
 
-    
-    if (result.token) {
-      
-      localStorage.setItem("token", result.token);
-      
-      toast.success("Login successful!");
-      setEmail("");
-      setPassword("");
-      setPattern([]);
-      setIsPatternLocked(false);
-
-      
-      navigate("/"); 
-    } else {
-      toast.error("Invalid token.");
+    if (!isPatternLocked) {
+      toast.error("Please set a pattern first!");
+      return;
     }
-  } catch (error) {
-    toast.error(error.message || "An error occurred during login.");
-    setIsPatternLocked(false);
-  }
-};
 
+    try {
+      const result =dispatch(
+        loginUser({ email, password, pattern: pattern.join("") })
+      );
 
+      if (result.token) {
+        localStorage.setItem("token", result.token);
+
+        toast.success("Login successful!");
+        setEmail("");
+        setPassword("");
+        setPattern([]);
+        setIsPatternLocked(false);
+
+        navigate("/");
+      } else {
+        toast.error("Invalid token.");
+      }
+    } catch (error) {
+      toast.error(error.message || "An error occurred during login.");
+      setIsPatternLocked(false);
+    }
+  };
 
   const handlePatternChange = (newPattern) => {
     setPattern(newPattern);
@@ -100,7 +68,7 @@ const handleRegister = async (e) => {
   console.log("Email:", email);
   console.log("Password:", password);
   console.log("Pattern:", pattern.join(""));
-  
+
   return (
     <div className="flex justify-center items-center mt-10">
       <form

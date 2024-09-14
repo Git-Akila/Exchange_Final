@@ -7,7 +7,7 @@ import graphSlice from "../Slicers/graphSlice";
 import cryptoSlice from "../Slicers/cryptoSlice";
 import fiatSlice from '../Slicers/fiatSlice';
 
-
+import tradehistorySlice from '../Slicers/tradehistorySlice';
 
 const store=configureStore({
     reducer:{
@@ -18,6 +18,7 @@ const store=configureStore({
         graph_data:graphSlice,
         cryptoData:cryptoSlice,
         fiatData:fiatSlice,
+        tradehistoryData:tradehistorySlice,
 
 
 

@@ -4,8 +4,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { json } from "react-router-dom";
 // https://demoback.kairaaexchange.com/get_graph_data
 
-const token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcHRpb24iOiJhZG1pbl9sb2dpbiIsImlkIjoiNjM0YTllODRjMzlhYzJlZWZhN2ZkNTY1Iiwic3RhdHVzIjp0cnVlLCJpYXQiOjE3MjYyOTc3OTUsImV4cCI6MTcyNjMwNDk5NX0.ioaahMj6S-VxRMdM5LCtIzGkSP48zRMFTFsvosYbEBA";
-//const token = localStorage.getItem("token");
+const token = localStorage.getItem("token");
 
 export const fetchUser = createAsyncThunk("fetchUser", async () => {
   try {
@@ -31,52 +30,54 @@ export const fetchUser = createAsyncThunk("fetchUser", async () => {
 //-----------------------------------------LoginUser--------------------------------------------------------------------------------
 export const loginUser = createAsyncThunk(
   "loginUser",
-  async ({ email, password, pattern }, thunkAPI) => {
-    try {
-      const response = await fetch(
-        "https://demoback.kairaaexchange.com/api/v1/admin/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Tag: "admin",
-            Authorization: "token",
+  async ({ email, password, pattern }, { rejectWithValue }) =>
+    //
+    {
+      console.log("ccccc", "email, password, pattern");
+
+      try {
+        // const axios = require('axios');
+        let data = JSON.stringify({
+          deviceInfo: {
+            userAgent:
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+            os: "Windows",
+            browser: "Chrome",
+            device: "Unknown",
+            os_version: "windows-10",
+            browser_version: "126.0.0.0",
           },
-          body: JSON.stringify({
-            email,
-            password,
-            pattern,
-            deviceInfo: {
-              userAgent:
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
-              os: "Windows",
-              browser: "Chrome",
-              device: "Unknown",
-              os_version: "windows-10",
-              browser_version: "126.0.0.0",
-            },
-            ipaddress: {
-              ip: "",
-            },
-          }),
-        }
-      );
+          ipaddress: {
+            ip: "",
+          },
+          username: email,
+          password: password,
+          pattern: pattern,
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        const errorMessage = errorData.message || "Failed to log in";
-        return thunkAPI.rejectWithValue(errorMessage);
+        let config = {
+          method: "post",
+          url: "https://demoback.kairaaexchange.com/api/v1/admin/login",
+          headers: {
+            Tag: "admin",
+            "Content-Type": "application/json",
+          },
+          data: data,
+        };
+        const response = await axios.request(config);
+
+        console.log(
+          "JSON.stringify(response.data)",
+          JSON.stringify(response.data)
+        );
+        localStorage.setItem("token", response.data.token);
+
+        return response.data;
+      } catch (error) {
+        return rejectWithValue(error.response?.data?.message || error.message);
       }
-
-      const data = await response.json();
-
-      localStorage.setItem("token", data.token);
-      return data;
-    } catch (error) {
-      console.error("Error during login:", error);
-      return thunkAPI.rejectWithValue(error.message);
+      
     }
-  }
 );
 //-----------------------------------------------kycUserDetails----------------------------------------------------
 export const kycUserDetails = createAsyncThunk(
@@ -151,7 +152,7 @@ export const graphData = createAsyncThunk("graphData", async () => {
 //     const data = await res.data;
 //     console.log("RESDATA"+data);
 //     return data;
-    
+
 //   } catch (error) {
 //     console.log("firsterrrr", error);
 //     // return rejectWithValue(error.message);
@@ -180,60 +181,87 @@ export const graphData = createAsyncThunk("graphData", async () => {
 //   return data;
 // });
 
-export const cryptoAsset = createAsyncThunk("cryptoAsset", async (_id, { rejectWithValue }) => {
-  // console.log("Fetching crypto assets for ID:", _id);
+export const cryptoAsset = createAsyncThunk(
+  "cryptoAsset",
+  async (_id, { rejectWithValue }) => {
+    // console.log("Fetching crypto assets for ID:", _id);
 
-  try {
-    const res = await axios.post(
-      "https://demoback.kairaaexchange.com/api/v1/admin/user-crypto-assets",
-      { id: _id },
-      {
-        headers: {
-          Authorization: `${token}`, 
-          "Content-Type": "application/json",
-          Tag: "admin",
-        },
-      }
-    );
-    
-   
-    // console.log("API Response:", res);
-    // console.log("API Response Data:", res.data);
-    // console.log("Crypto Data:", res.data.data);
+    try {
+      const res = await axios.post(
+        "https://demoback.kairaaexchange.com/api/v1/admin/user-crypto-assets",
+        { id: _id },
+        {
+          headers: {
+            Authorization: `${token}`,
+            "Content-Type": "application/json",
+            Tag: "admin",
+          },
+        }
+      );
 
-   
-    return res.data;
-    
-  } catch (error) {
-    console.log("Error fetching crypto assets:", error);
+      // console.log("API Response:", res);
+      // console.log("API Response Data:", res.data);
+      // console.log("Crypto Data:", res.data.data);
 
-    // Use rejectWithValue to return the error message to the async thunk
-    return rejectWithValue(error.response?.data?.message || error.message);
+      return res.data;
+    } catch (error) {
+      console.log("Error fetching crypto assets:", error);
+
+      // Use rejectWithValue to return the error message to the async thunk
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
   }
-});
-
+);
 
 //--------------------------------Fiat -------------------------------------------------
 
-export const FiatAsset=createAsyncThunk("FiatAsset",
-  async(_id,{rejectWithValue})=>{
-    console.log("Fetching API Data",_id);
-    try{
-      const res=await axios.post("https://demoback.kairaaexchange.com/api/v1/admin/user-fiat-assets",{id:_id},
+export const FiatAsset = createAsyncThunk(
+  "FiatAsset",
+  async (_id, { rejectWithValue }) => {
+    console.log("Fetching API Data", _id);
+    try {
+      const res = await axios.post(
+        "https://demoback.kairaaexchange.com/api/v1/admin/user-fiat-assets",
+        { id: _id },
         {
-          headers:{
-            'Authorization':`${token}`,
-            'Content-Type':'application/json',
-            'Tag':'admin',
+          headers: {
+            Authorization: `${token}`,
+            "Content-Type": "application/json",
+            Tag: "admin",
           },
         }
       );
       return res.data;
-    
-    }catch(error){
-      console.log("Fetching Error for Fiat"+error);
-      return rejectWithValue(error.response?.data?.message|| error.message);
+    } catch (error) {
+      console.log("Fetching Error for Fiat" + error);
+      return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
-)
+);
 
+
+//------------------------------------TradehistoryAsset------------------------------------------------------------------
+
+export const TradehistoryAsset = createAsyncThunk(
+  "TradehistoryAsset",
+  async (_id, { rejectWithValue }) => {
+    console.log("Fetching API Data", _id);
+    try {
+      const res = await axios.post(
+        "https://demoback.kairaaexchange.com/api/v1/admin/user-tradehistory",
+        { id: _id },
+        {
+          headers: {
+            Authorization: `${token}`,
+            "Content-Type": "application/json",
+            Tag: "admin",
+          },
+        }
+      );
+      return res.data;
+    } catch (error) {
+      console.log("Fetching Error for Fiat" + error);
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);

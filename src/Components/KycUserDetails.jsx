@@ -5,7 +5,7 @@ import { kycUserDetails } from "../Data/fetchUserData";
 import { cryptoAsset } from "../Data/fetchUserData";
 import {FiatAsset} from '../Data/fetchUserData';
 import { FaCloudArrowDown } from "react-icons/fa6";
-
+import {TradehistoryAsset} from '../Data/fetchUserData';
 import "react-datepicker/dist/react-datepicker.css";
 import UserPersonalInfo from "./userDetails/UserPersonalInfo";
 
@@ -41,6 +41,8 @@ function KycUserDetails() {
   const { isLoading:isKycLoading, data:data, isError:isKycError } = useSelector((state) => state.kyclist);
   const {isLoading:isCryptoLoading,data:cryptoData,isError:isCryptoError}=useSelector((state)=>state.cryptoData);
   const {isLoading:isfiatLoading,data:fiatData,isError:isFiatError}=useSelector((state)=>state.fiatData);
+  const {isLoading:istradehistoryLoading,data:tradehistoryData,isError:istradehistoryError}=useSelector((state)=>state.tradehistoryData);
+  
   const {_id}=useParams();
 
   const [activeTab, setActiveTab] = useState(0);
@@ -66,12 +68,19 @@ useEffect(()=>{
   }
 },[dispatch,_id]);
 
+useEffect(()=>{
+  if(_id){
+    dispatch(TradehistoryAsset(_id));
+  }
+},[dispatch,_id]);
 
-  if (isKycLoading ||isCryptoLoading || isfiatLoading) {
+
+
+  if (isKycLoading ||isCryptoLoading || isfiatLoading || istradehistoryLoading) {
     return <p>Loading...</p>;
   }
 
-  if (isKycError || isCryptoError || isFiatError) {
+  if (isKycError || isCryptoError || isFiatError || istradehistoryError) {
     return <p>There was an error fetching the details...</p>;
   }
 

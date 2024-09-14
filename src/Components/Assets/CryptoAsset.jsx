@@ -12,12 +12,12 @@ function CryptoAsset({ cryptoAssetData }) {
     cryptoOpen === "withdraw" ? setcryptoOpen("") : setcryptoOpen("withdraw");
   };
   return (
-    <><div className="mt-4">
-      <h2 className=" font-semibold text-xl mb-2 ">Crypto</h2>
-      <table className="border w-full h-full border-gray-300 bg-slate-50">
-          <thead>
-            <tr className="text-center border border-gray-300 ">
-              <th className="py-2">Coin</th>
+    <> 
+    <h2 className="font-semibold text-xl mb-4 mt-4">Crypto</h2>
+    <table className="w-full border border-gray-300 bg-slate-50 rounded-lg overflow-x-auto">
+      <thead className="bg-blue-100">
+        <tr className="text-center border-b border-gray-300">
+          <th className="py-2">Coin</th>
               <th className="py-2">Available</th>
               <th className="py-2">On hold</th>
               <th className="py-2">Total</th>
@@ -30,10 +30,10 @@ function CryptoAsset({ cryptoAssetData }) {
             cryptoAssetData.length > 0 ? (
                 cryptoAssetData.map((data, i) => (
                 <tr className="text-center" key={data.id || i}>
-                  <td className="py-2 flex items-center justify-start p-2">
+                  <td className="py-2 flex items-center justify-start  p-2">
                     <img
                       src={data.logo}
-                      className="w-14 h-14 mr-2"
+                      className="w-14 h-14 mr-6"
                       alt={`${data.coin} logo`}
                     />
                     {data.coin}
@@ -220,7 +220,7 @@ function CryptoAsset({ cryptoAssetData }) {
           </div>
         </div>
       ) : null}
-    </div></>
+    </>
   );
 }
 
