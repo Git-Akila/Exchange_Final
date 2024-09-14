@@ -4,8 +4,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { json } from "react-router-dom";
 // https://demoback.kairaaexchange.com/get_graph_data
 
-const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcHRpb24iOiJhZG1pbl9sb2dpbiIsImlkIjoiNjM0YTllODRjMzlhYzJlZWZhN2ZkNTY1Iiwic3RhdHVzIjp0cnVlLCJpYXQiOjE3MjYxMzA2NzYsImV4cCI6MTcyNjEzNzg3Nn0.lAC8X-cHl44uiqHw5wWMAJdqZYowhF0T3XvOWb4zcds";
+const token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcHRpb24iOiJhZG1pbl9sb2dpbiIsImlkIjoiNjM0YTllODRjMzlhYzJlZWZhN2ZkNTY1Iiwic3RhdHVzIjp0cnVlLCJpYXQiOjE3MjYyOTc3OTUsImV4cCI6MTcyNjMwNDk5NX0.ioaahMj6S-VxRMdM5LCtIzGkSP48zRMFTFsvosYbEBA";
 //const token = localStorage.getItem("token");
 
 export const fetchUser = createAsyncThunk("fetchUser", async () => {
@@ -125,52 +124,39 @@ export const graphData = createAsyncThunk("graphData", async () => {
 
 //------------------------------------------CryptoAsset-------------------------------------------------------
 
-export const cryptoAsset = createAsyncThunk("cryptoAsset", async (_id) => {
-  console.log("asdfasfsafasd7688");
+// export const cryptoAsset = createAsyncThunk("cryptoAsset", async (_id) => {
+//   console.log("asdfasfsafasd7688");
 
-  try {
-    console.log("asdfasfsafasd7688,", _id);
-    // const res = await fetch(
-    //   `https://demoback.kairaaexchange.com/api/v1/admin/user-crypto-assets`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       Authorization: `${token}`,
-    //       "Content-Type": "application/json",
-    //       Tag: "admin",
-    //     },
-    //     body: JSON.stringify({
-    //       id: _id,
-    //     }),
-    //   }
-    // );
-    // console.log("asdfasfres",res.json());
+//   try {
+//     console.log("asdfasfsafasd7688,", _id);
+//     const res = await axios.post(
+//       "https://demoback.kairaaexchange.com/api/v1/admin/user-crypto-assets",
+//       { id: _id },
+//       {
+//         headers: {
+//           Authorization: `${token}`,
+//           "Content-Type": "application/json",
+//           Tag: "admin",
+//         },
+//       }
+//     );
+//     console.log("APIRES"+res);
+//     console.log("API Response23:", res.data);
+//     console.log("cryptodatattt" , res.data.data);
 
-    const res = await axios.post(
-      "https://demoback.kairaaexchange.com/api/v1/admin/user-crypto-assets",
-      { id: _id },
-      {
-        headers: {
-          Authorization: `${token}`,
-          "Content-Type": "application/json",
-          Tag: "admin",
-        },
-      }
-    );
-    console.log("API Response23:", res.data);
+//     if (!res.ok) {
+//       throw new Error("Failed to fetch crypto assets");
+//     }
 
-    if (!res.ok) {
-      throw new Error("Failed to fetch crypto assets");
-    }
-
-    const data = await res.json();
-    console.log("cryptodatattt" + data.data);
-    return data;
-  } catch (error) {
-    console.log("firsterrrr", error);
-    // return rejectWithValue(error.message);
-  }
-});
+//     const data = await res.data;
+//     console.log("RESDATA"+data);
+//     return data;
+    
+//   } catch (error) {
+//     console.log("firsterrrr", error);
+//     // return rejectWithValue(error.message);
+//   }
+// });
 
 // export const cryptoAsset = createAsyncThunk("cryptoAsset", async (_id) => {
 //   const res = await fetch(
@@ -193,3 +179,61 @@ export const cryptoAsset = createAsyncThunk("cryptoAsset", async (_id) => {
 //   console.log("daahjkklkjjkdslkklds"+data)
 //   return data;
 // });
+
+export const cryptoAsset = createAsyncThunk("cryptoAsset", async (_id, { rejectWithValue }) => {
+  // console.log("Fetching crypto assets for ID:", _id);
+
+  try {
+    const res = await axios.post(
+      "https://demoback.kairaaexchange.com/api/v1/admin/user-crypto-assets",
+      { id: _id },
+      {
+        headers: {
+          Authorization: `${token}`, 
+          "Content-Type": "application/json",
+          Tag: "admin",
+        },
+      }
+    );
+    
+   
+    // console.log("API Response:", res);
+    // console.log("API Response Data:", res.data);
+    // console.log("Crypto Data:", res.data.data);
+
+   
+    return res.data;
+    
+  } catch (error) {
+    console.log("Error fetching crypto assets:", error);
+
+    // Use rejectWithValue to return the error message to the async thunk
+    return rejectWithValue(error.response?.data?.message || error.message);
+  }
+});
+
+
+//--------------------------------Fiat -------------------------------------------------
+
+export const FiatAsset=createAsyncThunk("FiatAsset",
+  async(_id,{rejectWithValue})=>{
+    console.log("Fetching API Data",_id);
+    try{
+      const res=await axios.post("https://demoback.kairaaexchange.com/api/v1/admin/user-fiat-assets",{id:_id},
+        {
+          headers:{
+            'Authorization':`${token}`,
+            'Content-Type':'application/json',
+            'Tag':'admin',
+          },
+        }
+      );
+      return res.data;
+    
+    }catch(error){
+      console.log("Fetching Error for Fiat"+error);
+      return rejectWithValue(error.response?.data?.message|| error.message);
+    }
+  }
+)
+

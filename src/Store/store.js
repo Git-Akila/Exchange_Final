@@ -5,7 +5,7 @@ import loginSlice from '../Slicers/loginSlice';
 import kycSlice from '../Slicers/kycSlice';
 import graphSlice from "../Slicers/graphSlice";
 import cryptoSlice from "../Slicers/cryptoSlice";
-
+import fiatSlice from '../Slicers/fiatSlice';
 
 
 
@@ -17,6 +17,7 @@ const store=configureStore({
         kyclist: kycSlice,
         graph_data:graphSlice,
         cryptoData:cryptoSlice,
+        fiatData:fiatSlice,
 
 
 

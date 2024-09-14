@@ -1,51 +1,57 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 //import {loginUser} from '../Data/fetchUserData';
 
 
-export const loginUser = createAsyncThunk('loginUser', async ({ email, password, pattern }, thunkAPI) => {
-    try {
-        const response = await fetch("https://demoback.kairaaexchange.com/api/v1/admin/login", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Tag': 'admin',
-                'Authorization': 'token',
+export const loginUser = createAsyncThunk(
+    'loginUser',
+    async ({ email, password, pattern }, { rejectWithValue }) => {
+        console.log("ccccc");
+      try {
+        const response = await axios.post(
+          "https://demoback.kairaaexchange.com/api/v1/admin/login",
+          {
+            email,
+            password,
+            pattern,
+            deviceInfo: {
+              userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+              os: "Windows",
+              browser: "Chrome",
+              device: "Unknown",
+              os_version: "windows-10",
+              browser_version: "126.0.0.0"
             },
-            body: JSON.stringify({ 
-                email, 
-                password, 
-                pattern, 
-                deviceInfo: {
-                    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
-                    "os": "Windows",
-                    "browser": "Chrome",
-                    "device": "Unknown",
-                    "os_version": "windows-10",
-                    "browser_version": "126.0.0.0"
-                },
-                ipaddress: {
-                    "ip": ""
-                }
-            })
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            const errorMessage = errorData.message || "Failed to log in";
-            console.error("Response Error: ", errorData); 
-            return thunkAPI.rejectWithValue(errorMessage);
+            ipaddress: {
+              ip: ""
+            }
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Tag': 'admin',
+              'Authorization': 'token', 
+            }
+          }
+        );
+  
+        
+        if (response.status !== 200) {
+          const errorMessage = response.data.message || "Failed to log in";
+          console.error("Response Error: ", response.data); 
+          return rejectWithValue(errorMessage);
         }
-
-        const data = await response.json();
-        console.log("Login Successful. Data: ", data); 
-        localStorage.setItem("token", data.token); 
-        return data;  
-    } catch (error) {
+  
+        console.log("Login Successful. Data: ", response.data); 
+        localStorage.setItem("token", response.data.token); 
+        return response.data;
+      } catch (error) {
         console.error("Error during login:", error); 
-        return thunkAPI.rejectWithValue(error.message);
+        return rejectWithValue(error.response?.data?.message || error.message);
+      }
     }
-});
-
+  );
+  
 
 
 

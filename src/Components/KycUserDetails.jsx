@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { kycUserDetails } from "../Data/fetchUserData";
 import { cryptoAsset } from "../Data/fetchUserData";
-
+import {FiatAsset} from '../Data/fetchUserData';
 import { FaCloudArrowDown } from "react-icons/fa6";
 
 import "react-datepicker/dist/react-datepicker.css";
@@ -12,27 +12,22 @@ import UserPersonalInfo from "./userDetails/UserPersonalInfo";
 import P2PWallet from "./userDetails/P2PWallet";
 import SwapHistory from "./userDetails/SwapHistory";
 import WalletHistory from "./userDetails/WalletHistory";
-import Assets from "../Components/userDetails/Assets";
+import Assets from "../Components/Assets/Assets";
 import UserOrderHistory from "./userDetails/UserOrderHistory";
 import UserSecurity from "./userDetails/UserSecurity";
 import OpenOrder from "./userDetails/OpenOrder";
+import UserActivity from "./userDetails/UserActivity/UserActivity";
+//import SecurityHistory from "./userDetails/UserActivity/SecurityHistory";
 import { useParams } from "react-router-dom";
 const TabButton = ({ label, isActive, onClick }) => (
   <button
-    style={{
-      paddingLeft: "2px",
-      paddingRight: "2px",
-      paddingTop: "8px",
-      paddingBottom: "8px",
-      cursor: "pointer",
-      borderBottom: isActive ? "2px solid blue" : "none",
-      fontSize: "14px",
-      marginRight: "6px",
-    }}
-    onClick={onClick}
-  >
-    {label}
-  </button>
+  className={`px-1 py-2 text-sm mr-1 cursor-pointer ${
+    isActive ? "border-b-2 border-blue-500 bg-blue-50 rounded-xl" : ""
+  }`}
+  onClick={onClick}
+>
+  {label}
+</button>
 );
 
 const TabPanel = ({ children, isActive }) => (
@@ -45,11 +40,12 @@ function KycUserDetails() {
   const dispatch = useDispatch();
   const { isLoading:isKycLoading, data:data, isError:isKycError } = useSelector((state) => state.kyclist);
   const {isLoading:isCryptoLoading,data:cryptoData,isError:isCryptoError}=useSelector((state)=>state.cryptoData);
+  const {isLoading:isfiatLoading,data:fiatData,isError:isFiatError}=useSelector((state)=>state.fiatData);
   const {_id}=useParams();
 
   const [activeTab, setActiveTab] = useState(0);
   console.log(".................data" + JSON.stringify(data, 2, null));
-  console.log(".......CryptoData"+cryptoData);
+  console.log(".......CryptoData"+JSON.stringify(cryptoData));
  useEffect(()=>{
   if(_id){
     console.log("Fetching"+_id);
@@ -64,33 +60,51 @@ function KycUserDetails() {
   }
  },[dispatch,_id]);
 
+useEffect(()=>{
+  if(_id){
+    dispatch(FiatAsset(_id));
+  }
+},[dispatch,_id]);
 
 
-
-  if (isKycLoading ||isCryptoLoading ) {
+  if (isKycLoading ||isCryptoLoading || isfiatLoading) {
     return <p>Loading...</p>;
   }
 
-  if (isKycError || isCryptoError) {
+  if (isKycError || isCryptoError || isFiatError) {
     return <p>There was an error fetching the details...</p>;
   }
+
+
+// userData for UserPersonalInfo
   const userData = data?.data || {};
   console.log("userDattaatta" + JSON.stringify(userData, 2, null));
   const kycData = userData.kyc || {};
 
+//logData for UserActivity
+const log=data || data?.logs || {}
+const logData=log.logs;
+
+
+// cryptoAssetData for Asset Tab
+
 const cryptoAssetData=cryptoData?.data || {};
 console.log("Cryptooo"+JSON.stringify(cryptoAssetData,null,2));
 
+//FiatAssetData for Asset Tab
+const FiatAssetData=fiatData?.data ||{};
+console.log("FFFF"+JSON.stringify(FiatAssetData));
+
   return (
     <div>
-      <div
-        style={{ display: "flex", flexWrap: "wrap" }}
-        className="bg-slate-100 p-2"
-      >
+   <div className="mx-auto container justify-center items-center">
+  <div
+    className="bg-slate-100 p-4 max-w-screen-xl mx-auto flex flex-wrap justify-center gap-4"
+  >
         <TabButton
           label="Personal Info"
           isActive={activeTab === 0}
-          onClick={() => setActiveTab(0)}
+          onClick={() => setActiveTab(0)} 
         />
         <TabButton
           label="Security"
@@ -154,7 +168,7 @@ console.log("Cryptooo"+JSON.stringify(cryptoAssetData,null,2));
           isActive={activeTab == 12}
           onClick={() => setActiveTab(12)}
         />
-      </div>
+      </div></div>
 
       <TabPanel isActive={activeTab === 0}>
         <Typography variant="h6">
@@ -168,7 +182,7 @@ console.log("Cryptooo"+JSON.stringify(cryptoAssetData,null,2));
       </TabPanel>
       <TabPanel isActive={activeTab === 2}>
         <Typography variant="h6">
-          <Assets />
+          <Assets cryptoAssetData={cryptoAssetData} FiatAssetData={FiatAssetData}/>
         </Typography>
       </TabPanel>
       <TabPanel isActive={activeTab === 3}>
@@ -194,6 +208,12 @@ console.log("Cryptooo"+JSON.stringify(cryptoAssetData,null,2));
       <TabPanel isActive={activeTab === 7}>
         <Typography variant="h6">
           <UserOrderHistory />
+        </Typography>
+      </TabPanel>
+      <TabPanel isActive={activeTab===8}>
+        <Typography variant="h6">
+          <UserActivity logData={logData}/>
+          {/* <SecurityHistory logData={logData}/> */}
         </Typography>
       </TabPanel>
       </div>
