@@ -5,12 +5,14 @@ function UserSecurity({ userData, kycData }) {
   const kycVerified = userData.kycVerified;
   const passcodeStatus = userData.passcodeStatus;
   const isActive = userData.isActive;
+  const BankInfo=userData.bank_info;
+  
   return (
     <div className="mx-auto container w-full">
       <div className="justify-center md:flex-row flex-col flex gap-2  px-3 mt-3">
         <div className="md:w-1/2 w-full p-5 bg-slate-50 text-[16px]">
           <h2 className="text-blue-700 font-bold text-xl">Bank Details</h2>
-          <ul>
+          {BankInfo.map((BankInfo,i)=>{<ul key={i || BankInfo.id}>
             <li className="gap-2">
               <span className="bg-slate-50 p-2 border-2 border-gray-50">
                 Account Holder Name
@@ -19,7 +21,7 @@ function UserSecurity({ userData, kycData }) {
                 type="text"
                 className="p-2 border-2 border-slate-300 mt-2 mb-2 bg-slate-200 rounded w-[500px]"
               >
-                ..
+               {BankInfo.holder || 'N/A'}
               </p>
             </li>
             <li className="gap-2">
@@ -30,7 +32,7 @@ function UserSecurity({ userData, kycData }) {
                 type="text"
                 className="p-2 border-2 border-slate-300 mt-2 mb-2 rounded bg-slate-200 w-[500px]"
               >
-                jjj
+                {BankInfo.bankname || 'N/A'}
               </p>
             </li>
             <li className="gap-2">
@@ -41,7 +43,7 @@ function UserSecurity({ userData, kycData }) {
                 type="text"
                 className="p-2 border-2 border-slate-300 rounded mt-2 mb-2 bg-slate-200 w-[500px]"
               >
-                jjj
+              {BankInfo.branch || 'N/A'}
               </p>
             </li>
             <li className="gap-2">
@@ -52,7 +54,7 @@ function UserSecurity({ userData, kycData }) {
                 type="text"
                 className="p-2 border-2 border-slate-300 rounded mt-2 mb-2 bg-slate-200 w-[500px]"
               >
-                jjj
+               {BankInfo.ibancode || 'N/A'}
               </p>
             </li>
             <li className="gap-2">
@@ -63,7 +65,7 @@ function UserSecurity({ userData, kycData }) {
                 type="text"
                 className="p-2 border-2 border-slate-300 rounded mt-2 mb-2 bg-slate-200 w-[500px]"
               >
-                jjj
+               {BankInfo.account_type || 'N/A'}
               </p>
             </li>
             <li className="gap-2">
@@ -74,10 +76,10 @@ function UserSecurity({ userData, kycData }) {
                 type="text"
                 className="p-2 border-2 rounded border-slate-300 mt-2 mb-2 bg-slate-200 w-[500px]"
               >
-                jjj
+               {BankInfo.Upi_id || 'N/A'}
               </p>
             </li>
-          </ul>
+          </ul> })}
         </div>
         <div className="md:w-1/2 w-full bg-slate-50 text-[16px] p-5">
           <ul>
@@ -168,7 +170,7 @@ function UserSecurity({ userData, kycData }) {
               </span>
               <span className="flex gap-2">
                 <img
-                  src="https://example.com/image.jpg"
+                  src={'https://example.com/image.jpg'}
                   style={{ width: "200px", height: "200px" }}
                   className="p-3"
                 />

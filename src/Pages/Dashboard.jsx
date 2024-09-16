@@ -15,10 +15,9 @@ function Dashboard() {
   const dataTableRef = useRef(null);
   useEffect(() => {
     dispatch(fetchUser());
-  }, [dispatch]);
-  useEffect(() => {
     dispatch(graphData());
   }, [dispatch]);
+  
 
   if (isLoading || isLoading1) {
     return <p>Loading...</p>;
@@ -30,17 +29,14 @@ function Dashboard() {
 
   
   const graph = JSON.stringify(graphUser,2,null);
-  console.log("GraphicsData" + graph);
-
+  
   const graph1=(graphUser && graphUser.message && graphUser?.message )|| [];
-  console.log("graphdata"+graph1);
+  // console.log("graphdata"+graph1);
   const graph2 = Array.isArray(graphUser?.message) ? graphUser.message : [];
   const user = data?.data || [];
-  console.log("userrrr", user);
-
-  console.log("datatta" + data);
+  
   const users = (data && data.data && data?.data) || [];
-  console.log("userrrr", users);
+  
 
   const totalUsers = users;
   const isActive = users ? users.filter((user) => user.isActive) : [];

@@ -5,15 +5,16 @@ import { IoFilterCircle } from "react-icons/io5";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-function UserOrderHistory() {
+function UserOrderHistory({TradehistoryData}) {
   const options = ["All", "Past 7 days", "Past 30 days", "Past 60 days"];
   const [open, setOpen] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const handleOpen = () => setOpen(!open);
+ 
   return (
     <div className="mx-auto container">
-      <div className="justify-center">
+      <div className="bg-slate-50 p-2 shadow ">
         <div className="justify-between flex">
           <h2 className="text-blue-700 font-semibold">Orders History</h2>
           <button className="p-2 rounded-lg flex justify-center items-center text-[14px] gap-2 bg-blue-200">
@@ -63,7 +64,7 @@ function UserOrderHistory() {
               </option>
             ))}
           </select>
-          <div className="border rounded-lg justify-between flex items-center p-2">
+          <div className="border rounded-lg bg-white justify-between flex items-center p-2">
             <input type="text" className="focus:outline-none " />
             <ImSearch />
           </div>
@@ -132,15 +133,21 @@ function UserOrderHistory() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>..</td>
-                <td>..</td>
-                <td>..</td>
-                <td>..</td>
-                <td>..</td>
-                <td>..</td>
-                <td>..</td>
-              </tr>
+              {TradehistoryData && TradehistoryData.data? (TradehistoryData.data.map((e,i)=>(
+              <tr key={i || e.id}>
+                <td>{e.date || 'N/A'}</td>
+                <td>{e.pair || 'N/A'}</td>
+                <td>{e.type || 'N/A'}/{e.side || 'N/A'}</td>
+                <td>{e.price || 'N/A'}</td>
+                <td>{e.amount || 'N/A'}</td>
+                <td>{e.filled || 'N/A'}</td>
+                <td>{e.fee || 'N/A'}</td>
+                <td>{e.status || 'N/A'}</td>
+              </tr>))):(
+                <div className="text-center ">
+                  <p>No Records Available...</p>
+                </div>
+              )}
             </tbody>
           </table>
         </div>

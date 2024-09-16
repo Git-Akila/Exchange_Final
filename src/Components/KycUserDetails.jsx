@@ -6,6 +6,7 @@ import { cryptoAsset } from "../Data/fetchUserData";
 import {FiatAsset} from '../Data/fetchUserData';
 import { FaCloudArrowDown } from "react-icons/fa6";
 import {TradehistoryAsset} from '../Data/fetchUserData';
+import {UserTransaction} from '../Data/fetchUserData';
 import "react-datepicker/dist/react-datepicker.css";
 import UserPersonalInfo from "./userDetails/UserPersonalInfo";
 
@@ -42,52 +43,37 @@ function KycUserDetails() {
   const {isLoading:isCryptoLoading,data:cryptoData,isError:isCryptoError}=useSelector((state)=>state.cryptoData);
   const {isLoading:isfiatLoading,data:fiatData,isError:isFiatError}=useSelector((state)=>state.fiatData);
   const {isLoading:istradehistoryLoading,data:tradehistoryData,isError:istradehistoryError}=useSelector((state)=>state.tradehistoryData);
-  
+  const {isLoading:isUserTransactionLoading,data:UserTransactionData,isError:isUserTransactionError}=useSelector((state)=>state.UserTransaction);
   const {_id}=useParams();
 
   const [activeTab, setActiveTab] = useState(0);
-  console.log(".................data" + JSON.stringify(data, 2, null));
-  console.log(".......CryptoData"+JSON.stringify(cryptoData));
+  // console.log(".................data" + JSON.stringify(data, 2, null));
+  // console.log(".......CryptoData"+JSON.stringify(cryptoData));
  useEffect(()=>{
   if(_id){
     console.log("Fetching"+_id);
     dispatch(kycUserDetails(_id));
+    dispatch(cryptoAsset(_id));
+    dispatch(FiatAsset(_id));
+    dispatch(TradehistoryAsset(_id));
+    dispatch(UserTransaction(_id));
   } 
  },[dispatch,_id]);
 
- useEffect(()=>{
-  if(_id){
-    console.log("Fetching..."+_id);
-    dispatch(cryptoAsset(_id));
-  }
- },[dispatch,_id]);
+ 
 
-useEffect(()=>{
-  if(_id){
-    dispatch(FiatAsset(_id));
-  }
-},[dispatch,_id]);
-
-useEffect(()=>{
-  if(_id){
-    dispatch(TradehistoryAsset(_id));
-  }
-},[dispatch,_id]);
-
-
-
-  if (isKycLoading ||isCryptoLoading || isfiatLoading || istradehistoryLoading) {
+  if (isKycLoading ||isCryptoLoading || isfiatLoading || istradehistoryLoading || isUserTransactionLoading ) {
     return <p>Loading...</p>;
   }
 
-  if (isKycError || isCryptoError || isFiatError || istradehistoryError) {
+  if (isKycError || isCryptoError || isFiatError || istradehistoryError || isUserTransactionError) {
     return <p>There was an error fetching the details...</p>;
   }
 
 
 // userData for UserPersonalInfo
   const userData = data?.data || {};
-  console.log("userDattaatta" + JSON.stringify(userData, 2, null));
+  // console.log("userDattaatta" + JSON.stringify(userData, 2, null));
   const kycData = userData.kyc || {};
 
 //logData for UserActivity
@@ -98,11 +84,19 @@ const logData=log.logs;
 // cryptoAssetData for Asset Tab
 
 const cryptoAssetData=cryptoData?.data || {};
-console.log("Cryptooo"+JSON.stringify(cryptoAssetData,null,2));
+ console.log("Cryptooo"+JSON.stringify(cryptoAssetData,null,2));
 
 //FiatAssetData for Asset Tab
 const FiatAssetData=fiatData?.data ||{};
-console.log("FFFF"+JSON.stringify(FiatAssetData));
+// console.log("FFFF"+JSON.stringify(FiatAssetData));
+
+
+//TradehistoryData for UserOrderHistory
+const TradehistoryData=tradehistoryData || {};
+//console.log("TradehistoryData"+JSON.stringify(TradehistoryData));
+//UserTransactionData for Wallet
+const UserTransactionDataa=UserTransactionData || {};
+console.log("UserTransactionData"+JSON.stringify(UserTransactionDataa));
 
   return (
     <div>
@@ -206,7 +200,7 @@ console.log("FFFF"+JSON.stringify(FiatAssetData));
       </TabPanel>
       <TabPanel isActive={activeTab === 5}>
         <Typography variant="h6">
-          <WalletHistory />
+          <WalletHistory UserTransactionData={UserTransactionDataa}/>
         </Typography>
       </TabPanel>
       <TabPanel isActive={activeTab === 6}>
@@ -216,7 +210,7 @@ console.log("FFFF"+JSON.stringify(FiatAssetData));
       </TabPanel>
       <TabPanel isActive={activeTab === 7}>
         <Typography variant="h6">
-          <UserOrderHistory />
+          <UserOrderHistory TradehistoryData={TradehistoryData}/>
         </Typography>
       </TabPanel>
       <TabPanel isActive={activeTab===8}>

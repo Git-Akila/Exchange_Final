@@ -19,7 +19,7 @@ export const fetchUser = createAsyncThunk("fetchUser", async () => {
         },
       }
     );
-    console.log("API Response:", response.data);
+    // console.log("API Response:", response.data);
     return response.data;
   } catch (error) {
     throw new Error(
@@ -33,7 +33,7 @@ export const loginUser = createAsyncThunk(
   async ({ email, password, pattern }, { rejectWithValue }) =>
     //
     {
-      console.log("ccccc", "email, password, pattern");
+      // console.log("ccccc", "email, password, pattern");
 
       try {
         // const axios = require('axios');
@@ -119,7 +119,7 @@ export const graphData = createAsyncThunk("graphData", async () => {
     throw new Error("Failed to fetch user data");
   }
   const data = await res.json();
-  console.log("ggggggData" + data);
+  // console.log("ggggggData" + data);
   return data;
 });
 
@@ -258,6 +258,7 @@ export const TradehistoryAsset = createAsyncThunk(
           },
         }
       );
+      
       return res.data;
     } catch (error) {
       console.log("Fetching Error for Fiat" + error);
@@ -265,3 +266,32 @@ export const TradehistoryAsset = createAsyncThunk(
     }
   }
 );
+
+
+// ______________________________User Transaction for Wallet History___________________________
+
+export const UserTransaction=createAsyncThunk("UserTransaction",
+  async(_id,{rejectWithValue})=>{
+    console.log("llllll"+token);
+    try{
+        const res=await axios.post(
+          "https://demoback.kairaaexchange.com//api/v1/admin/user-transaction",
+          {id:_id},
+          {
+            headers:{
+              Authorization:`${token}`,
+              'Content-Type':'application/json',
+              'Tag':'admin',
+            },
+          },
+        );
+       console.log("API Res"+JSON.stringify(res.data));
+        return res.data;
+    }
+    
+    
+    catch(err){
+    console.log("There is something error"+err);
+return rejectWithValue(err.res?.data?.message|| err.message);
+    }
+  })

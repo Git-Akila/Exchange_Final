@@ -3,9 +3,9 @@ import React from 'react'
 function P2PWallet() {
   return (
     <div className="mx-auto container text-[16px]">
-            <div className="justify-center">
+            <div className="bg-slate-50 rounded p-4 shadow-lg  mx-auto">
               <h2 className="font-semibold text-xl mb-2 ">Crypto</h2>
-              <table className="bg-slate-50 w-full h-full  border">
+              <table className="bg-white w-full h-full  border">
                 <thead>
                   <tr className="border border-b-gray-200">
                     <th className="py-2">Coin</th>

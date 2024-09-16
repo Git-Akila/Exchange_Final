@@ -8,7 +8,7 @@ import cryptoSlice from "../Slicers/cryptoSlice";
 import fiatSlice from '../Slicers/fiatSlice';
 
 import tradehistorySlice from '../Slicers/tradehistorySlice';
-
+import UserTransactionSlice from '../Slicers/walletSlice';
 const store=configureStore({
     reducer:{
         userlist:userSlice,
@@ -19,6 +19,8 @@ const store=configureStore({
         cryptoData:cryptoSlice,
         fiatData:fiatSlice,
         tradehistoryData:tradehistorySlice,
+
+        UserTransaction:UserTransactionSlice,
 
 
 
