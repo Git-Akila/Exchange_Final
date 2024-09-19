@@ -19,7 +19,9 @@ import UserSecurity from "./userDetails/UserSecurity";
 import OpenOrder from "./userDetails/OpenOrder";
 import UserActivity from "./userDetails/UserActivity/UserActivity";
 //import SecurityHistory from "./userDetails/UserActivity/SecurityHistory";
+
 import { useParams } from "react-router-dom";
+import Tickets from "./userDetails/Tickets";
 const TabButton = ({ label, isActive, onClick }) => (
   <button
   className={`px-1 py-2 text-sm mr-1 cursor-pointer ${
@@ -205,7 +207,7 @@ console.log("UserTransactionData"+JSON.stringify(UserTransactionDataa));
       </TabPanel>
       <TabPanel isActive={activeTab === 6}>
         <Typography varient="h6">
-          <OpenOrder/>
+          <OpenOrder TradehistoryData={TradehistoryData}/>
         </Typography>
       </TabPanel>
       <TabPanel isActive={activeTab === 7}>
@@ -217,6 +219,26 @@ console.log("UserTransactionData"+JSON.stringify(UserTransactionDataa));
         <Typography variant="h6">
           <UserActivity logData={logData}/>
           {/* <SecurityHistory logData={logData}/> */}
+        </Typography>
+      </TabPanel>
+      <TabPanel isActive={activeTab===9}>
+        <Typography variant="h6">
+
+        </Typography>
+      </TabPanel>
+      <TabPanel isActive={activeTab===10}>
+        <Typography variant="h6">
+        <Tickets userData={data}/>
+        </Typography>
+      </TabPanel>
+      <TabPanel isActive={activeTab===11}>
+        <Typography variant="h6">
+         
+        </Typography>
+      </TabPanel>
+      <TabPanel isActive={activeTab===12}>
+        <Typography variant="h6">
+          
         </Typography>
       </TabPanel>
       </div>

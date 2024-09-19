@@ -8,6 +8,7 @@ import Login from '../src/Pages/Login/Login';
 import Dashboard from '../src/Pages/Dashboard';
 import KycUserDetails from '../src/Components/KycUserDetails';
 const App = () => {
+  
   const token = localStorage.getItem("token");
 
   return (

@@ -4,7 +4,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { json } from "react-router-dom";
 // https://demoback.kairaaexchange.com/get_graph_data
 
-const token = localStorage.getItem("token");
+// const token = localStorage.getItem("token");
+const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcHRpb24iOiJhZG1pbl9sb2dpbiIsImlkIjoiNjM0YTllODRjMzlhYzJlZWZhN2ZkNTY1Iiwic3RhdHVzIjp0cnVlLCJpYXQiOjE3MjY3NDQwOTIsImV4cCI6MTcyNjc1MTI5Mn0.0h-TpCeFZBgiud9kDGxd5PmPX0zAeMDK169AJRiX7ok";
 
 export const fetchUser = createAsyncThunk("fetchUser", async () => {
   try {
@@ -31,7 +32,7 @@ export const fetchUser = createAsyncThunk("fetchUser", async () => {
 export const loginUser = createAsyncThunk(
   "loginUser",
   async ({ email, password, pattern }, { rejectWithValue }) =>
-    //
+    
     {
       // console.log("ccccc", "email, password, pattern");
 
@@ -98,6 +99,7 @@ export const kycUserDetails = createAsyncThunk(
       throw new Error("Failed to fetch user data");
     }
     const data = await res.json();
+    
     return data;
   }
 );

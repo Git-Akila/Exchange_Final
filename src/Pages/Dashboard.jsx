@@ -15,10 +15,12 @@ function Dashboard() {
   const dataTableRef = useRef(null);
   useEffect(() => {
     dispatch(fetchUser());
-    dispatch(graphData());
+    
   }, [dispatch]);
   
-
+useEffect(()=>{
+  dispatch(graphData());
+},[dispatch]);
   if (isLoading || isLoading1) {
     return <p>Loading...</p>;
   }
