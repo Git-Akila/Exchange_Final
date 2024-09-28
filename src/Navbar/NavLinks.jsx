@@ -31,10 +31,10 @@ const NavLinks = () => {
             </h1>
             {link.submenu && (
               <div>
-              <div className="absolute top-20 hidden group-hover:md:block hover:md:block z-[9999]">
-  <div className="py-3">
-    <div className="w-4 h-4 left-3 absolute mt-1 bg-white rotate-45"></div>
-  </div>
+                <div className="absolute top-20 hidden group-hover:md:block hover:md:block z-[9999]">
+                  <div className="py-3">
+                    <div className="w-4 h-4 left-3 absolute mt-1 bg-white rotate-45"></div>
+                  </div>
                   <div className="p-5 bg-blue-200 z-[9999] grid grid-cols-3 gap-10">
                     {link.sublinks.map((mysublinks) => (
                       <div>

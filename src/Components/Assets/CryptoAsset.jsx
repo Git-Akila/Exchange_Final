@@ -1,42 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 function CryptoAsset({ cryptoAssetData }) {
-   const [cryptoOpen, setcryptoOpen] = useState("");
+  const [toggledId, setToggledId] = useState(null);
+  const [operationType, setOperationType] = useState(null);
 
-  
+  const handleToggle = (id, type) => {
+    if (toggledId === id && operationType === type) {
+     
+      setToggledId(null);
+      setOperationType(null);
+    } else {
+      setToggledId(id);
+      setOperationType(type);
+    }
+  };
 
-   const [tableData, setTableData] = useState([]);
-   const [activeRowId, setActiveRowId] = useState([]);
- console.log("ActiveROw"+activeRowId);
- console.log("TableData"+tableData);
-   
-   useEffect(() => {
-     if (cryptoAssetData instanceof Promise) {
-       const fetchData = async () => {
-         const data = await cryptoAssetData;
-         setTableData(data);
-       };
-       fetchData();
-     } else {
-       setTableData(cryptoAssetData);
-     }
-   }, [cryptoAssetData]);
- 
-   
-   const handleRowClick = (id) => {
-    const table=tableData.filter((e)=>e.id ===id)
-    setActiveRowId(table);
-   };
- 
-   
-   const closePopup = (id) => {
-    const table=tableData.filter((e)=>e.id ===id)
-    setActiveRowId(table);
-   };
- 
+  const handleClose = () => {
+    setToggledId(null);
+    setOperationType(null);
+  };
+
   return (
-    <> 
-    <h2 className="font-semibold text-xl mb-4 mt-4">Crypto</h2>
+    <>
+      <h2 className="font-semibold text-xl mb-4 mt-4">Crypto Assets</h2>
+
       <table className="w-full border border-gray-300 bg-slate-50 rounded-lg overflow-x-auto">
         <thead className="bg-blue-100">
           <tr className="text-center border-b border-gray-300">
@@ -48,58 +35,62 @@ function CryptoAsset({ cryptoAssetData }) {
           </tr>
         </thead>
         <tbody>
-          {tableData && Array.isArray(tableData) && tableData.length > 0 ? (
-            tableData.map((data, i) => (
-              <tr
-                className="text-center"
-                key={data.id || i}
-               
-              >
-                <td className="py-2 flex items-center justify-start p-2">
-                  <img
-                    src={data.logo}
-                    className="w-14 h-14 mr-6"
-                    alt={`${data.coin} logo`}
-                  />
-                  {data.coin}
-                </td>
-                <td className="py-2">{data.amount}</td>
-                <td className="py-2">{data.hold}</td>
-                <td className="py-2">{data.total}</td>
-                <td className="py-2 flex gap-2 justify-center items-center">
-                  <button
-                    className={`p-1 rounded font-medium ${
-                      data.deposit ? "text-blue-600" : "text-red-500"
-                    }`}
-                    // disabled={!data.deposit} 
-                    onClick={() => handleRowClick(data.id)} 
-                  >
-                    Deposit
-                  </button>
-                  <button
-                    className={`p-1 rounded font-medium ${
-                      data.withdraw ? "text-blue-500" : "text-red-500"
-                    }`}
-                    disabled={!data.withdraw}
-                  >
-                    Withdraw
-                  </button>
-                </td>
+          {cryptoAssetData.length > 0 ? (
+            cryptoAssetData.map((data, i) => (
+              <React.Fragment key={data.id || i}>
+                <tr className="text-center">
+                  <td className="py-2">
+                    <div className="flex flex-col items-center gap-2">
+                      <img
+                        src={data.logo}
+                        className="w-12 h-12"
+                        alt={`${data.coin} logo`}
+                      />
+                      <div>{data.coin}</div>
+                    </div>
+                  </td>
+                  <td className="py-2">{data.amount}</td>
+                  <td className="py-2">{data.hold}</td>
+                  <td className="py-2">{data.total}</td>
+                  <td className="py-2">
+                    <div className="flex justify-center items-center gap-2">
+                      <button
+                        className={`p-1 rounded font-medium ${
+                          data.deposit ? "text-blue-600" : "text-red-500"
+                        }`}
+                        onClick={() => handleToggle(data.id, "deposit")}
+                      >
+                        Deposit
+                      </button>
+                      <button
+                        className={`p-1 rounded font-medium ${
+                          data.withdraw ? "text-blue-500" : "text-red-500"
+                        }`}
+                        onClick={() => handleToggle(data.id, "withdraw")}
+                      >
+                        Withdraw
+                      </button>
+                    </div>
+                  </td>
+                </tr>
 
-                {/* Conditional rendering of the popup */}
-                {activeRowId.length >0? (
-                  <tr>
-                    <td colSpan={5}>
-                      <div className="mx-auto container justify-center items-center mt-8">
-                        <div className="bg-slate-50 rounded-lg p-4 shadow-lg max-w-md mx-auto">
+                {/* Show Details Below the Selected Row */}
+                {toggledId === data.id &&
+                  operationType === "deposit" &&
+                  (data.deposit ? (
+                    <tr className="bg-gray-100 xs:mx-20 md:mx-20">
+                      <td
+                        colSpan={5}
+                        className="xs:px-40 xs:py-10 md:px-72 md:py-10 p-6"
+                      >
+                        <div className="bg-slate-50 rounded-lg p-10 shadow-lg">
                           <div className="flex justify-between items-center mb-4">
                             <h2 className="text-blue-700 font-bold text-xl">
                               Bank Details
                             </h2>
-
                             <button
                               className="text-red-500 font-bold"
-                              onClick={()=>closePopup(data.id)} // Close popup on click
+                              onClick={handleClose}
                             >
                               X
                             </button>
@@ -109,53 +100,147 @@ function CryptoAsset({ cryptoAssetData }) {
                               <label>Account Holder Name</label>
                               <input
                                 type="text"
-                                required
-                                placeholder="Account Name"
+                                //placeholder="Enter name"
+                                value={data.holder || ""}
                                 className="w-full border rounded p-2"
+                                readOnly
                               />
                             </div>
                             <div className="mb-4">
                               <label>Account Number</label>
                               <input
                                 type="text"
-                                required
-                                placeholder="Account Number"
+                                //placeholder="Account Number"
+                                value={data.accountNumber || ""}
                                 className="w-full border rounded p-2"
+                                readOnly
                               />
                             </div>
                             <div className="mb-4">
                               <label>IFSC Code</label>
                               <input
                                 type="text"
-                                required
-                                placeholder="IFSC Code"
+                                //placeholder="IFSC Code"
+                                value={data.ifscCode || ""}
                                 className="w-full border rounded p-2"
+                                readOnly
                               />
                             </div>
                             <div className="mb-4">
                               <label>Account Type</label>
                               <input
                                 type="text"
-                                required
-                                placeholder="Account Type"
+                                //placeholder="Account Type"
+                                value={data.accountType || ""}
                                 className="w-full border rounded p-2"
+                                readOnly
                               />
                             </div>
                             <div className="mb-4">
                               <label>UPI ID</label>
                               <input
-                                required
+                                type="text"
+                                //placeholder="UPI ID"
+                                value={data.upiId || ""}
                                 className="p-2 w-full border rounded"
-                                placeholder="UPI ID"
+                                readOnly
                               />
                             </div>
                           </form>
                         </div>
-                      </div>
-                    </td>
-                  </tr>
-                ):(<></>)}
-              </tr>
+                      </td>
+                    </tr>
+                  ) : (
+                    <tr className="bg-gray-100 ">
+                      <td colSpan={5} className=" p-3">
+                        <div className="bg-slate-50 rounded-lg p-10 shadow-lg">
+                          <div className="flex justify-between items-center mb-4">
+                            <p>...Loading</p>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+
+                {toggledId === data.id &&
+                  operationType === "withdraw" &&
+                  (data.withdraw ? (
+                    <tr className="bg-gray-100 xs:mx-20 md:mx-20">
+                      <td
+                        colSpan={5}
+                        className="xs:px-40 xs:py-10 md:px-72 md:py-10 p-6"
+                      >
+                        <div className="bg-slate-50 rounded-lg p-10 shadow-lg">
+                          <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-blue-700 font-bold text-xl">
+                              Withdrawal
+                            </h2>
+                            <button
+                              className="text-red-500 font-bold"
+                              onClick={handleClose}
+                            >
+                              X
+                            </button>
+                          </div>
+                          <form>
+                            <div className="mb-4">
+                              <label>Withdraw Amount</label>
+                              <input
+                                type="text"
+                                value={data.holder || ""}
+                                className="w-full border rounded p-2"
+                                readOnly
+                              />
+                            </div>
+                            <div className="mb-4">
+                              <label>Withdraw Method</label>
+                              <select className="w-full border rounded p-2">
+                                <option value="" disabled>
+                                  Select Method
+                                </option>
+                                <option value="IMPS">IMPS</option>
+                                <option value="NEFT">NEFT</option>
+                              </select>
+                            </div>
+                            <div className="mb-4">
+                              <label>Transaction Fee</label>
+                              <input
+                                type="text"
+                                value={data.ifscCode || ""}
+                                className="w-full border rounded p-2"
+                                readOnly
+                              />
+                            </div>
+                            <div className="mb-4">
+                              <label>Notes</label>
+                              <input
+                                type="text"
+                                value={data.accountType || ""}
+                                className="w-full border rounded p-2"
+                                readOnly
+                              />
+                            </div>
+                            <div className="justify-center items-center flex">
+                              <button className="bg-blue-700 font-bold p-2 rounded">
+                                Confirm Withdrawal
+                              </button>
+                            </div>
+                          </form>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    <tr className="bg-gray-100 ">
+                      <td colSpan={5} className=" p-3">
+                        <div className="bg-slate-50 rounded-lg p-10 shadow-lg">
+                          <div className="flex justify-between items-center mb-4">
+                            <p className="text-lg text-gray-400">No Withdrawal Available for this User</p>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+              </React.Fragment>
             ))
           ) : (
             <tr>
@@ -166,10 +251,7 @@ function CryptoAsset({ cryptoAssetData }) {
           )}
         </tbody>
       </table>
-   
-     
-
-  </>
+    </>
   );
 }
 

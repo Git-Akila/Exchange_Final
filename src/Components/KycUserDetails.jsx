@@ -4,9 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { kycUserDetails } from "../Data/fetchUserData";
 import { cryptoAsset } from "../Data/fetchUserData";
 import {FiatAsset} from '../Data/fetchUserData';
+import {kycApproved} from '../Data/kycData';
+
 import { FaCloudArrowDown } from "react-icons/fa6";
 import {TradehistoryAsset} from '../Data/fetchUserData';
 import {UserTransaction} from '../Data/fetchUserData';
+
 import "react-datepicker/dist/react-datepicker.css";
 import UserPersonalInfo from "./userDetails/UserPersonalInfo";
 
@@ -14,7 +17,7 @@ import P2PWallet from "./userDetails/P2PWallet";
 import SwapHistory from "./userDetails/SwapHistory";
 import WalletHistory from "./userDetails/WalletHistory";
 import Assets from "../Components/Assets/Assets";
-import UserOrderHistory from "./userDetails/UserOrderHistory";
+import OrderHistory from "./userDetails/OrderHistory";
 import UserSecurity from "./userDetails/UserSecurity";
 import OpenOrder from "./userDetails/OpenOrder";
 import UserActivity from "./userDetails/UserActivity/UserActivity";
@@ -22,6 +25,8 @@ import UserActivity from "./userDetails/UserActivity/UserActivity";
 
 import { useParams } from "react-router-dom";
 import Tickets from "./userDetails/Tickets";
+import Airdrop from "./userDetails/Airdrop";
+import ExportHistory from "./userDetails/ExportHistory";
 const TabButton = ({ label, isActive, onClick }) => (
   <button
   className={`px-1 py-2 text-sm mr-1 cursor-pointer ${
@@ -46,7 +51,8 @@ function KycUserDetails() {
   const {isLoading:isfiatLoading,data:fiatData,isError:isFiatError}=useSelector((state)=>state.fiatData);
   const {isLoading:istradehistoryLoading,data:tradehistoryData,isError:istradehistoryError}=useSelector((state)=>state.tradehistoryData);
   const {isLoading:isUserTransactionLoading,data:UserTransactionData,isError:isUserTransactionError}=useSelector((state)=>state.UserTransaction);
-  const {_id}=useParams();
+  // const {isLoading:iskycApprovedLoading,data:kycApprovedData,isError:iskycApprovedError}=useSelector((state)=>state.kycApproved);
+  const {_id,page}=useParams();
 
   const [activeTab, setActiveTab] = useState(0);
   // console.log(".................data" + JSON.stringify(data, 2, null));
@@ -59,16 +65,18 @@ function KycUserDetails() {
     dispatch(FiatAsset(_id));
     dispatch(TradehistoryAsset(_id));
     dispatch(UserTransaction(_id));
+    // dispatch(kycApproved(_id,page));
+
   } 
- },[dispatch,_id]);
+ },[dispatch,_id,page]);
 
  
 
-  if (isKycLoading ||isCryptoLoading || isfiatLoading || istradehistoryLoading || isUserTransactionLoading ) {
+  if (isKycLoading ||isCryptoLoading || isfiatLoading || istradehistoryLoading || isUserTransactionLoading  ) {
     return <p>Loading...</p>;
   }
 
-  if (isKycError || isCryptoError || isFiatError || istradehistoryError || isUserTransactionError) {
+  if (isKycError || isCryptoError || isFiatError || istradehistoryError || isUserTransactionError ) {
     return <p>There was an error fetching the details...</p>;
   }
 
@@ -100,11 +108,14 @@ const TradehistoryData=tradehistoryData || {};
 const UserTransactionDataa=UserTransactionData || {};
 console.log("UserTransactionData"+JSON.stringify(UserTransactionDataa));
 
-  return (
+// const kycApprovedData1=kycApprovedData || {}
+// console.log("kycApprovedData"+kycApprovedData);
+
+return (
     <div>
    <div className="mx-auto container justify-center items-center">
   <div
-    className="bg-slate-100 p-4 max-w-screen-xl mx-auto flex flex-wrap justify-center gap-4"
+    className="bg-slate-50 p-4 max-w-screen-xl mx-auto flex flex-wrap justify-center gap-4 rounded"
   >
         <TabButton
           label="Personal Info"
@@ -122,7 +133,7 @@ console.log("UserTransactionData"+JSON.stringify(UserTransactionDataa));
           isActive={activeTab === 2}
           onClick={() => setActiveTab(2)}
         />
-        <TabButton
+        {/* <TabButton
           label="P2P Wallet"
           isActive={activeTab === 3}
           onClick={() => setActiveTab(3)}
@@ -131,7 +142,7 @@ console.log("UserTransactionData"+JSON.stringify(UserTransactionDataa));
           label="Swap History"
           isActive={activeTab === 4}
           onClick={() => setActiveTab(4)}
-        />
+        /> */}
         <TabButton
           label="Wallet History"
           isActive={activeTab === 5}
@@ -190,7 +201,7 @@ console.log("UserTransactionData"+JSON.stringify(UserTransactionDataa));
           <Assets cryptoAssetData={cryptoAssetData} FiatAssetData={FiatAssetData}/>
         </Typography>
       </TabPanel>
-      <TabPanel isActive={activeTab === 3}>
+      {/* <TabPanel isActive={activeTab === 3}>
         <Typography variant="h6">
           <P2PWallet />
         </Typography>
@@ -199,10 +210,10 @@ console.log("UserTransactionData"+JSON.stringify(UserTransactionDataa));
         <Typography varient="h6">
           <SwapHistory />
         </Typography>
-      </TabPanel>
+      </TabPanel> */}
       <TabPanel isActive={activeTab === 5}>
         <Typography variant="h6">
-          <WalletHistory UserTransactionData={UserTransactionDataa}/>
+          {/* <WalletHistory UserTransactionData={UserTransactionDataa}/> */}
         </Typography>
       </TabPanel>
       <TabPanel isActive={activeTab === 6}>
@@ -212,12 +223,12 @@ console.log("UserTransactionData"+JSON.stringify(UserTransactionDataa));
       </TabPanel>
       <TabPanel isActive={activeTab === 7}>
         <Typography variant="h6">
-          <UserOrderHistory TradehistoryData={TradehistoryData}/>
+          <OrderHistory TradehistoryData={TradehistoryData}/>
         </Typography>
       </TabPanel>
       <TabPanel isActive={activeTab===8}>
         <Typography variant="h6">
-          <UserActivity logData={logData}/>
+          <UserActivity userData={data}/>
           {/* <SecurityHistory logData={logData}/> */}
         </Typography>
       </TabPanel>
@@ -233,12 +244,12 @@ console.log("UserTransactionData"+JSON.stringify(UserTransactionDataa));
       </TabPanel>
       <TabPanel isActive={activeTab===11}>
         <Typography variant="h6">
-         
+         <Airdrop userData={data}/>
         </Typography>
       </TabPanel>
       <TabPanel isActive={activeTab===12}>
         <Typography variant="h6">
-          
+          <ExportHistory userData={data}/>
         </Typography>
       </TabPanel>
       </div>

@@ -6,11 +6,14 @@ const Layout = ({ children }) => {
   const location = useLocation();
 
   
-  const isLoginPage = location.pathname === '/login';
+  const showNavbarPaths = ['/', '/subadmin'];
+  const shouldShowNavbar = showNavbarPaths.includes(location.pathname) || 
+                           location.pathname.startsWith('/userdetails/');
 
   return (
     <div>
-      {!isLoginPage && <Navbar />} 
+      
+      {shouldShowNavbar  && <Navbar />}
       {children}
     </div>
   );

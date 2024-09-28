@@ -3,10 +3,9 @@ import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { json } from "react-router-dom";
 // https://demoback.kairaaexchange.com/get_graph_data
-
-// const token = localStorage.getItem("token");
-const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcHRpb24iOiJhZG1pbl9sb2dpbiIsImlkIjoiNjM0YTllODRjMzlhYzJlZWZhN2ZkNTY1Iiwic3RhdHVzIjp0cnVlLCJpYXQiOjE3MjY3NDQwOTIsImV4cCI6MTcyNjc1MTI5Mn0.0h-TpCeFZBgiud9kDGxd5PmPX0zAeMDK169AJRiX7ok";
-
+// const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcHRpb24iOiJhZG1pbl9sb2dpbiIsImlkIjoiNjM0YTllODRjMzlhYzJlZWZhN2ZkNTY1Iiwic3RhdHVzIjp0cnVlLCJpYXQiOjE3MjcwMjE5NTEsImV4cCI6MTcyNzAyOTE1MX0.0p_qy15Ydy4BTW1DFP9eD7RUu-i5piEesdeN4qGcC34";
+const token = localStorage.getItem("token");
+//const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcHRpb24iOiJhZG1pbl9sb2dpbiIsImlkIjoiNjM0YTllODRjMzlhYzJlZWZhN2ZkNTY1Iiwic3RhdHVzIjp0cnVlLCJpYXQiOjE3MjY4ODk0MjEsImV4cCI6MTcyNjg5NjYyMX0.7n6dcSZOK8U2W6iH0DKZ7sBFDAQWztFLDMZVItNfVGQ";
 export const fetchUser = createAsyncThunk("fetchUser", async () => {
   try {
     const response = await axios.post(
@@ -34,7 +33,7 @@ export const loginUser = createAsyncThunk(
   async ({ email, password, pattern }, { rejectWithValue }) =>
     
     {
-      // console.log("ccccc", "email, password, pattern");
+       console.log("ccccc", "email, password, pattern");
 
       try {
         // const axios = require('axios');

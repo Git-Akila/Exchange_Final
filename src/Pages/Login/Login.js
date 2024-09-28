@@ -1,13 +1,34 @@
 //npm i react-toastify react-pattern-lock
+//npm install styled-components
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PatternLock from "react-pattern-lock";
-
+import styled from 'styled-components';
 import { loginUser } from "../../Data/fetchUserData";
+
+const PatternLockContainer = styled.div`
+  .custom-pattern-lock {
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8)); /* Add shadow to the entire lock */
+  }
+
+  .custom-pattern-lock circle {
+    transition: all 0.3s ease;
+    fill: rgba(0, 123, 255, 0.5); /* Optional: Semi-transparent fill */
+    stroke: #007bff;
+    stroke-width: 1;
+  }
+
+  .custom-pattern-lock circle:hover {
+    stroke: #ffffff;
+    stroke-width: 2;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8)); /* Add shadow */
+  }
+`;
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -18,13 +39,21 @@ const Login = () => {
   const navigate = useNavigate();
 
   const { isLoading, isError, data } = useSelector((state) => state.login);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const expirationTime = localStorage.getItem("expirationTime");
+    const currentTime = new Date().getTime();
 
-  if (isLoading) {
-    return <p>...Loading</p>;
-  }
-  if (isError) {
-    return <p>There was an error fetching the details...</p>;
-  }
+    // Check if token exists and has not expired
+    if (token && expirationTime && currentTime < expirationTime) {
+      navigate("/");
+    } else if (token) {
+      // Token has expired
+      localStorage.removeItem("token");
+      localStorage.removeItem("expirationTime");
+      navigate("/login");
+    }
+  }, [navigate]);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -35,22 +64,32 @@ const Login = () => {
     }
 
     try {
-      const result =dispatch(
+      const result = await dispatch(
         loginUser({ email, password, pattern: pattern.join("") })
-      );
+      ).unwrap(); // Unwrapping the promise for easier access to the result
 
-      if (result.token) {
+      if (result?.token) {
         localStorage.setItem("token", result.token);
 
-        toast.success("Login successful!");
+        // Set expiration time (10 minutes from now)
+        const expirationTime = new Date().getTime() + 10 * 60 * 1000; // 10 minutes
+        localStorage.setItem("expirationTime", expirationTime);
+
+        // Check if the input token matches the data.token
+        if (data.token === result.token) {
+          toast.success("Login successful!");
+          navigate("/");
+        } else {
+          toast.error("Invalid token.");
+        }
+
+        // Clear form
         setEmail("");
         setPassword("");
         setPattern([]);
         setIsPatternLocked(false);
-
-        navigate("/");
       } else {
-        toast.error("Invalid token.");
+        toast.error("Invalid login credentials.");
       }
     } catch (error) {
       toast.error(error.message || "An error occurred during login.");
@@ -65,9 +104,6 @@ const Login = () => {
   const handlePatternFinish = () => {
     setIsPatternLocked(true);
   };
-  console.log("Email:", email);
-  console.log("Password:", password);
-  console.log("Pattern:", pattern.join(""));
 
   return (
     <div className="flex justify-center items-center mt-10">
@@ -76,7 +112,12 @@ const Login = () => {
         className="bg-blue-900 justify-center items-center flex-col p-3"
       >
         <div className="justify-center items-center">
-          <h2 className="text-white text-2xl font-bold p-3">Login</h2>
+          <div className="p-2 mb-2">
+            <h2 className="text-white text-2xl font-bold">Sign-In</h2>
+            <p className="text-[18px] font-medium text-white">
+              Access the Koianation panel using your email and password.
+            </p>
+          </div>
           <input
             placeholder="Enter email"
             className="py-3 mb-2 px-4 rounded-lg border w-full border-gray-300"
@@ -97,7 +138,9 @@ const Login = () => {
           />
         </div>
 
-        <div className="justify-center items-center flex bg-blue-100 mb-4">
+        <div className="flex justify-center items-center bg-blue-100 ">
+      <div className="bg-gradient-to-b m-3 from-blue-700 to-blue-500 p-4 rounded-lg shadow-lg transition-all duration-300 hover:bg-gradient-to-t hover:from-blue-500 hover:to-blue-700 hover:scale-105">
+        <PatternLockContainer>
           <PatternLock
             width={300}
             pointSize={15}
@@ -106,13 +149,16 @@ const Login = () => {
             onChange={handlePatternChange}
             onFinish={handlePatternFinish}
             disabled={isPatternLocked}
+            className="custom-pattern-lock"
           />
-        </div>
+        </PatternLockContainer>
+      </div>
+    </div>
 
         <div className="items-center justify-center flex">
           <button
             type="submit"
-            className="p-3 m-2 bg-white rounded-2xl text-center"
+            className="p-3 m-2 bg-blue-800 text-white text-lg w-full rounded-lg text-center"
             disabled={isLoading || !isPatternLocked}
           >
             {isLoading ? "Logging in..." : "Login"}

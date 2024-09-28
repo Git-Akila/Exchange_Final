@@ -88,22 +88,28 @@ function UserSecurity({ userData, kycData }) {
               </ul>
             ))
           ) : (
-            <p>No Bank Details Available</p>
+            <div className="flex justify-center items-center h-full text-center">
+              <p>No Bank Details Available</p>
+            </div>
           )}
         </div>
         <div className="md:w-1/2 w-full bg-slate-50 text-[16px] p-5">
           <ul className="mb-4 mt-4 border-b border-gray-200 pb-4">
-          <li className="flex items-center justify-between gap-4 mb-4">
-  <span className="bg-slate-50 text-lg px-3 py-2 rounded-md">
-    Account is Activated/ Tab to block account
-  </span>
-  <div className="flex justify-center items-center w-1/3">
-    <label className="switch">
-      <input checked={isActive} type="checkbox" className="toggle" />
-      <span className="slider"></span>
-    </label>
-  </div>
-</li>
+            <li className="flex items-center justify-between gap-4 mb-4">
+              <span className="bg-slate-50 text-lg px-3 py-2 rounded-md">
+                Account is Activated/ Tab to block account
+              </span>
+              <div className="flex justify-center items-center w-1/3">
+                <label className="switch">
+                  <input
+                    checked={isActive}
+                    type="checkbox"
+                    className="toggle"
+                  />
+                  <span className="slider"></span>
+                </label>
+              </div>
+            </li>
 
             <li className="flex items-center justify-between gap-4 mb-4">
               <span className="bg-slate-50 text-lg px-3 py-2 rounded-md">
@@ -174,10 +180,10 @@ function UserSecurity({ userData, kycData }) {
               userData1.bank_info.map((BankInfo, i) => (
                 <ul
                   key={i || BankInfo.id}
-                  className="mb-4 mt-4 border-b border-gray-200 pb-4"
+                  className="mb-4 mt-4 px-3 border-b border-gray-200 pb-4"
                 >
-                  <li className="flex items-center justify-between gap-4">
-                    <span className="bg-slate-50 text-lg px-3 py-2 rounded-md">
+                  <li className="flex  items-center justify-between gap-4">
+                    <span className="bg-slate-50 text-lg py-2 rounded-md">
                       Bank Proof
                     </span>
 
@@ -205,25 +211,25 @@ function UserSecurity({ userData, kycData }) {
                         </>
                       ) : (
                         <button
-                        className={`p-2 rounded ${
-                          BankInfo.verifystatus === 0
-                            ? 'bg-gray-300 text-gray-600'
+                          className={`p-2 rounded ${
+                            BankInfo.verifystatus === 0
+                              ? "bg-gray-300 text-gray-600"
+                              : BankInfo.verifystatus === 1
+                              ? "bg-green-300 text-green-600"
+                              : BankInfo.verifystatus === 3
+                              ? "bg-red-300 text-red-600"
+                              : "bg-gray-300 text-gray-600"
+                          }`}
+                        >
+                          {BankInfo.verifystatus === 0
+                            ? "Rejected"
                             : BankInfo.verifystatus === 1
-                            ? 'bg-green-300 text-green-600'
+                            ? "Approved"
                             : BankInfo.verifystatus === 3
-                            ? 'bg-red-300 text-red-600'
-                            : 'bg-gray-300 text-gray-600'
-                        }`}
-                      >
-                        {BankInfo.verifystatus === 0
-                          ? 'Rejected'
-                          : BankInfo.verifystatus === 1
-                          ? 'Approved'
-                          : BankInfo.verifystatus === 3
-                          ? 'Not Provided'
-                          : 'Unknown Status'} 
-                      </button>)}
-                        
+                            ? "Not Provided"
+                            : "Unknown Status"}
+                        </button>
+                      )}
                     </div>
                   </li>
                 </ul>

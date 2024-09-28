@@ -3,6 +3,7 @@ import MUIDataTable from "mui-datatables";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import styled from 'styled-components';
 import { FaRegEdit } from "react-icons/fa";
+import Paper from '@mui/material/Paper';
 //npm install mui-datatables @mui/material react-icons
 //npm install @emotion/react @emotion/styled
 //npm install @mui/icons-material
@@ -49,37 +50,105 @@ const DataTable = forwardRef(({ initialData }, ref) => {
   ];
 
   const options = {
-    onRowClick:handleRowClick,
-    selectableRows: false,
-    elevation: 0,
-    rowsPerPage: 5,
-    responsive: "vertical",
-    rowsPerPageOptions: [5, 10, 20, 25],
+    onRowClick: handleRowClick, // Handler for row click
+    selectableRows: false, // Disable row selection
+    elevation: 0, // No shadow
+    rowsPerPage: 5, // Default rows per page
+    responsive: "vertical", // Responsive layout
+    rowsPerPageOptions: [5, 10, 20, 25], // Options for rows per page
+    search: true, // Enable search
+    pagination: true, // Enable pagination
+    customStyles: {
+      // Custom styles for the table
+      backgroundColor: "black", // Set table background color
+    },
+    // Optional: You can also override specific components here
+    components: {
+      MuiTable: {
+        styleOverrides: {
+          root: {
+            backgroundColor: "black", // Table background color
+          },
+        },
+      },
+    },
   };
+  
 
   const getMuiTheme = () => createTheme({
     typography: { fontWeightBold: "bold" },
-    palette: { background: { paper: "#081A51", default: "#081A51" }, mode: "dark" },
+    palette: {
+      background: {
+        paper: '#FDFDFD',
+        default: "#FDFDFD"
+      },
+      mode: "dark",
+    },
     components: {
       MuiTableCell: {
         styleOverrides: {
-          head: { padding: "10px 4px" },
-          body: { padding: "7px 15px", color: "#e2e8f0" },  
+          head: {
+            padding: "10px 4px",
+            color: "black",
+          },
+          body: {
+            padding: "7px 15px",
+            color: "black",
+          },
+        },
+      },
+      MuiIconButton: {
+        styleOverrides: {
+          root: {
+            color: 'black',
+          },
+        },
+      },
+      
+      MuiSelect: {
+        styleOverrides: {
+          select: {
+            color: "black", // Rows per page select text color
+          },
+        },
+      },
+      MuiTablePagination: {
+        styleOverrides: {
+          toolbar: {
+            color: "black",
+          },
+          select: {
+            color: "black", // Rows per page dropdown text color
+          },
+          actions: {
+            color: "black",
+          },
+        },
+      },
+      MuiToolbar: {
+        styleOverrides: {
+          root: {
+            //  backgroundColor: "black", // Set background color for the toolbar
+            color: "black", // Set text color for the toolbar
+          },
         },
       },
     },
   });
+  
 
   return (
     <div className="bg-whitesmoke py-16 min-h-screen grid place-items-center">
       <HideScrollbarDiv className="w-[95%] max-w-6xl">
         <ThemeProvider theme={getMuiTheme()}>
+        <Paper elevation={3} style={{ padding: "1rem", boxShadow: "0px 4px 20px rgba(0,0,0,0.1)" }}>
+      
           <MUIDataTable
-            title={"User List"}
+           title={<span style={{ color: "black", fontSize:"22px", fontWeight:"bold" }}>User List</span>}
             data={tableData}
             columns={columns}
             options={options}
-          />
+          /></Paper>
         </ThemeProvider>
       </HideScrollbarDiv>
     </div>

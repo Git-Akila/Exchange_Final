@@ -9,6 +9,8 @@ import fiatSlice from '../Slicers/fiatSlice';
 
 import tradehistorySlice from '../Slicers/tradehistorySlice';
 import UserTransactionSlice from '../Slicers/walletSlice';
+import kycApprovedSlice from '../Slicers/kycApproveSlice';
+
 const store=configureStore({
     reducer:{
         userlist:userSlice,
@@ -21,6 +23,7 @@ const store=configureStore({
         tradehistoryData:tradehistorySlice,
 
         UserTransaction:UserTransactionSlice,
+        kycApproved:kycApprovedSlice,
 
 
 

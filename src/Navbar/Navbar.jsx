@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-
+import Logo from '../Components/Assets/logo.avif';
 import Button from "./Button";
 import NavLinks from "./NavLinks";
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   return (
-    <nav className="bg-blue-600">
+    <nav className="bg-blue-200">
       <div className="flex items-center font-medium justify-around">
         <div className="z-50 p-5 md:w-auto w-full flex justify-between">
-          <h1 className="text-2xl bold">Exchange</h1>
+          <div className="text-2xl bold flex gap-1"><img className="w-[40px] rounded h-[40px]" src={Logo}/>oinnation</div>
           {/* <img src={Logo} alt="logo" className="md:cursor-pointer h-9" /> */}
           <div className="text-3xl md:hidden" onClick={() => setOpen(!open)}>
             <ion-icon name={`${open ? "close" : "menu"}`}></ion-icon>
@@ -47,7 +47,7 @@ const Navbar = () => {
           
           <NavLinks />
           <li>
-            <Link to="/" className="py-7 px-3 inline-block">
+            <Link to="/subadmin" className="py-7 px-3 inline-block">
               Subadmin
             </Link>
           </li>

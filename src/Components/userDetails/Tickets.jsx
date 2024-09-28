@@ -1,56 +1,124 @@
-import React from 'react';
+import React from "react";
+import { MdVisibility, MdVisibilityOff } from "react-icons/md";
+
 import {
-    MdVisibility,
-    
-    MdVisibilityOff,
-  } from "react-icons/md";
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,Box
+} from "@mui/material";
+//npm i @mui/material @emotion/react @emotion/styled
 
-function Tickets({userData}) {
-    const ticket=userData || {tickets:[]};
-    console.log("Tickets"+JSON.stringify(ticket));
+function Tickets({ userData }) {
+  const data = userData || { tickets: [] };
+  console.log("Tickets" + JSON.stringify(data.tickets));
   return (
-    <div className='mx-auto container justify-center items-center mt-6'>
-        <div className='bg-slate-50 rounded-lg p-4 shadow-lg mx-auto'>
-            <h2 className='font-bold text-xl text-blue-600 mb-2'>Support Tickets</h2>
-            <table className='bg-white border-2 border-gray-200 w-full h-full'>
-                <thead className='text-lg'>
-                    <tr className='border-b-2 border-gray-100'>
-                    <th className='py-2'>Ticket</th>
-                    <th  className='py-2'>Issue Type</th>
-                    <th  className='py-2'>Query</th>
-                    <th  className='py-2'>Subject</th>
-                    <th  className='py-2'>Submitted</th>
-                    <th  className='py-2'>Status</th>
-                    <th  className='py-2'>Action</th></tr>
-                </thead>
-                <tbody className='text-[15px]'>
-                {ticket?.tickets && ticket.tickets.length > 0 ? (
-        ticket.tickets.map((ticket, i) => (
-                    <tr key={i || ticket.id}>
-                    <td  className='py-2'> {ticket.ticket_id || 'N/A'} </td>
-                    <td  className='py-2'>{ticket.issue_type || 'N/A'}</td>
-                    <td  className='py-2'>{ticket.query || 'N/A'}</td>
-                    <td  className='py-2'>{ticket.subject || 'N/A'}</td>
-                    <td  className='py-2'>{ticket.date || 'N/A'}</td>
-                    <td  className='py-2'>{ticket.status || 'N/A'}</td>
-                   {ticket.status ?(  <td  className='py-2'>
-                        {ticket.status===true ?(
-                             <MdVisibility color="green" size={25} />
-                        ):(
-                            <MdVisibilityOff color="red" size={25} />
-                        )}
-                    </td>):( <td>N/A</td>)}
-                </tr>
+    <div className="mx-auto container w-full h-full">
+      <div className="bg-slate-50 rounded-lgtext-center  items-center p-5 justify-center">
+        <h2 className="font-bold text-[18px] text-blue-800 mb-4">
+          Support Tickets
+        </h2>
+        <Paper sx={{ width: "100%", overflow: "hidden", padding: "20px" }}>
+          <TableContainer>
+            <Table sx={{ boxShadow: "0px 4px 20px rgba(0,0,0,0.5)" }}>
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    align="center"
+                    sx={{ fontSize: "17px", fontWeight: "bold" }}
+                  >
+                    Ticket
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{ fontSize: "17px", fontWeight: "bold" }}
+                  >
+                    Issue Type
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{ fontSize: "17px", fontWeight: "bold" }}
+                  >
+                    Query
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{ fontSize: "17px", fontWeight: "bold" }}
+                  >
+                    Subject
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{ fontSize: "17px", fontWeight: "bold" }}
+                  >
+                    Submitted
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{ fontSize: "17px", fontWeight: "bold" }}
+                  >
+                    Status
+                  </TableCell>
+                  {/* <TableCell
+                    align="center"
+                    sx={{ fontSize: "17px", fontWeight: "bold" }}
+                  >
+                    Action
+                  </TableCell> */}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data?.tickets && data?.tickets.length > 0 ? (
+                  data.tickets.map((row) => (
+                    <TableRow key={row.id}>
+                      <TableCell align="center">
+                        {row.ticket_id || ""}
+                      </TableCell>
+                      <TableCell align="center">
+                        {row.issue_type || ""}
+                      </TableCell>
+                      <TableCell align="center">{row.query || ""}</TableCell>
+                      <TableCell align="center">{row.subject || ""}</TableCell>
+                      <TableCell align="center">{row.date || ""}</TableCell>
 
-                   ))):(<div className='text-center
-                    justify-center flex'><p className='text-xs 
-                    items-center p-3 text-gray-300'>No Tickets Found !!!</p></div>)} 
-                </tbody>
-            </table>
-        </div>
+                      <TableCell align="center" sx={{ textAlign: "center" }}>
+                        <Box
+                          display="flex"
+                          justifyContent="center"
+                          alignItems="center"
+                        >
+                          {data.status !== undefined ? (
+                            data.status === true ? (
+                              <MdVisibility color="green" size={25} />
+                            ) : (
+                              <MdVisibilityOff color="red" size={25} />
+                            )
+                          ) : (
+                            <p>Not Provided</p>
+                          )}
+                        </Box>
+                      </TableCell>
 
+                      {/* <TableCell align="center"><button className="p-2 rounded bg-white">view</button></TableCell> */}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell align="center" colSpan={7}>
+                      No Tickets Found !!!
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      </div>
     </div>
-  )
+  );
 }
 
-export default Tickets
+export default Tickets;

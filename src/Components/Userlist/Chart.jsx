@@ -9,6 +9,9 @@ const Chart = ({graph}) => {
   // console.log("DATAAAAA"+JSON.stringify(data,null,2));
   // console.log("DAAAATAAAAAA"+data)
   const messageData = graph?.message || [];
+  const count=messageData.count || [];
+  const year=messageData.year;
+  const month=messageData.month;
   const processData = (data) => {
     return data.map(item => [item.month, item.count]);
   }

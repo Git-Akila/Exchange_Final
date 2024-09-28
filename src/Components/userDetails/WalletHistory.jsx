@@ -4,156 +4,416 @@ import {
   MdOutlineCloudDownload,
   MdVisibilityOff,
 } from "react-icons/md";
-import DatePicker from "react-datepicker";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TablePagination,
+  Paper,
+  TextField,
+  InputAdornment,
+  Select,
+  MenuItem,Box
+} from "@mui/material";
+import { FormControl, InputLabel } from "@mui/material"; // Correct imports
+
+import { format, parseISO } from "date-fns";
+import SearchIcon from "@mui/icons-material/Search";
+
 import { BsCalendarDate } from "react-icons/bs";
-import { FcSearch } from "react-icons/fc";
-function WalletHistory({ UserTransactionData }) {
-  console.log(
-    "UserTransactionData11 " + JSON.stringify(UserTransactionData.data)
-  );
-  //searching
-  const [query, setQuery] = useState("");
-  const handleSearch = () => {
-    //data(query);
-    setQuery(query);
+import * as XLSX from 'xlsx';
+function OpenOrder({ UserTransactionData }) {
+  const data1=UserTransactionData|| {};
+ const data = data1?.data || [];
+console.log("USerTran"+JSON.stringify(data.fiat))
+  const [selectedOption, setSelectedOption] = useState("");
+  const [selectedOption1, setSelectedOption1] = useState("");
+  const [selectedOption2, setSelectedOption2] = useState("");
+  const [selectedOption4, setSelectedOption4] = useState("");
+  const [filterDate, setFilterDate] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const handleExport = () => {
+    if(data.length === 0){
+        console.log("No Data Available to Export");
+        return;
+
+    }
+
+    const worksheet = XLSX.utils.json_to_sheet(data); 
+    const workbook = XLSX.utils.book_new(); 
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Data"); 
+    XLSX.writeFile(workbook, "ExportedData.xlsx"); 
   };
 
-  //FilteredOption
-  const [selectedValue, setSelectedValue] = useState("");
+  const filteredData = data.filter((row) => {
+    const formattedDate = format(parseISO(row.DateTime), "yyyy-MM-dd");
+    // Crypto and fiat
+    const typeMatches1 =
+      selectedOption1 === "option1"
+        ? ""
+        : selectedOption1 === "option2"
+        ? "fiat"
+        : selectedOption1 === "option3"
+        ? "crypto"
+        : selectedOption1 === "option3"
+        ? "swap"
+        
+        : "";
 
-  const handleChange = (e) => {
-    setSelectedValue(e.target.value);
-    //data(e.target.value);
+    const typeMatches =
+      selectedOption === "option1"
+        ? ""
+        : selectedOption === "option2"
+        ? "1"
+        : selectedOption === "option3"
+        ? "2"
+        : selectedOption === "option4"
+        ? "0"
+        : "";
+
+    const typeMatches2 =
+      selectedOption2 === "option1"
+        ? ""
+        : selectedOption2 === "option2"
+        ? "deposit"
+        : selectedOption2 === "option3"
+        ? "withdraw"
+        : selectedOption2 === "option4"
+        ? "eth"
+        : "";
+
+    // const typeMatches4 =
+    //   selectedOption4 === "option1"
+    //     ? ""
+    //     : selectedOption4 === "option2"
+    //     ? "limit"
+    //     : selectedOption2 === "option3"
+    //     ? "market"
+    //     : selectedOption2 === "option4"
+    //     ? "stop"
+    //     : "";
+
+    return (
+      (typeMatches === "" || row.status.toString() === typeMatches) &&
+      (typeMatches2 === "" || row.type === typeMatches2) &&
+      // (typeMatches1 === "" || 
+      //   (row === typeMatches1) || 
+      //   (selectedOption1 === "option2" && row.fiat) || 
+      //   (selectedOption1 === "option3" && row.crypto)||
+      //   (selectedOption1 === "option3" && row.swap)
+      // ) && 
+      (filterDate === "" || formattedDate === filterDate)
+    );
+  });
+
+  const handleSelectChange = (event) => {
+    setSelectedOption(event.target.value);
   };
 
-  //Datepicker
-  const [startDate, setStartDate] = useState(null);
-  const handleDateChange = (date) => {
-    setStartDate(date);
-    // data(date);
-    startDate(date);
+  const handleSelectChange1 = (event) => {
+    setSelectedOption1(event.target.value);
+  };
+  const handleSelectChange2 = (event) => {
+    setSelectedOption2(event.target.value);
+  };
+  // const handleSelectChange4 = (event) => {
+  //   setSelectedOption4(event.target.value);
+  // };
+  const handleDateFilterChange = (event) => {
+    setFilterDate(event.target.value);
   };
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
   return (
-    <div className="mx-auto container text-[16px]">
-      <div className="bg-slate-50 p-2 rounded">
-        <div className="justify-between flex">
-          <h2 className=" font-semibold text-xl mb-2 mt-2">Wallet History</h2>
-          <button className="p-2 bg-blue-200 flex text-center items-center gap-2 rounded-md">
+    <div className="mx-auto container w-full h-full bg-white">
+      <div className=" bg-slate-50 rounded text-center  items-center p-10 justify-center">
+      <div className="justify-between flex">
+          <h2 className=" font-bold text-blue-800 text-[18px] mb-2 mt-2">
+            Wallet History
+          </h2>
+          <button className="p-2 bg-blue-200 flex text-center items-center gap-2 rounded-md"
+          onClick={handleExport}>
             Download
-            <MdOutlineCloudDownload />
+          <MdOutlineCloudDownload />
           </button>
         </div>
-        <div className="gap-2 flex justify-between mt-3 mb-3">
-          <div className="flex items-center text-slate-400">
-            <select
-              value={selectedValue}
-              onChange={handleChange}
-              className="border p-2 rounded-lg border-blue-200"
+        <div className="grid grid-cols-5 gap-10 mb-3   justify-between">
+          {/* DropDown1 */}
+          {/* <div className="flex justify-between gap-2 items-center text-center rounded-lg">
+            <FormControl
+              fullWidth
+              style={{ backgroundColor: "white", borderRadius: "10px" }}
             >
-              <option value="">All</option>
-              <option value="Flat">Flat</option>
-              <option value="Crypto">Crypto</option>
-            </select>
-          </div>
-          <div className="flex items-center text-slate-400">
-            <select className="border p-2 rounded-lg border-blue-200">
-              <option value="">All</option>
-            </select>
-          </div>
-          <div className="flex items-center text-slate-400">
-            <select className="border p-2 rounded-lg border-blue-200">
-              <option value="">All</option>
-            </select>
-          </div>
-          {/* npm install react-datepicker
-           */}
-          <div className="flex items-center border p-2 bg-white rounded-lg border-blue-200">
-            <DatePicker
-              selected={startDate}
-              onChange={handleDateChange}
-              placeholderText="Select Date"
-              className="focus:outline-none"
-            />
-            <BsCalendarDate size={20} color="#5390D9" />
+              <InputLabel id="dropdown-label">Currency Type</InputLabel>
+              <Select
+                labelId="dropdown-label"
+                id="dropdown"
+                value={selectedOption1}
+                onChange={handleSelectChange1}
+                label="Select Option"
+                style={{ borderRadius: "10px" }}
+                //   endAdornment={
+                //     <InputAdornment position="end">
+                //       <SearchIcon style={{ fontSize: 30, cursor: "pointer" }} />
+                //     </InputAdornment>
+                //   }
+              >
+                <MenuItem value="option1">All</MenuItem>
+                <MenuItem value="option2">Fiat</MenuItem>
+
+                <MenuItem value="option3">Crypto</MenuItem>
+                
+              </Select>
+            </FormControl>
+          </div> */}
+          {/* DropDown2 */}
+          <div className="flex justify-between gap-2 items-center text-center rounded-lg">
+            <FormControl
+              fullWidth
+              style={{ backgroundColor: "white", borderRadius: "10px" }}
+            >
+              <InputLabel id="dropdown-label">Transaction</InputLabel>
+              <Select
+                labelId="dropdown-label"
+                id="dropdown"
+                value={selectedOption2}
+                onChange={handleSelectChange2}
+                label="Select Option"
+                style={{ borderRadius: "10px" }}
+                //   endAdornment={
+                //     <InputAdornment position="end">
+                //       <SearchIcon style={{ fontSize: 30, cursor: "pointer" }} />
+                //     </InputAdornment>
+                //   }
+              >
+                <MenuItem value="option1">All</MenuItem>
+                <MenuItem value="option2">Deposit</MenuItem>
+
+                <MenuItem value="option3">Withdraw</MenuItem>
+               
+              </Select>
+            </FormControl>
           </div>
 
-          <div
-            onClick={handleSearch}
-            className="flex items-center
-      border p-2 rounded-lg mr-2 border-blue-200 bg-white "
-          >
-            <input
-              type="text"
-              placeholder="search..."
-              className="focus:outline-none w-full "
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
+          {/* DropDown3 */}
+          <div className="flex justify-between gap-2 items-center text-center rounded-lg">
+            <FormControl
+              fullWidth
+              style={{ backgroundColor: "white", borderRadius: "10px" }}
+            >
+              <InputLabel id="dropdown-label">Status</InputLabel>
+              <Select
+                labelId="dropdown-label"
+                id="dropdown"
+                value={selectedOption}
+                onChange={handleSelectChange}
+                label="Select Option"
+                style={{ borderRadius: "10px" }}
+                //   endAdornment={
+                //     <InputAdornment position="end">
+                //       <SearchIcon style={{ fontSize: 30, cursor: "pointer" }} />
+                //     </InputAdornment>
+                //   }
+              >
+                <MenuItem value="option1">All</MenuItem>
+                <MenuItem value="option2">Pending</MenuItem>
+
+                <MenuItem value="option3">Completed</MenuItem>
+                <MenuItem value="option4">Cancelled</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+
+          {/* DropDown4
+          <div className="flex justify-between gap-2 items-center text-center rounded-lg">
+            <FormControl
+              fullWidth
+              style={{ backgroundColor: "white", borderRadius: "10px" }}
+            >
+              <InputLabel id="dropdown-label">Order</InputLabel>
+              <Select
+                labelId="dropdown-label"
+                id="dropdown"
+                value={selectedOption4}
+                onChange={handleSelectChange4}
+                label="Select Option"
+                style={{ borderRadius: "10px" }}
+                //   endAdornment={
+                //     <InputAdornment position="end">
+                //       <SearchIcon style={{ fontSize: 30, cursor: "pointer" }} />
+                //     </InputAdornment>
+                //   }
+              >
+                <MenuItem value="option1">All</MenuItem>
+                <MenuItem value="option2">Limit Order</MenuItem>
+
+                <MenuItem value="option3">Market Order</MenuItem>
+                <MenuItem value="option4">Stop Order</MenuItem>
+              </Select>
+            </FormControl>
+          </div>*/}
+
+          {/* Date Filter */}
+          <div>
+            <TextField
+              label="Filter by Date"
+              type="date"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={filterDate}
+              onChange={handleDateFilterChange}
+              InputLabelProps={{ shrink: true }}
+              style={{ backgroundColor: "white" }}
             />
-            <FcSearch size={30} />
           </div>
         </div>
-        <table className="bg-slate-50 border-2 border-gray-200 w-full h-full">
-          <thead>
-            <tr className="border-b-2 border-gray-200">
-              <th className="py-2">Date</th>
-              <th className="py-2">Assets</th>
-              <th className="py-2">Type</th>
-              <th className="py-2">Amount</th>
-              <th className="py-2">Transaction Fees</th>
-              <th className="py-2">Payment Option</th>
-              <th className="py-2">Transaction ID</th>
-              <th className="py-2">Notes</th>
-              <th className="py-2">Status</th>
-              <th className="py-2">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {UserTransactionData && UserTransactionData.data ? (
-              UserTransactionData.data.fiat.map((e) => (
-                <tr className="border-2  border-slate-50">
-                  <td className="py-2">{e.DateTime || "N/A"}</td>
-                  <td className="py-2">{e.currency || "N/A"}</td>
-                  <td className="py-2">{e.type || "N/A"}</td>
-                  <td className="py-2">{e.total || "N/A"}</td>
-                  <td className="py-2">{e.fee || "N/A"}</td>
-                  <td className="py-2">{e.method || "N/A"}</td>
-                  <td className="py-2">{e.txnid || "N/A"}</td>
-                  <td className="py-2">{e.command || "N/A"}</td>
 
-                  <td className="py-2">
-                    <button className="bg-blue-300 px-2 rounded-lg">
-                      {e.status === 1
-                        ? "Approved"
-                        : e.status === 2
-                        ? "Rejected"
-                        : e.status === 0
-                        ? "Cancelled"
-                        : "N/A"}
-                    </button>
-                  </td>
-                  <td className="py-2">
-                    {e.status === 1 ? (
-                      <p>
-                        <MdVisibility
-                          color={e.status === 1 ? "green" : "red"}
-                          size={25}
-                        />
-                      </p>
-                    ) : (
-                      <MdVisibilityOff color="gray" size={25} />
-                    )}
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <div></div>
-            )}
-          </tbody>
-        </table>
-      </div>
+
+
+       
+        <Paper sx={{ width: "100%", overflow: "hidden", padding: "20px" }}>
+          {/* Table */}
+          <TableContainer>
+            <Table
+              sx={{
+                boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.5)", // Custom shadow color and blur
+              }}
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    align="center"
+                    sx={{ fontSize: "17px", fontWeight: "bold" }}
+                  >
+                    Date
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{ fontSize: "17px", fontWeight: "bold" }}
+                  >
+                   Assets
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{ fontSize: "17px", fontWeight: "bold" }}
+                  >
+                    Type
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{ fontSize: "17px", fontWeight: "bold" }}
+                  >
+                   Amount
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{ fontSize: "17px", fontWeight: "bold" }}
+                  >
+                   Transaction Fees
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{ fontSize: "17px", fontWeight: "bold" }}
+                  >
+                    Payment Option
+                  </TableCell>
+                 
+                  <TableCell
+                    align="center"
+                    sx={{ fontSize: "17px", fontWeight: "bold" }}
+                  >
+                    Transaction ID
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{ fontSize: "17px", fontWeight: "bold" }}
+                  >
+                    Notes
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{ fontSize: "17px", fontWeight: "bold" }}
+                  >
+                   Status
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{ fontSize: "17px", fontWeight: "bold" }}
+                  >
+                    Action
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filteredData ? (
+                  filteredData
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) => (
+                      <TableRow key={row.id}>
+                        <TableCell align="center">{row.DateTime || ""}</TableCell>
+                        <TableCell align="center">{row.currency}</TableCell>
+                        <TableCell align="center">{row.type}/{row.side}</TableCell>
+                        <TableCell align="center">{row.total}</TableCell>
+                        <TableCell align="center">{row.fee}</TableCell>
+                        <TableCell align="center">{row.method}</TableCell>
+                        <TableCell align="center">{row.txnid}</TableCell>
+                        <TableCell align="center">{row.command}</TableCell>
+                        <TableCell align="center" sx={{ textAlign: "center" }}>
+                        <Box
+                          display="flex"
+                          justifyContent="center"
+                          alignItems="center"
+                        >
+                          {data.status !== undefined ? (
+                            data.status === 1 ? (
+                              <MdVisibility color="green" size={25} />
+                            ) : data.status===2?(
+                              <MdVisibility color="red" size={25} />
+                            ) :( <MdVisibilityOff color="gray" size={25}/>)
+                          ) : (
+                            <p>Not Provided</p>
+                          )}
+                        </Box>
+                      </TableCell>
+                        </TableRow>
+                    ))
+                ) : (
+                  <TableRow>
+                    <TableCell align="center" colSpan={6}>
+                      No Records Available !!!
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          {/* Pagination */}
+          <TablePagination
+            component="div"
+            count={filteredData.length}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Paper>
+     </div>
     </div>
   );
 }
 
-export default WalletHistory;
+export default OpenOrder;
