@@ -7,12 +7,14 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PatternLock from "react-pattern-lock";
-import styled from 'styled-components';
+import styled from "styled-components";
 import { loginUser } from "../../Data/fetchUserData";
 
 const PatternLockContainer = styled.div`
   .custom-pattern-lock {
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8)); /* Add shadow to the entire lock */
+    filter: drop-shadow(
+      0 0 8px rgba(255, 255, 255, 0.8)
+    ); /* Add shadow to the entire lock */
   }
 
   .custom-pattern-lock circle {
@@ -29,7 +31,6 @@ const PatternLockContainer = styled.div`
   }
 `;
 
-
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -44,14 +45,24 @@ const Login = () => {
     const expirationTime = localStorage.getItem("expirationTime");
     const currentTime = new Date().getTime();
 
-    // Check if token exists and has not expired
-    if (token && expirationTime && currentTime < expirationTime) {
-      navigate("/");
-    } else if (token) {
-      // Token has expired
-      localStorage.removeItem("token");
-      localStorage.removeItem("expirationTime");
-      navigate("/login");
+    if (token && expirationTime) {
+      if (currentTime < expirationTime) {
+        navigate("/");
+      } else {
+        localStorage.removeItem("token");
+        localStorage.removeItem("expirationTime");
+        toast.error("Session expired. Please log in again.");
+        navigate("/login");
+      }
+      const timeLeft = expirationTime - currentTime;
+      const timeout = setTimeout(() => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("expirationTime");
+        toast.error("Session expired. Please log in again.");
+        navigate("/login");
+       
+      }, timeLeft);
+      return () => clearTimeout(timeout);
     }
   }, [navigate]);
 
@@ -66,24 +77,21 @@ const Login = () => {
     try {
       const result = await dispatch(
         loginUser({ email, password, pattern: pattern.join("") })
-      ).unwrap(); // Unwrapping the promise for easier access to the result
+      ).unwrap();
 
       if (result?.token) {
         localStorage.setItem("token", result.token);
 
-        // Set expiration time (10 minutes from now)
-        const expirationTime = new Date().getTime() + 10 * 60 * 1000; // 10 minutes
+        const expirationTime = new Date().getTime() + 10 * 60 * 1000;
         localStorage.setItem("expirationTime", expirationTime);
 
-        // Check if the input token matches the data.token
-        if (data.token === result.token) {
+        if (result?.token) {
           toast.success("Login successful!");
           navigate("/");
         } else {
           toast.error("Invalid token.");
         }
 
-        // Clear form
         setEmail("");
         setPassword("");
         setPattern([]);
@@ -115,7 +123,7 @@ const Login = () => {
           <div className="p-2 mb-2">
             <h2 className="text-white text-2xl font-bold">Sign-In</h2>
             <p className="text-[18px] font-medium text-white">
-              Access the Koianation panel using your email and password.
+              Access the Koinnation panel using your email and password.
             </p>
           </div>
           <input
@@ -139,21 +147,21 @@ const Login = () => {
         </div>
 
         <div className="flex justify-center items-center bg-blue-100 ">
-      <div className="bg-gradient-to-b m-3 from-blue-700 to-blue-500 p-4 rounded-lg shadow-lg transition-all duration-300 hover:bg-gradient-to-t hover:from-blue-500 hover:to-blue-700 hover:scale-105">
-        <PatternLockContainer>
-          <PatternLock
-            width={300}
-            pointSize={15}
-            size={3}
-            path={pattern}
-            onChange={handlePatternChange}
-            onFinish={handlePatternFinish}
-            disabled={isPatternLocked}
-            className="custom-pattern-lock"
-          />
-        </PatternLockContainer>
-      </div>
-    </div>
+          <div className="bg-gradient-to-b m-3 from-blue-700 to-blue-500 p-4 rounded-lg shadow-lg transition-all duration-300 hover:bg-gradient-to-t hover:from-blue-500 hover:to-blue-700 hover:scale-105">
+            <PatternLockContainer>
+              <PatternLock
+                width={300}
+                pointSize={15}
+                size={3}
+                path={pattern}
+                onChange={handlePatternChange}
+                onFinish={handlePatternFinish}
+                disabled={isPatternLocked}
+                className="custom-pattern-lock"
+              />
+            </PatternLockContainer>
+          </div>
+        </div>
 
         <div className="items-center justify-center flex">
           <button

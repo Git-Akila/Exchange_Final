@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import UserList from "../Components/Userlist/UserList";
+import React, {useEffect, useLayoutEffect, useRef} from "react";
+
 import Chart from "../Components/Userlist/Chart";
 import DataTable from "../Components/Userlist/DataTable";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,7 +26,7 @@ function Dashboard() {
     isError: isError1,
   } = useSelector((state) => state.graph_data);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     dispatch(fetchUser());
   }, [dispatch]);
 

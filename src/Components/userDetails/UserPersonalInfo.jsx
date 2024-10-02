@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { RiEditFill } from "react-icons/ri";
 import axios from "axios";
 
+import 'react-toastify/dist/ReactToastify.css';
+
 //npm install react-image-lightbox
 //npm install react-awesome-lightbox
 
@@ -10,33 +12,63 @@ import axios from "axios";
 import Lightbox from "react-awesome-lightbox";
 import "react-awesome-lightbox/build/style.css";
 import { useParams } from "react-router-dom";
+import { toast ,ToastContainer} from "react-toastify";
 function UserPersonalInfo({ userData, kycData }) {
   const [isOpen, setIsOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
   const images = [kycData.front, kycData.back];
 
-  const { _id} = useParams(); 
+  const { _id } = useParams();
 
-  const token=localStorage.getItem("token");
+  const reason = "jjjj";
+  const token = localStorage.getItem("token");
+
   const approveKyc = async (page) => {
+    console.log("approve kyc called");
     try {
-      const response = await axios.post(
+      const response = await axios.get(
         `https://demoback.kairaaexchange.com/api/v1/user/approve-kyc/${_id}/${page}`,
-        {},
+
         {
           headers: {
             Authorization: `${token}`,
-            "Content-Type": "application/json",
-            Tag: "Admin",
+            Tag: "admin",
           },
         }
       );
+      toast.success("Approved Successfully");
       console.log("KYC Approved:", response.data);
     } catch (error) {
-      console.error("Error approving KYC:", error.response?.data || error.message);
+      console.error(
+        "Error approving KYC:",
+        error.response?.data || error.message
+      );
+      toast.error("KYC Failed to Approved");
     }
   };
 
+  const KYCReject = async (page) => {
+    console.log("reject");
+    try {
+      const res = await axios.post(
+        `https://demoback.kairaaexchange.com/api/v1/user/reject-kyc/${_id}/${page}`,
+        {
+          reason: [reason],
+        },
+        {
+          headers: {
+            Authorization: `${token}`,
+            Tag: "admin",
+          },
+        }
+      );
+      toast.error("Rejected Successfully")
+      console.log("The Response of KYC Reject" + res?.data);
+    } catch (err) {
+      console.log("Error" + err.res?.data || err.message);
+      toast.error("Can not Reject KYC");
+    }
+  };
   return (
     <div className="mx-auto container">
       <div className="justify-center md:grid-cols-2 grid grid-cols-1 gap-2  px-3 mt-3">
@@ -187,7 +219,6 @@ function UserPersonalInfo({ userData, kycData }) {
               <li className="flex justify-between mb-2 py-1">
                 <span>Proof Status</span>
                 <span className="flex gap-2">
-                 
                   <button
                     className={`p-2 rounded ${
                       kycData.proofstatus === 0
@@ -207,20 +238,15 @@ function UserPersonalInfo({ userData, kycData }) {
                       "Not Provided"
                     ) : kycData.proofstatus === 2 ? (
                       <div className="flex justify-between gap-2">
-                        <button
-                          className="bg-green-500 p-2 rounded "
-                          onClick={async () => {
-                            
-                            try {
-                              await approveKyc("pan");
-                            } catch (error) {
-                              console.error("Error approving KYC:", error);
-                            }
-                          }}
+                        <button className="bg-green-500 p-2 rounded "
+                        onClick={()=>approveKyc("proof")
+                         
+                        }
                         >
                           Approve
                         </button>
-                        <button className="bg-red-500 p-2 rounded">
+                        <button className="bg-red-500 p-2 rounded"
+                        onClick={()=>KYCReject("proof")}>
                           Reject
                         </button>
                       </div>
@@ -242,8 +268,8 @@ function UserPersonalInfo({ userData, kycData }) {
                     src={kycData.selfie}
                     alt="Back"
                     onClick={() => {
-                      setPhotoIndex(1); 
-                      setIsOpen(true); 
+                      setPhotoIndex(1);
+                      setIsOpen(true);
                     }}
                     loading="lazy"
                     style={{ cursor: "pointer", width: "100px" }}
@@ -259,9 +285,8 @@ function UserPersonalInfo({ userData, kycData }) {
               )}
 
               <li className="flex justify-between mb-2 py-1">
-                <span>Selfi Status</span>
+                <span>Selfie Status</span>
                 <span className="flex gap-2">
-                 
                   <button
                     className={`p-2 rounded ${
                       kycData.selfiestatus === 0
@@ -281,10 +306,12 @@ function UserPersonalInfo({ userData, kycData }) {
                       "Not Provided"
                     ) : kycData.selfiestatus === 2 ? (
                       <div className="flex justify-between gap-2">
-                        <button className="bg-green-500 p-2 rounded">
+                        <button className="bg-green-500 p-2 rounded"
+                        onClick={()=>approveKyc("selfie")}>
                           Approve
                         </button>
-                        <button className="bg-red-500 p-2 rounded">
+                        <button className="bg-red-500 p-2 rounded"
+                        onClick={()=>KYCReject("selfie")}>
                           Reject
                         </button>
                       </div>
@@ -307,8 +334,8 @@ function UserPersonalInfo({ userData, kycData }) {
                     src={kycData.pan}
                     alt="Back"
                     onClick={() => {
-                      setPhotoIndex(1); 
-                      setIsOpen(true); 
+                      setPhotoIndex(1);
+                      setIsOpen(true);
                     }}
                     loading="lazy"
                     style={{ cursor: "pointer", width: "100px" }}
@@ -323,7 +350,6 @@ function UserPersonalInfo({ userData, kycData }) {
                 />
               )}
 
-            
               <li className="flex justify-between items-center mb-2">
                 <span> Pancard status</span>
                 <button
@@ -335,15 +361,7 @@ function UserPersonalInfo({ userData, kycData }) {
                       : kycData.proofstatus === 3
                       ? "bg-red-300 text-red-600"
                       : "bg-gray-100"
-                  }`}   onClick={async () => {
-                            
-                    try {
-                      await approveKyc("pan");
-                      console.log("successfull"+approveKyc("pan"));
-                    } catch (error) {
-                      console.error("Error approving KYC:", error);
-                    }
-                  }}
+                  }`}
                 >
                   {kycData.proofstatus === 0 ? (
                     "Rejected"
@@ -353,16 +371,34 @@ function UserPersonalInfo({ userData, kycData }) {
                     "Not Provided"
                   ) : kycData.proofstatus === 2 ? (
                     <div className="flex justify-between gap-2">
-                      <button className="bg-green-500 p-2 rounded">
+                      <button
+                        className="bg-green-500 p-2 rounded"
+                        onClick={()=>approveKyc("pan")}
+                        // onClick={async () => {
+                        //   try {
+                        //     await approveKyc("pan");
+                        //     console.log("Successfully approved KYC for pan");
+                        //     toast.success("Successfully Approved");
+                        //   } catch (error) {
+                        //     console.error("Error approving KYC:", error);
+                        //     toast.error("Error approving KYC");
+                        //   }
+                        // }}
+                      >
                         Approve
                       </button>
-                      <button className="bg-red-500 p-2 rounded">Reject</button>
+
+                      <button
+                        className="bg-red-500 p-2 rounded"
+                        onClick={() => KYCReject("pan")}
+                      >
+                        Reject
+                      </button>
                     </div>
                   ) : (
                     "Unknown Status"
                   )}
                 </button>
-               
               </li>
               <li className="flex justify-between mb-2">
                 <span> Date</span>
@@ -372,6 +408,7 @@ function UserPersonalInfo({ userData, kycData }) {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

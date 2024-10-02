@@ -2,11 +2,12 @@ import axios from "axios";
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { json } from "react-router-dom";
+import { useEffect } from "react";
 // https://demoback.kairaaexchange.com/get_graph_data
-// const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcHRpb24iOiJhZG1pbl9sb2dpbiIsImlkIjoiNjM0YTllODRjMzlhYzJlZWZhN2ZkNTY1Iiwic3RhdHVzIjp0cnVlLCJpYXQiOjE3MjcwMjE5NTEsImV4cCI6MTcyNzAyOTE1MX0.0p_qy15Ydy4BTW1DFP9eD7RUu-i5piEesdeN4qGcC34";
 const token = localStorage.getItem("token");
-//const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcHRpb24iOiJhZG1pbl9sb2dpbiIsImlkIjoiNjM0YTllODRjMzlhYzJlZWZhN2ZkNTY1Iiwic3RhdHVzIjp0cnVlLCJpYXQiOjE3MjY4ODk0MjEsImV4cCI6MTcyNjg5NjYyMX0.7n6dcSZOK8U2W6iH0DKZ7sBFDAQWztFLDMZVItNfVGQ";
+
 export const fetchUser = createAsyncThunk("fetchUser", async () => {
+  
   try {
     const response = await axios.post(
       "https://demoback.kairaaexchange.com/api/v1/user/list",

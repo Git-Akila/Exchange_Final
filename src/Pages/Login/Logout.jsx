@@ -7,14 +7,14 @@ function Logout() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Remove the token from localStorage
+   
     localStorage.removeItem("token");
     localStorage.removeItem("expirationTime");
 
-    // Navigate to the login page
+   
     navigate("/login", { replace: true });
 
-    // Show success toast
+   
     toast.success("Logged out successfully");
   };
 
@@ -27,7 +27,7 @@ function Logout() {
             <div className="justify-center items-center flex">
               <button
                 className="bg-blue-800 text-white p-2 rounded-lg w-full"
-                onClick={handleLogout} // Call the logout function
+                onClick={handleLogout} 
               >
                 Sign Out
               </button>

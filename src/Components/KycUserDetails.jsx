@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { kycUserDetails } from "../Data/fetchUserData";
 import { cryptoAsset } from "../Data/fetchUserData";
 import {FiatAsset} from '../Data/fetchUserData';
-import {kycApproved} from '../Data/kycData';
+
 
 import { FaCloudArrowDown } from "react-icons/fa6";
 import {TradehistoryAsset} from '../Data/fetchUserData';
@@ -27,6 +27,7 @@ import { useParams } from "react-router-dom";
 import Tickets from "./userDetails/Tickets";
 import Airdrop from "./userDetails/Airdrop";
 import ExportHistory from "./userDetails/ExportHistory";
+import Referel from "./userDetails/Referel";
 const TabButton = ({ label, isActive, onClick }) => (
   <button
   className={`px-1 py-2 text-sm mr-1 cursor-pointer ${
@@ -51,8 +52,7 @@ function KycUserDetails() {
   const {isLoading:isfiatLoading,data:fiatData,isError:isFiatError}=useSelector((state)=>state.fiatData);
   const {isLoading:istradehistoryLoading,data:tradehistoryData,isError:istradehistoryError}=useSelector((state)=>state.tradehistoryData);
   const {isLoading:isUserTransactionLoading,data:UserTransactionData,isError:isUserTransactionError}=useSelector((state)=>state.UserTransaction);
-  // const {isLoading:iskycApprovedLoading,data:kycApprovedData,isError:iskycApprovedError}=useSelector((state)=>state.kycApproved);
-  const {_id,page}=useParams();
+   const {_id,page}=useParams();
 
   const [activeTab, setActiveTab] = useState(0);
   // console.log(".................data" + JSON.stringify(data, 2, null));
@@ -65,7 +65,7 @@ function KycUserDetails() {
     dispatch(FiatAsset(_id));
     dispatch(TradehistoryAsset(_id));
     dispatch(UserTransaction(_id));
-    // dispatch(kycApproved(_id,page));
+    
 
   } 
  },[dispatch,_id,page]);
@@ -163,11 +163,11 @@ return (
           isActive={activeTab === 8}
           onClick={() => setActiveTab(8)}
         />
-        <TabButton
+        {/* <TabButton
           label="Referral"
           isActive={activeTab === 9}
           onClick={() => setActiveTab(9)}
-        />
+        /> */}
         <TabButton
           label="Tickets"
           isActive={activeTab === 10}
@@ -213,7 +213,7 @@ return (
       </TabPanel> */}
       <TabPanel isActive={activeTab === 5}>
         <Typography variant="h6">
-          {/* <WalletHistory UserTransactionData={UserTransactionDataa}/> */}
+          <WalletHistory UserTransactionData={UserTransactionDataa}/>
         </Typography>
       </TabPanel>
       <TabPanel isActive={activeTab === 6}>
@@ -234,7 +234,7 @@ return (
       </TabPanel>
       <TabPanel isActive={activeTab===9}>
         <Typography variant="h6">
-
+          {/* <Referel/> */}
         </Typography>
       </TabPanel>
       <TabPanel isActive={activeTab===10}>
