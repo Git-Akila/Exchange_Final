@@ -1,181 +1,620 @@
-//npm i react-toastify react-pattern-lock
-//npm install styled-components
+import React, { useState } from "react";
+import {
+  TextField,
+  Button,
+  Typography,
+  InputAdornment,
+  IconButton,
+  Box,
+  Grid,
+} from "@mui/material";
+import { FaArrowLeft } from "react-icons/fa";
 
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { CheckBox, Visibility, VisibilityOff } from "@mui/icons-material";
 import PatternLock from "react-pattern-lock";
-import styled from "styled-components";
-import { loginUser } from "../../Data/fetchUserData";
+import { useDispatch, useSelector } from "react-redux";
+import { subAdmin } from "../../Data/fetchUserData";
+import { toast, ToastContainer } from "react-toastify";
 
-const PatternLockContainer = styled.div`
-  .custom-pattern-lock {
-    filter: drop-shadow(
-      0 0 8px rgba(255, 255, 255, 0.8)
-    ); /* Add shadow to the entire lock */
-  }
+const SubLoginPage = () => {
+  const dispatch=useDispatch();
+  const navigate=useNavigate();
 
-  .custom-pattern-lock circle {
-    transition: all 0.3s ease;
-    fill: rgba(0, 123, 255, 0.5); /* Optional: Semi-transparent fill */
-    stroke: #007bff;
-    stroke-width: 1;
-  }
+  const [name,setName]=useState("");
 
-  .custom-pattern-lock circle:hover {
-    stroke: #ffffff;
-    stroke-width: 2;
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8)); /* Add shadow */
-  }
-`;
+  const [userid,setUserId]=useState("");
 
-const SubAdmin = () => {
   const [email, setEmail] = useState("");
+
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [password1,setPassword1]=useState("");
+  const [showPassword1, setShowPassword1] = useState(false);
+
   const [pattern, setPattern] = useState([]);
   const [isPatternLocked, setIsPatternLocked] = useState(false);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+ 
 
-  const { isLoading, isError, data } = useSelector((state) => state.login);
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const expirationTime = localStorage.getItem("expirationTime");
-    const currentTime = new Date().getTime();
+  const [pattern1,setPattern1]=useState([]);
+  const [isPatternLocked1, setIsPatternLocked1] = useState(false);
+ 
+const [message,setMessage]=useState("")
+const [message1,setMessage1]=useState("")
+  
 
-    if (token && expirationTime) {
-      if (currentTime < expirationTime) {
-        navigate("/");
-      } else {
-        localStorage.removeItem("token");
-        localStorage.removeItem("expirationTime");
-        toast.error("Session expired. Please log in again.");
-        navigate("/login");
-      }
-      const timeLeft = expirationTime - currentTime;
-      const timeout = setTimeout(() => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("expirationTime");
-        toast.error("Session expired. Please log in again.");
-        navigate("/login");
-       
-      }, timeLeft);
-      return () => clearTimeout(timeout);
-    }
-  }, [navigate]);
+const {isLoading,isError,data}=useSelector((state)=>state.subadmin);
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
 
-    if (!isPatternLocked) {
-      toast.error("Please set a pattern first!");
-      return;
-    }
 
-    try {
-      const result = await dispatch(
-        loginUser({ email, password, pattern: pattern.join("") })
-      ).unwrap();
 
-      if (result?.token) {
-        localStorage.setItem("token", result.token);
-
-        const expirationTime = new Date().getTime() + 10 * 60 * 1000;
-        localStorage.setItem("expirationTime", expirationTime);
-
-        if (result?.token) {
-          toast.success("Login successful!");
-          navigate("/");
-        } else {
-          toast.error("Invalid token.");
-        }
-
-        setEmail("");
-        setPassword("");
-        setPattern([]);
-        setIsPatternLocked(false);
-      } else {
-        toast.error("Invalid login credentials.");
-      }
-    } catch (error) {
-      toast.error(error.message || "An error occurred during login.");
-      setIsPatternLocked(false);
-    }
+  const handleTogglePassword = () => {
+    setShowPassword(!showPassword);
+  };
+  const handleTogglePassword1 = () => {
+    setShowPassword1(!showPassword1);
   };
 
   const handlePatternChange = (newPattern) => {
     setPattern(newPattern);
   };
-
-  const handlePatternFinish = () => {
-    setIsPatternLocked(true);
+  const handlePatternChange1 = (newPattern1) => {
+    setPattern1(newPattern1);
   };
 
+  const handleSubmit = () => {
+    if (pattern.length > 0) {
+      setMessage(`Pattern entered: ${pattern.join("-")}`);
+    } else {
+      setMessage("Please draw a pattern!");
+    }
+  };
+  const handleSubmit1 = () => {
+    if (pattern1.length > 0) {
+      setMessage1(`Pattern entered: ${pattern1.join("-")}`);
+    } else {
+      setMessage1("Please draw a pattern!");
+    }
+  };
+
+const handleOverallSubmit=async(e)=>{
+  e.preventDefault();
+  if (!isPatternLocked || !isPatternLocked1) {
+    toast.error("Please set a pattern first!");
+    return;
+  }
+  try{
+    const result=await dispatch(
+      subAdmin({username:name,email,password,pattern:pattern.join(""),pattern1:pattern1.join("")})
+    ).unwrap();
+
+    if(result?.token){
+      toast.success("Login successful");
+      navigate("/");
+
+    }else{
+      toast.error("Invalid token");
+    }
+    setEmail("");
+    setPassword("");
+    setPattern([]);
+    setIsPatternLocked(false);
+  }catch(error){
+    toast.error(error.message || "An error occurred during login.");
+    setIsPatternLocked(false);
+  }
+
+};
+  
+
   return (
-    <div className="flex justify-center items-center mt-10">
-      <form
-        onSubmit={handleRegister}
-        className="bg-blue-900 justify-center items-center flex-col p-3"
-      >
-        <div className="justify-center items-center">
-          <div className="p-2 mb-2">
-            <h2 className="text-white text-2xl font-bold">Sign-In</h2>
-            <p className="text-[18px] font-medium text-white">
-              Access the Koinnation panel using your email and password.
-            </p>
-          </div>
-          <input
-            placeholder="Enter email"
-            className="py-3 mb-2 px-4 rounded-lg border w-full border-gray-300"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <input
-            placeholder="Enter password"
-            className="py-3 mb-2 px-4 rounded-lg border w-full border-gray-300"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
+    <div className="w-full h-full mx-auto container m-10 p-1">
+      <div className="justify-between flex border-2 p-5">
+        <Typography
+          variant="h4"
+          sx={{
+            marginBottom: "5px",
+            fontWeight: "400px",
+            color: "#2563EB",
+            fontSize: "22px",
+          }}
+        >
+          SubAdmin Details
+        </Typography>
+        <Link to="/"><Button className="bg-gray-100 font-bold p-2 gap-2"><FaArrowLeft />Back</Button></Link>
+      </div>
 
-        <div className="flex justify-center items-center bg-blue-100 ">
-          <div className="bg-gradient-to-b m-3 from-blue-700 to-blue-500 p-4 rounded-lg shadow-lg transition-all duration-300 hover:bg-gradient-to-t hover:from-blue-500 hover:to-blue-700 hover:scale-105">
-            <PatternLockContainer>
-              <PatternLock
-                width={300}
-                pointSize={15}
-                size={3}
-                path={pattern}
-                onChange={handlePatternChange}
-                onFinish={handlePatternFinish}
-                disabled={isPatternLocked}
-                className="custom-pattern-lock"
-              />
-            </PatternLockContainer>
-          </div>
-        </div>
+      <div className="grid grid-cols-2 gap-5 justify-center  border-l border-r border-b p-2">
+        <div className="">
+         
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+                color: "",
+                fontSize: "18px",
+              }}
+            >
+              Username <span className="text-red-600">*</span>
+            </Typography>
+            <TextField
+              placeholder="Enter Email"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              fullWidth
+              required
+              sx={{ marginBottom: "7px", backgroundColor: "white" }}
+            />
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                fontWeight: "500px",
+                color: "",
+                fontSize: "18px",
+              }}
+            >
+              Unique Id <span className="text-red-600">*</span>
+            </Typography>
+            <TextField
+              placeholder="Enter Email"
+              value={userid}
+              onChange={(e) => setUserId(e.target.value)}
+              fullWidth
+              required
+              sx={{ marginBottom: "7px", backgroundColor: "white" }}
+            />
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                fontWeight: "500px",
+                color: "",
+                fontSize: "18px",
+              }}
+            >
+              Password<span className="text-red-600">*</span>
+            </Typography>
+            <TextField
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              fullWidth
+              required
+              sx={{ marginBottom: "7px", backgroundColor: "white" }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleTogglePassword} edge="end">
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
 
-        <div className="items-center justify-center flex">
-          <button
-            type="submit"
-            className="p-3 m-2 bg-blue-800 text-white text-lg w-full rounded-lg text-center"
-            disabled={isLoading || !isPatternLocked}
-          >
-            {isLoading ? "Logging in..." : "Login"}
-          </button>
+            {/* Pattern lock for drawing */}
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                fontWeight: "500px",
+                color: "",
+                fontSize: "18px",
+              }}
+            >
+              Pattern <span className="text-red-600">*</span>
+            </Typography>
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <div className="bg-gradient-to-t to-blue-500 from-blue-700 m-4">
+                <PatternLock
+                  width={300}
+                  height={300}
+                  pointSize={20}
+                  onChange={handlePatternChange}
+                  path={pattern}
+                  size={3}
+                  lineColor="#3f51b5"
+                  activePointColor="#3f51b5"
+                  allowRepeat={false}
+                  onFinish={handleSubmit }
+                />
+              </div>
+            </Box>
+
+            {/* <div className="justify-center items-center flex">
+            <Button type="submit" variant="contained" color="primary">
+              Login
+            </Button>
+          </div> */}
+          
         </div>
-      </form>
-      <ToastContainer />
+        <div className="">
+         
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+                color: "",
+                fontSize: "18px",
+              }}
+            >
+              Email <span className="text-red-600">*</span>
+            </Typography>
+            <TextField
+              placeholder="Enter Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              fullWidth
+              required
+              sx={{ marginBottom: "7px", backgroundColor: "white" }}
+            />
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                fontWeight: "500px",
+                color: "",
+                fontSize: "18px",
+              }}
+            >
+              Confirm Password <span className="text-red-600">*</span>
+            </Typography>
+            <TextField
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={password1}
+              onChange={(e) => setPassword1(e.target.value)}
+              fullWidth
+              required
+              sx={{ marginBottom: "7px", backgroundColor: "white" }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleTogglePassword1} edge="end">
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+
+            {/* Pattern lock for drawing */}
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                fontWeight: "500px",
+                color: "",
+                fontSize: "18px",
+              }}
+            >
+              Confirm Pattern <span className="text-red-600">*</span>
+            </Typography>
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <div className="bg-gradient-to-t to-blue-500 from-blue-700 m-4">
+                <PatternLock
+                  width={300}
+                  height={300}
+                  pointSize={20}
+                  onChange={handlePatternChange1}
+                  path={pattern1}
+                  size={3}
+                  lineColor="#3f51b5"
+                  activePointColor="#3f51b5"
+                  allowRepeat={false}
+                  onFinish={handleSubmit1}
+                />
+              </div>
+            </Box>
+         
+        </div>
+      </div>
+
+
+      <div className="mt-5 ">
+        <h2 className="text-blue-800 text-[20px] font-bold">Permission</h2>
+      
+        <div className="grid grid-cols-3 p-4 mt-2  border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+                
+                font:"bold",
+                fontSize: "18px",
+                color:"#2563EB"
+              }}
+            >
+             User Details
+            </Typography>
+            <div className="flex gap-10">
+            <span><CheckBox sx={{backgroundColor:"white"}}/> Read</span>
+            <span><CheckBox sx={{backgroundColor:"white"}}/> Write</span>
+            </div>
+            </div>
+
+            <div className="grid grid-cols-3 p-4  border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+                
+                font:"bold",
+                fontSize: "18px",
+                color:"#2563EB"
+              }}
+            >
+            Assets Management
+            </Typography>
+            <div className="flex gap-10">
+            <span><CheckBox sx={{backgroundColor:"white"}}/>Read</span>
+            <span><CheckBox sx={{backgroundColor:"white"}}/>Write</span>
+            </div>
+            </div>
+
+            <div className="grid grid-cols-3 p-4  border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+                
+                font:"bold",
+                fontSize: "18px",
+                color:"#2563EB"
+              }}
+            >
+            Order History Management
+            </Typography>
+            <div className="flex gap-10">
+            <span><CheckBox sx={{backgroundColor:"white"}}/>Read</span>
+            <span><CheckBox sx={{backgroundColor:"white"}}/>Write</span>
+            </div>
+            </div>
+
+
+            <div className="grid grid-cols-3 p-4 border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+                
+                font:"bold",
+                fontSize: "18px",
+                color:"#2563EB"
+              }}
+            >
+            Ticket Management
+            </Typography>
+            <div className="flex gap-10">
+            <span><CheckBox sx={{backgroundColor:"white"}}/>Read</span>
+            <span><CheckBox sx={{backgroundColor:"white"}}/>Write</span>
+            </div>
+            </div>
+
+            <div className="grid grid-cols-3 p-4 mt-2 mb-2 border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+                
+                font:"bold",
+                fontSize: "18px",
+                color:"#2563EB"
+              }}
+            >
+            Block Management
+            </Typography>
+            <div className="flex gap-10">
+            <span><CheckBox sx={{backgroundColor:"white"}}/>Read</span>
+            <span><CheckBox sx={{backgroundColor:"white"}}/>Write</span>
+            </div>
+            </div>
+
+            <div className="grid grid-cols-3 p-4  border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+                
+                font:"bold",
+                fontSize: "18px",
+                color:"#2563EB"
+              }}
+            >
+            Category Management
+            </Typography>
+            <div className="flex gap-10">
+            <span><CheckBox sx={{backgroundColor:"white"}}/>Read</span>
+            <span><CheckBox sx={{backgroundColor:"white"}}/>Write</span>
+            </div>
+            </div>
+
+            <div className="grid grid-cols-3 p-4 border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+                
+                font:"bold",
+                fontSize: "18px",
+                color:"#2563EB"
+              }}
+            >
+            Email Template Management
+            </Typography>
+            <div className="flex gap-10">
+            <span><CheckBox sx={{backgroundColor:"white"}}/>Read</span>
+            <span><CheckBox sx={{backgroundColor:"white"}}/>Write</span>
+            </div>
+            </div>
+
+            <div className="grid grid-cols-3 p-4  border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+                
+                font:"bold",
+                fontSize: "18px",
+                color:"#2563EB"
+              }}
+            >
+           Markets
+            </Typography>
+            <div className="flex gap-10">
+            <span><CheckBox sx={{backgroundColor:"white"}}/>Read</span>
+            <span><CheckBox sx={{backgroundColor:"white"}}/>Write</span>
+            </div>
+            </div>
+
+            <div className="grid grid-cols-3 p-4  border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+                
+                font:"bold",
+                fontSize: "18px",
+                color:"#2563EB"
+              }}
+            >
+            Site Settings
+            </Typography>
+            <div className="flex gap-10">
+            <span><CheckBox sx={{backgroundColor:"white"}}/>Read</span>
+            <span><CheckBox sx={{backgroundColor:"white"}}/>Write</span>
+            </div>
+            </div>
+
+            <div className="grid grid-cols-3 p-4  border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+                
+                font:"bold",
+                fontSize: "18px",
+                color:"#2563EB"
+              }}
+            >
+            Admin Banks Management
+            </Typography>
+            <div className="flex gap-10">
+            <span><CheckBox sx={{backgroundColor:"white"}}/>Read</span>
+            <span><CheckBox sx={{backgroundColor:"white"}}/>Write</span>
+            </div>
+            </div>
+
+            <div className="grid grid-cols-3 p-4  border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+                
+                font:"bold",
+                fontSize: "18px",
+                color:"#2563EB"
+              }}
+            >
+            Career Management
+            </Typography>
+            <div className="flex gap-10">
+            <span><CheckBox sx={{backgroundColor:"white"}}/>Read</span>
+            <span><CheckBox sx={{backgroundColor:"white"}}/>Write</span>
+            </div>
+            </div>
+
+            <div className="grid grid-cols-3 p-4  border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+                
+                font:"bold",
+                fontSize: "18px",
+                color:"#2563EB"
+              }}
+            >
+            P2P Order Management
+            </Typography>
+            <div className="flex gap-10">
+            <span><CheckBox sx={{backgroundColor:"white"}}/>Read</span>
+            <span><CheckBox sx={{backgroundColor:"white"}}/>Write</span>
+            </div>
+            </div>
+
+            <div className="grid grid-cols-3 p-4  border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+                
+                font:"bold",
+                fontSize: "18px",
+                color:"#2563EB"
+              }}
+            >
+            P2P Payment
+            </Typography>
+            <div className="flex gap-10">
+            <span><CheckBox sx={{backgroundColor:"white"}} preventDefault/>Read</span>
+            <span><CheckBox sx={{backgroundColor:"white"}}/>Write</span>
+            </div>
+            </div>
+      
+      </div>
+      <div className="gap-6 flex m-3">
+        <button className="p-2 rounded bg-blue-400" onClick={handleOverallSubmit}>Submit</button>
+        <button className="p-2 rounded bg-red-600">Cancel</button>
+      </div>
+
+      <ToastContainer/>
     </div>
   );
 };
 
-export default SubAdmin
+export default SubLoginPage;

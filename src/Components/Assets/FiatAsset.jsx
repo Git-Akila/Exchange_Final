@@ -1,53 +1,31 @@
 import React, { useState, useEffect } from "react";
 
 function FiatAsset({ FiatAssetData }) {
-  const [togglelist, setToggledList] = useState({});
-  const [togglelistfind,setToggledListfind]=useState(null);
-  const [togglelistforwithdraw, setTogglelistforwithdraw] = useState({});
-  const [togglelistforwithdrawfind, setTogglelistforwithdrawfind] = useState(null);
-  const handleToggle = (id) => {
-    setToggledList((prevState) => ({
-      ...prevState,
-      [id]: !prevState[id],
-    }));
-    let data=FiatAssetData?.find((e)=>e.id===id);
-    setToggledListfind(data)
-  };
-  const handleToggleClose = (id) => {
-    setToggledList((prev) => ({
-      ...prev,
-      [id]: false,
-     
+  const [toggledId, setToggledId] = useState(null);
+  const [operationType, setOperationType] = useState(null);
 
-    }));
-    let data=FiatAssetData?.find((e)=>e.id===id);
-    setToggledListfind(null);
-   
-  };
-  // withdraw
-  const handleToggle1 = (id) => {
-    setTogglelistforwithdraw((prevState) => ({
-      ...prevState,
-      [id]: !prevState[id],
-    }));
-    const data=FiatAssetData?.find((e)=>e.id===id);
-    setTogglelistforwithdrawfind(data);
-  };
-  const handleToggleClose1 = (id) => {
-    setTogglelistforwithdraw((prev) => ({
-      ...prev,
-      [id]: false,
-    }));
-    setTogglelistforwithdrawfind(null);
+  const handleToggle = (i, type) => {
+    if (toggledId === i && operationType === type) {
+      console.log("fff");
+      setToggledId(null);
+      setOperationType(null);
+    } else {
+    
+      setToggledId(i);
+      setOperationType(type);
+    }
   };
 
-  
+  const handleClose = () => {
+    setToggledId(null);
+    setOperationType(null);
+  };
 
   return (
     <>
       <h2 className="font-semibold text-xl mb-2">Fiat</h2>
       <table className="w-full border border-gray-300 bg-slate-50 rounded-lg overflow-x-auto">
-        <thead className="bg-blue-100">
+        <thead className="bg-blue-100" >
           <tr className="text-center border-b border-gray-300">
             <th className="py-2">Coin</th>
             <th className="py-2">Available</th>
@@ -59,7 +37,7 @@ function FiatAsset({ FiatAssetData }) {
         <tbody>
           {FiatAssetData.length > 0 ? (
             FiatAssetData.map((data, i) => (
-              <React.Fragment key={data.id || i}>
+              <React.Fragment key={i}>
                 <tr className="text-center">
                   <td className="py-2">
                     <div className="flex flex-col items-center gap-2   justify-items-center">
@@ -90,7 +68,7 @@ function FiatAsset({ FiatAssetData }) {
                         className={`p-1 rounded font-medium ${
                           data.deposit ? "text-blue-600" : "text-red-500"
                         }`}
-                        onClick={() => handleToggle(data.id)}
+                        onClick={() => handleToggle(i,"deposit")}
                       >
                         Deposit
                       </button>
@@ -99,7 +77,7 @@ function FiatAsset({ FiatAssetData }) {
                           data.withdraw ? "text-blue-500" : "text-red-500"
                         }`}
                         // disabled={!data.withdraw}
-                        onClick={()=>handleToggle1(data.id)}
+                        onClick={()=>handleToggle(i,"withdraw")}
                       >
                         Withdraw
                       </button>
@@ -107,8 +85,9 @@ function FiatAsset({ FiatAssetData }) {
                   </td>
                 </tr>
 
-                {/* Show Details Below the Deposit Selected Row */}
-                {togglelistfind &&
+                 {/* Show Details Below the Selected Row */}
+                 {toggledId === i &&
+                  operationType === "deposit" &&
                   (data.deposit ? (
                     <tr className="bg-gray-100 xs:mx-20 md:mx-20">
                       <td
@@ -122,19 +101,19 @@ function FiatAsset({ FiatAssetData }) {
                             </h2>
                             <button
                               className="text-red-500 font-bold"
-                              onClick={()=>handleToggleClose(data.id)}
+                              onClick={handleClose}
                             >
                               X
                             </button>
                           </div>
-                          <form>
-                            <div className="mb-4">
+                          {  Array.isArray(data.admin_bank_info)?(
+                           <form>
+                           <div className="mb-4">
                               <label>Account Holder Name</label>
                               <input
                                 type="text"
-                                required
-                                placeholder="Account Name"
-                                value={data.holder || ""}
+                                //placeholder="Enter name"
+                                value={data.admin_bank_info.holder || ""}
                                 className="w-full border rounded p-2"
                                 readOnly
                               />
@@ -143,9 +122,8 @@ function FiatAsset({ FiatAssetData }) {
                               <label>Account Number</label>
                               <input
                                 type="text"
-                                required
-                                placeholder="Account Number"
-                                value={data.accountNumber || ""}
+                                //placeholder="Account Number"
+                                value={data.admin_bank_info.acc_number || ""}
                                 className="w-full border rounded p-2"
                                 readOnly
                               />
@@ -154,9 +132,8 @@ function FiatAsset({ FiatAssetData }) {
                               <label>IFSC Code</label>
                               <input
                                 type="text"
-                                required
-                                placeholder="IFSC Code"
-                                value={data.ifscCode || ""}
+                                //placeholder="IFSC Code"
+                                value={data.admin_bank_info.ifsc_code || ""}
                                 className="w-full border rounded p-2"
                                 readOnly
                               />
@@ -165,9 +142,8 @@ function FiatAsset({ FiatAssetData }) {
                               <label>Account Type</label>
                               <input
                                 type="text"
-                                required
-                                placeholder="Account Type"
-                                value={data.accountType || ""}
+                                //placeholder="Account Type"
+                                value={data.admin_bank_info.account_type || ""}
                                 className="w-full border rounded p-2"
                                 readOnly
                               />
@@ -175,22 +151,84 @@ function FiatAsset({ FiatAssetData }) {
                             <div className="mb-4">
                               <label>UPI ID</label>
                               <input
-                                required
+                                type="text"
+                                //placeholder="UPI ID"
                                 value={data.upiId || ""}
                                 className="p-2 w-full border rounded"
-                                placeholder="UPI ID"
                                 readOnly
                               />
                             </div>
-                          </form>
+                          </form>):(
+                            <form>
+                            <div className="mb-4">
+                               <label>Account Holder Name</label>
+                               <input
+                                 type="text"
+                                 //placeholder="Enter name"
+                                 value={data.holder || ""}
+                                 className="w-full border rounded p-2"
+                                 readOnly
+                               />
+                             </div>
+                             <div className="mb-4">
+                               <label>Account Number</label>
+                               <input
+                                 type="text"
+                                 //placeholder="Account Number"
+                                 value={data.acc_number || ""}
+                                 className="w-full border rounded p-2"
+                                 readOnly
+                               />
+                             </div>
+                             <div className="mb-4">
+                               <label>IFSC Code</label>
+                               <input
+                                 type="text"
+                                 //placeholder="IFSC Code"
+                                 value={data.ifsc_code || ""}
+                                 className="w-full border rounded p-2"
+                                 readOnly
+                               />
+                             </div>
+                             <div className="mb-4">
+                               <label>Account Type</label>
+                               <input
+                                 type="text"
+                                 //placeholder="Account Type"
+                                 value={data.account_type || ""}
+                                 className="w-full border rounded p-2"
+                                 readOnly
+                               />
+                             </div>
+                             <div className="mb-4">
+                               <label>UPI ID</label>
+                               <input
+                                 type="text"
+                                 //placeholder="UPI ID"
+                                 value={data.upiId || ""}
+                                 className="p-2 w-full border rounded"
+                                 readOnly
+                               />
+                             </div>
+                           </form>
+                          )}
                         </div>
                       </td>
                     </tr>
                   ) : (
-                    <p> No Data Available...</p>
+                    <tr className="bg-gray-100 ">
+                      <td colSpan={5} className=" p-3">
+                        <div className="bg-slate-50 rounded-lg p-10 shadow-lg">
+                          <div className="flex justify-between items-center mb-4">
+                            <p>...Loading</p>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
                   ))}
 
-                {togglelistforwithdrawfind &&
+                {toggledId === i &&
+                  operationType === "withdraw" &&
                   (data.withdraw ? (
                     <tr className="bg-gray-100 xs:mx-20 md:mx-20">
                       <td
@@ -204,7 +242,7 @@ function FiatAsset({ FiatAssetData }) {
                             </h2>
                             <button
                               className="text-red-500 font-bold"
-                              onClick={() => handleToggleClose1(data.id)}
+                              onClick={handleClose}
                             >
                               X
                             </button>
@@ -214,8 +252,6 @@ function FiatAsset({ FiatAssetData }) {
                               <label>Withdraw Amount</label>
                               <input
                                 type="text"
-                                required
-                                placeholder="Withdraw Amount"
                                 value={data.holder || ""}
                                 className="w-full border rounded p-2"
                                 readOnly
@@ -223,27 +259,18 @@ function FiatAsset({ FiatAssetData }) {
                             </div>
                             <div className="mb-4">
                               <label>Withdraw Method</label>
-                              <select
-                                required
-                                // value={data.accountMethod || ""} // assuming accountMethod is part of your state
-                                // onChange={(e) => setData({ ...data, accountMethod: e.target.value })} // update state with the selected value
-                                className="w-full border rounded p-2"
-                              >
+                              <select className="w-full border rounded p-2">
                                 <option value="" disabled>
                                   Select Method
-                                </option>{" "}
-                                {/* Placeholder option */}
+                                </option>
                                 <option value="IMPS">IMPS</option>
                                 <option value="NEFT">NEFT</option>
                               </select>
                             </div>
-
                             <div className="mb-4">
                               <label>Transaction Fee</label>
                               <input
                                 type="text"
-                                required
-                                placeholder="Transaction Fee"
                                 value={data.ifscCode || ""}
                                 className="w-full border rounded p-2"
                                 readOnly
@@ -253,14 +280,12 @@ function FiatAsset({ FiatAssetData }) {
                               <label>Notes</label>
                               <input
                                 type="text"
-                                required
-                                placeholder="notes"
                                 value={data.accountType || ""}
                                 className="w-full border rounded p-2"
                                 readOnly
                               />
                             </div>
-                            <div className="justify-center items-center">
+                            <div className="justify-center items-center flex">
                               <button className="bg-blue-700 font-bold p-2 rounded">
                                 Confirm Withdrawal
                               </button>
@@ -270,7 +295,16 @@ function FiatAsset({ FiatAssetData }) {
                       </td>
                     </tr>
                   ) : (
-                    <p> No Data Available...</p>
+                    <tr className="bg-gray-100 ">
+                      <td colSpan={5} className=" p-3">
+                        <div className="bg-slate-50 rounded-lg p-10 shadow-lg">
+                          <div className="flex justify-between items-center mb-4">
+                            <p className="text-lg text-gray-400">No Withdrawal Available for this User</p>
+                            <p>{data.description}</p>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
                   ))}
               </React.Fragment>
             ))
@@ -283,7 +317,6 @@ function FiatAsset({ FiatAssetData }) {
           )}
         </tbody>
       </table>
-
       
     </>
   );

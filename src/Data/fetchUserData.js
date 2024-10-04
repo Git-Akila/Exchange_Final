@@ -7,7 +7,6 @@ import { useEffect } from "react";
 const token = localStorage.getItem("token");
 
 export const fetchUser = createAsyncThunk("fetchUser", async () => {
-  
   try {
     const response = await axios.post(
       "https://demoback.kairaaexchange.com/api/v1/user/list",
@@ -31,55 +30,256 @@ export const fetchUser = createAsyncThunk("fetchUser", async () => {
 //-----------------------------------------LoginUser--------------------------------------------------------------------------------
 export const loginUser = createAsyncThunk(
   "loginUser",
-  async ({ email, password, pattern }, { rejectWithValue }) =>
-    
-    {
-       console.log("ccccc", "email, password, pattern");
+  async ({ email, password, pattern }, { rejectWithValue }) => {
+    console.log("ccccc", "email, password, pattern");
 
-      try {
-        // const axios = require('axios');
-        let data = JSON.stringify({
-          deviceInfo: {
-            userAgent:
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
-            os: "Windows",
-            browser: "Chrome",
-            device: "Unknown",
-            os_version: "windows-10",
-            browser_version: "126.0.0.0",
-          },
-          ipaddress: {
-            ip: "",
-          },
-          username: email,
-          password: password,
-          pattern: pattern,
-        });
+    try {
+      // const axios = require('axios');
+      let data = JSON.stringify({
+        deviceInfo: {
+          userAgent:
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+          os: "Windows",
+          browser: "Chrome",
+          device: "Unknown",
+          os_version: "windows-10",
+          browser_version: "126.0.0.0",
+        },
+        ipaddress: {
+          ip: "",
+        },
+        username: email,
+        password: password,
+        pattern: pattern,
+      });
 
-        let config = {
-          method: "post",
-          url: "https://demoback.kairaaexchange.com/api/v1/admin/login",
-          headers: {
-            Tag: "admin",
-            "Content-Type": "application/json",
-          },
-          data: data,
-        };
-        const response = await axios.request(config);
+      let config = {
+        method: "post",
+        url: "https://demoback.kairaaexchange.com/api/v1/admin/login",
+        headers: {
+          Tag: "admin",
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+      const response = await axios.request(config);
 
-        console.log(
-          "JSON.stringify(response.data)",
-          JSON.stringify(response.data)
-        );
-        localStorage.setItem("token", response.data.token);
+      console.log(
+        "JSON.stringify(response.data)",
+        JSON.stringify(response.data)
+      );
+      localStorage.setItem("token", response.data.token);
 
-        return response.data;
-      } catch (error) {
-        return rejectWithValue(error.response?.data?.message || error.message);
-      }
-      
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
     }
+  }
 );
+//__________________________________________________SubAdmin__________________________________
+export const subAdmin = createAsyncThunk(
+  "subAdmin",
+  async ({
+    username,
+    email,
+    password,
+    confirm_password,
+    pattern,
+    confirm_pattern,
+  }) => {
+    try {
+      let data = JSON.stringify({
+        permission: [
+          {
+            module: "user_details",
+            module_name: "User Details",
+            read: true,
+            write: true,
+            submodule: [
+              {
+                submodule: "personal_info",
+                submodule_name: "Personal Info",
+                read: false,
+                write: false,
+              },
+              {
+                submodule: "security",
+                submodule_name: "Security",
+                read: false,
+                write: false,
+              },
+              {
+                submodule: "assets",
+                submodule_name: "Assets",
+                read: false,
+                write: false,
+              },
+              {
+                submodule: "asset_history",
+                submodule_name: "Asset History",
+                read: false,
+                write: false,
+              },
+              {
+                submodule: "open_orders",
+                submodule_name: "Open Orders",
+                read: false,
+                write: false,
+              },
+              {
+                submodule: "orders_history",
+                submodule_name: "Orders History",
+                read: false,
+                write: false,
+              },
+              {
+                submodule: "user_activity",
+                submodule_name: "User Activity",
+                read: false,
+                write: false,
+              },
+              {
+                submodule: "referral",
+                submodule_name: "Referral",
+                read: false,
+                write: false,
+              },
+              {
+                submodule: "tickets",
+                submodule_name: "Tickets",
+                read: false,
+                write: false,
+              },
+              {
+                submodule: "airdrop",
+                submodule_name: "Airdrop",
+                read: false,
+                write: false,
+              },
+              {
+                submodule: "p2p_wallet",
+                submodule_name: "P2P Wallet",
+                read: false,
+                write: false,
+              },
+              {
+                submodule: "swap_history",
+                submodule_name: "Swap History",
+                read: false,
+                write: false,
+              },
+            ],
+          },
+          {
+            module: "assets_management",
+            module_name: "Assets Management",
+            read: true,
+            write: true,
+          },
+          {
+            module: "assets_transactions",
+            module_name: "Assets Transactions",
+            read: false,
+            write: false,
+          },
+          {
+            module: "order_history_management",
+            module_name: "Order History Management",
+            read: false,
+            write: false,
+          },
+          {
+            module: "tickets_management",
+            module_name: "Tickets Management",
+            read: false,
+            write: false,
+          },
+          {
+            module: "block_management",
+            module_name: "Block Management",
+            read: false,
+            write: false,
+          },
+          {
+            module: "category_management",
+            module_name: "Category Management",
+            read: false,
+            write: false,
+          },
+          {
+            module: "email_template_management",
+            module_name: "Email Template Management",
+            read: false,
+            write: false,
+          },
+          {
+            module: "markets",
+            module_name: "Markets",
+            read: false,
+            write: false,
+          },
+          {
+            module: "site_settings",
+            module_name: "Site Settings",
+            read: false,
+            write: false,
+          },
+          {
+            module: "admin_banks",
+            module_name: "Admin Banks",
+            read: false,
+            write: false,
+          },
+          {
+            module: "career_mgmt",
+            module_name: " career_mgmt",
+            read: false,
+            write: false,
+          },
+          {
+            module: "p2porder_management",
+            module_name: "P2P Order Management",
+            read: false,
+            write: false,
+          },
+          {
+            module: "p2p_payments",
+            module_name: "P2P Payment",
+            read: false,
+            write: false,
+          },
+        ],
+        password: password,
+        email: email,
+        username: username,
+        confirm_password: confirm_password,
+        pattern: pattern,
+        confirm_pattern: confirm_pattern,
+      });
+
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: "https://demoback.kairaaexchange.com/api/v1/subadmin/add-new",
+        headers: {
+          Authorization:
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcHRpb24iOiJhZG1pbl9sb2dpbiIsImlkIjoiNjM0YTllODRjMzlhYzJlZWZhN2ZkNTY1Iiwic3RhdHVzIjp0cnVlLCJpYXQiOjE3MjgwMzU0MzksImV4cCI6MTcyODA0MjYzOX0.QOirbnTHm90m5rMbrCBPraHeozgV7t3nxfecWFO7REo",
+          "Content-Type": "application/json",
+          Tag: "admin",
+        },
+        data: data,
+      };
+
+      const response = await axios.request(config);
+      return response.data;
+    } catch (error) {
+      throw new Error(
+        error.response?.data?.message || "Failed to fetch user data"
+      );
+    }
+  }
+);
+
 //-----------------------------------------------kycUserDetails----------------------------------------------------
 export const kycUserDetails = createAsyncThunk(
   "kycUserDetails",
@@ -99,7 +299,7 @@ export const kycUserDetails = createAsyncThunk(
       throw new Error("Failed to fetch user data");
     }
     const data = await res.json();
-    
+
     return data;
   }
 );
@@ -241,7 +441,6 @@ export const FiatAsset = createAsyncThunk(
   }
 );
 
-
 //------------------------------------TradehistoryAsset------------------------------------------------------------------
 
 export const TradehistoryAsset = createAsyncThunk(
@@ -260,7 +459,7 @@ export const TradehistoryAsset = createAsyncThunk(
           },
         }
       );
-      
+
       return res.data;
     } catch (error) {
       console.log("Fetching Error for Fiat" + error);
@@ -269,31 +468,29 @@ export const TradehistoryAsset = createAsyncThunk(
   }
 );
 
-
 // ______________________________User Transaction for Wallet History___________________________
 
-export const UserTransaction=createAsyncThunk("UserTransaction",
-  async(_id,{rejectWithValue})=>{
-    console.log("llllll"+token);
-    try{
-        const res=await axios.post(
-          "https://demoback.kairaaexchange.com//api/v1/admin/user-transaction",
-          {id:_id},
-          {
-            headers:{
-              Authorization:`${token}`,
-              'Content-Type':'application/json',
-              'Tag':'admin',
-            },
+export const UserTransaction = createAsyncThunk(
+  "UserTransaction",
+  async (_id, { rejectWithValue }) => {
+    console.log("llllll" + token);
+    try {
+      const res = await axios.post(
+        "https://demoback.kairaaexchange.com//api/v1/admin/user-transaction",
+        { id: _id },
+        {
+          headers: {
+            Authorization: `${token}`,
+            "Content-Type": "application/json",
+            Tag: "admin",
           },
-        );
-       console.log("API Res"+JSON.stringify(res.data));
-        return res.data;
+        }
+      );
+      console.log("API Res" + JSON.stringify(res.data));
+      return res.data;
+    } catch (err) {
+      console.log("There is something error" + err);
+      return rejectWithValue(err.res?.data?.message || err.message);
     }
-    
-    
-    catch(err){
-    console.log("There is something error"+err);
-return rejectWithValue(err.res?.data?.message|| err.message);
-    }
-  })
+  }
+);

@@ -9,6 +9,7 @@ import fiatSlice from '../Slicers/fiatSlice';
 
 import tradehistorySlice from '../Slicers/tradehistorySlice';
 import UserTransactionSlice from '../Slicers/walletSlice';
+import subadminSlice from "../Slicers/subadminSlice";
 
 const store=configureStore({
     reducer:{
@@ -22,7 +23,7 @@ const store=configureStore({
         tradehistoryData:tradehistorySlice,
 
         UserTransaction:UserTransactionSlice,
-       
+       subadmin:subadminSlice,
 
 
 

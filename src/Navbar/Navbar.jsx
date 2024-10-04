@@ -24,7 +24,7 @@ const Navbar = () => {
          
           <NavLinks />
           <li>
-            <Link to="/" className="py-7 px-3 inline-block">
+            <Link to="/subadmin" className="py-7 px-3 inline-block">
             Subadmin
             </Link>
           </li>

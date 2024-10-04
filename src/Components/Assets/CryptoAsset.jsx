@@ -4,13 +4,14 @@ function CryptoAsset({ cryptoAssetData }) {
   const [toggledId, setToggledId] = useState(null);
   const [operationType, setOperationType] = useState(null);
 
-  const handleToggle = (id, type) => {
-    if (toggledId === id && operationType === type) {
-     
+  const handleToggle = (i, type) => {
+    if (toggledId === i && operationType === type) {
+      
       setToggledId(null);
       setOperationType(null);
     } else {
-      setToggledId(id);
+    
+      setToggledId(i);
       setOperationType(type);
     }
   };
@@ -20,7 +21,7 @@ function CryptoAsset({ cryptoAssetData }) {
     setOperationType(null);
   };
 
-  return (
+ return (
     <>
       <h2 className="font-semibold text-xl mb-4 mt-4">Crypto Assets</h2>
 
@@ -37,8 +38,10 @@ function CryptoAsset({ cryptoAssetData }) {
         <tbody>
           {cryptoAssetData.length > 0 ? (
             cryptoAssetData.map((data, i) => (
-              <React.Fragment key={data.id || i}>
-                <tr className="text-center">
+              <React.Fragment key={i 
+                // || i
+              } >
+                <tr className="text-center" onClick={()=>setToggledId(i)}>
                   <td className="py-2">
                     <div className="flex flex-col items-center gap-2">
                       <img
@@ -58,7 +61,7 @@ function CryptoAsset({ cryptoAssetData }) {
                         className={`p-1 rounded font-medium ${
                           data.deposit ? "text-blue-600" : "text-red-500"
                         }`}
-                        onClick={() => handleToggle(data.id, "deposit")}
+                        onClick={() => handleToggle(i, "deposit")}
                       >
                         Deposit
                       </button>
@@ -66,7 +69,7 @@ function CryptoAsset({ cryptoAssetData }) {
                         className={`p-1 rounded font-medium ${
                           data.withdraw ? "text-blue-500" : "text-red-500"
                         }`}
-                        onClick={() => handleToggle(data.id, "withdraw")}
+                        onClick={() => handleToggle(i, "withdraw")}
                       >
                         Withdraw
                       </button>
@@ -75,7 +78,7 @@ function CryptoAsset({ cryptoAssetData }) {
                 </tr>
 
                 {/* Show Details Below the Selected Row */}
-                {toggledId === data.id &&
+                {toggledId === i &&
                   operationType === "deposit" &&
                   (data.deposit ? (
                     <tr className="bg-gray-100 xs:mx-20 md:mx-20">
@@ -162,7 +165,7 @@ function CryptoAsset({ cryptoAssetData }) {
                     </tr>
                   ))}
 
-                {toggledId === data.id &&
+                {toggledId === i &&
                   operationType === "withdraw" &&
                   (data.withdraw ? (
                     <tr className="bg-gray-100 xs:mx-20 md:mx-20">
@@ -235,6 +238,7 @@ function CryptoAsset({ cryptoAssetData }) {
                         <div className="bg-slate-50 rounded-lg p-10 shadow-lg">
                           <div className="flex justify-between items-center mb-4">
                             <p className="text-lg text-gray-400">No Withdrawal Available for this User</p>
+                            {/* <p>{data.description}</p> */}
                           </div>
                         </div>
                       </td>

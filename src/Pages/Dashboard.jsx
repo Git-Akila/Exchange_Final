@@ -1,6 +1,6 @@
 import React, {useEffect, useLayoutEffect, useRef} from "react";
 
-import Chart from "../Components/Userlist/Chart";
+import Chart1 from "../Components/Userlist/Chart";
 import DataTable from "../Components/Userlist/DataTable";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUser, graphData } from "../Data/fetchUserData";
@@ -535,7 +535,7 @@ function Dashboard() {
         </div>
       </div>
 
-      <Chart graph={graph1} />
+      <Chart1 graph={graph1} />
       <div ref={tableWrapperRef}>
         <DataTable ref={dataTableRef} initialData={users} />
       </div>

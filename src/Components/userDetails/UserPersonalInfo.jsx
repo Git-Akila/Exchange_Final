@@ -16,7 +16,7 @@ import { toast ,ToastContainer} from "react-toastify";
 function UserPersonalInfo({ userData, kycData }) {
   const [isOpen, setIsOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
-  const images = [kycData.front, kycData.back];
+  const images = [kycData.front, kycData.back,kycData.selfie,kycData.pan];
 
   const { _id } = useParams();
 
@@ -268,7 +268,7 @@ function UserPersonalInfo({ userData, kycData }) {
                     src={kycData.selfie}
                     alt="Back"
                     onClick={() => {
-                      setPhotoIndex(1);
+                      setPhotoIndex(2);
                       setIsOpen(true);
                     }}
                     loading="lazy"
@@ -334,7 +334,7 @@ function UserPersonalInfo({ userData, kycData }) {
                     src={kycData.pan}
                     alt="Back"
                     onClick={() => {
-                      setPhotoIndex(1);
+                      setPhotoIndex(3);
                       setIsOpen(true);
                     }}
                     loading="lazy"
