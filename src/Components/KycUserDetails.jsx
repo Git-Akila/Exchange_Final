@@ -28,9 +28,10 @@ import Tickets from "./userDetails/Tickets";
 import Airdrop from "./userDetails/Airdrop";
 import ExportHistory from "./userDetails/ExportHistory";
 import Referel from "./userDetails/Referel";
+import { color } from "highcharts";
 const TabButton = ({ label, isActive, onClick }) => (
   <button
-  className={`px-1 py-2 text-sm mr-1 cursor-pointer ${
+  className={`px-1 py-2 font-bold text-blue-800 mr-1 cursor-pointer text-lg ${
     isActive ? "border-b-2 border-blue-500 bg-blue-50 rounded-xl" : ""
   }`}
   onClick={onClick}
@@ -119,6 +120,7 @@ return (
   >
         <TabButton
           label="Personal Info"
+          
           isActive={activeTab === 0}
           onClick={() => setActiveTab(0)} 
         />

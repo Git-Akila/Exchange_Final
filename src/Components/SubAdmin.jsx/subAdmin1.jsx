@@ -21,31 +21,62 @@ import { toast, ToastContainer } from "react-toastify";
 const SubLoginPage = () => {
   const dispatch=useDispatch();
   const navigate=useNavigate();
+  const {isLoading,isError,data}=useSelector((state)=>state.subadmin);
+const [formData,setFormData]=useState({
+  name:'',
+  email:'',
+  password:'',
+  confirmPassword:'',
+  pattern:'',
+  confirmPattern:'',
+  
+});
 
-  const [name,setName]=useState("");
+const handleInputChange=(e)=>{
+  const {name,value}=e.target;
+  setFormData({
+    ...formData,
+    [name]:value,
+  });
+};
 
-  const [userid,setUserId]=useState("");
+const handleSubmit=async(e)=>{
+  e.preventDefault();
 
-  const [email, setEmail] = useState("");
+  const {name,email,password,confirmPassword,pattern,confirmPattern}=formData;
 
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  if(password!==confirmPassword){
+    toast.error("Password does not match...")
+    
+  }
+}
 
-  const [password1,setPassword1]=useState("");
-  const [showPassword1, setShowPassword1] = useState(false);
 
-  const [pattern, setPattern] = useState([]);
+
+//   const [name,setName]=useState("");
+
+//   const [userid,setUserId]=useState("");
+
+//   const [email, setEmail] = useState("");
+
+//   const [password, setPassword] = useState("");
+//   const [showPassword, setShowPassword] = useState(false);
+
+//   const [password1,setPassword1]=useState("");
+   const [showPassword1, setShowPassword1] = useState(false);
+
+//   const [pattern, setPattern] = useState([]);
   const [isPatternLocked, setIsPatternLocked] = useState(false);
  
 
-  const [pattern1,setPattern1]=useState([]);
-  const [isPatternLocked1, setIsPatternLocked1] = useState(false);
+//   const [pattern1,setPattern1]=useState([]);
+//   const [isPatternLocked1, setIsPatternLocked1] = useState(false);
  
-const [message,setMessage]=useState("")
-const [message1,setMessage1]=useState("")
+// const [message,setMessage]=useState("")
+// const [message1,setMessage1]=useState("")
   
 
-const {isLoading,isError,data}=useSelector((state)=>state.subadmin);
+
 
 
 
@@ -57,72 +88,86 @@ const {isLoading,isError,data}=useSelector((state)=>state.subadmin);
     setShowPassword1(!showPassword1);
   };
 
-  const handlePatternChange = (newPattern) => {
-    setPattern(newPattern);
-  };
-  const handlePatternChange1 = (newPattern1) => {
-    setPattern1(newPattern1);
-  };
+//   const handlePatternChange = (newPattern) => {
+//     setPattern(newPattern);
+//   };
+//   const handlePatternChange1 = (newPattern1) => {
+//     setPattern1(newPattern1);
+//   };
 
-  const handleSubmit = () => {
-    if (pattern.length > 0) {
-      setIsPatternLocked(true);
-      setMessage(`Pattern entered: ${pattern.join("-")}`);
-    } else {
-      setMessage("Please draw a pattern!");
-    }
-  };
-  const handleSubmit1 = () => {
-    if (pattern1.length > 0) {
-      setIsPatternLocked1(true);
-      setMessage1(`Pattern entered: ${pattern1.join("-")}`);
-    } else {
-      setMessage1("Please draw a pattern!");
-    }
-  };
+//   const handleSubmit = () => {
+//     if (pattern.length > 0) {
+//       setIsPatternLocked(true);
+//       setMessage(`Pattern entered: ${pattern.join("-")}`);
+//     } else {
+//       setMessage("Please draw a pattern!");
+//     }
+//   };
+//   const handleSubmit1 = () => {
+//     if (pattern1.length > 0) {
+//       setIsPatternLocked1(true);
+//       setMessage1(`Pattern entered: ${pattern1.join("-")}`);
+//     } else {
+//       setMessage1("Please draw a pattern!");
+//     }
+//   };
 
-  const handleOverallSubmit = async (e) => {
-    e.preventDefault();
-    if (!isPatternLocked || !isPatternLocked1) {
-      toast.error("Please set a pattern first!");
-      return;
-    }
+//   const handleOverallSubmit = async (e) => {
+//     e.preventDefault();
+//     if (!isPatternLocked || !isPatternLocked1) {
+//       toast.error("Please set a pattern first!");
+//       return;
+//     }
   
-    try {
-      const result = await dispatch(
-        subAdmin({
-          username: name,
-          email,
-          password,
-          pattern: pattern.join(""),
-          pattern1: pattern1.join(""),
-        })
-      ).unwrap();
+  //   try {
+  //     const result = await dispatch(
+  //       subAdmin({
+  //         username: name,
+  //         email,
+  //         password,
+  //         pattern: pattern.join(""),
+  //         pattern1: pattern1.join(""),
+  //       })
+  //     ).unwrap();
   
-      if (result?.token) {
-        toast.success("Login successful");
-        navigate("/");
-      } else {
-        toast.error("Invalid token");
-      }
+  //     if (result?.token) {
+  //       toast.success("Login successful");
+  //       navigate("/");
+  //     } else {
+  //       toast.error("Invalid token");
+  //     }
   
-      // Clear fields after successful submission
-      setEmail("");
-      setPassword("");
-      setPattern([]);
-      setPattern1([]);
-      setIsPatternLocked(false);
-      setIsPatternLocked1(false);
-    } catch (error) {
-      toast.error(error.message || "An error occurred during login.");
-      setIsPatternLocked(false);
-    }
+  //     // Clear fields after successful submission
+  //     setEmail("");
+  //     setPassword("");
+  //     setPattern([]);
+  //     setPattern1([]);
+  //     setIsPatternLocked(false);
+  //     setIsPatternLocked1(false);
+  //   } catch (error) {
+  //     toast.error(error.message || "An error occurred during login.");
+  //     setIsPatternLocked(false);
+  //   }
+  // };
+  
+  const handlePatternChange = (pattern) => {
+    setFormData({
+      ...formData,
+      pattern,
+    });
   };
   
-
+  const handlePatternChange1 = (pattern1) => {
+    setFormData({
+      ...formData,
+      confirmPattern: pattern1,
+    });
+  };
   return (
+    <form>
     <div className="w-full h-full mx-auto container m-10 p-1">
       <div className="justify-between flex border-2 p-5">
+     
         <Typography
           variant="h4"
           sx={{
@@ -136,7 +181,7 @@ const {isLoading,isError,data}=useSelector((state)=>state.subadmin);
         </Typography>
         <Link to="/"><Button className="bg-gray-100 font-bold p-2 gap-2"><FaArrowLeft />Back</Button></Link>
       </div>
-
+      
       <div className="grid grid-cols-2 gap-5 justify-center  border-l border-r border-b p-2">
         <div className="">
          
@@ -154,8 +199,10 @@ const {isLoading,isError,data}=useSelector((state)=>state.subadmin);
             </Typography>
             <TextField
               placeholder="Enter Email"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              name="name"
+              type="text"
+                            value={formData.name}
+              onChange={handleInputChange}
               fullWidth
               required
               sx={{ marginBottom: "7px", backgroundColor: "white" }}
@@ -173,8 +220,10 @@ const {isLoading,isError,data}=useSelector((state)=>state.subadmin);
             </Typography>
             <TextField
               placeholder="Enter Email"
-              value={userid}
-              onChange={(e) => setUserId(e.target.value)}
+              name="email"
+              type="text"
+              value={formData.email}
+              onChange={handleInputChange}
               fullWidth
               required
               sx={{ marginBottom: "7px", backgroundColor: "white" }}
@@ -193,8 +242,8 @@ const {isLoading,isError,data}=useSelector((state)=>state.subadmin);
             <TextField
               type={showPassword ? "text" : "password"}
               placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={handleInputChange}
               fullWidth
               required
               sx={{ marginBottom: "7px", backgroundColor: "white" }}
@@ -232,8 +281,8 @@ const {isLoading,isError,data}=useSelector((state)=>state.subadmin);
                   width={300}
                   height={300}
                   pointSize={20}
+                  path={formData.pattern}
                   onChange={handlePatternChange}
-                  path={pattern}
                   size={3}
                   lineColor="#3f51b5"
                   activePointColor="#3f51b5"
@@ -266,8 +315,8 @@ const {isLoading,isError,data}=useSelector((state)=>state.subadmin);
             </Typography>
             <TextField
               placeholder="Enter Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={handleInputChange}
               fullWidth
               required
               sx={{ marginBottom: "7px", backgroundColor: "white" }}
@@ -286,8 +335,8 @@ const {isLoading,isError,data}=useSelector((state)=>state.subadmin);
             <TextField
               type={showPassword ? "text" : "password"}
               placeholder="Password"
-              value={password1}
-              onChange={(e) => setPassword1(e.target.value)}
+              value={formData.confirmPassword}
+              onChange={handleInputChange}
               fullWidth
               required
               sx={{ marginBottom: "7px", backgroundColor: "white" }}
@@ -325,8 +374,8 @@ const {isLoading,isError,data}=useSelector((state)=>state.subadmin);
                   width={300}
                   height={300}
                   pointSize={20}
+                  path={formData.confirmPattern}
                   onChange={handlePatternChange1}
-                  path={pattern1}
                   size={3}
                   lineColor="#3f51b5"
                   activePointColor="#3f51b5"
@@ -621,10 +670,12 @@ const {isLoading,isError,data}=useSelector((state)=>state.subadmin);
       <div className="gap-6 flex m-3">
         <button className="p-2 rounded bg-blue-400" onClick={handleOverallSubmit}>Submit</button>
         <button className="p-2 rounded bg-red-600">Cancel</button>
+        
       </div>
 
       <ToastContainer/>
     </div>
+    </form>
   );
 };
 

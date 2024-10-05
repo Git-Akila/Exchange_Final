@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { RiEditFill } from "react-icons/ri";
 import axios from "axios";
 
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 //npm install react-image-lightbox
 //npm install react-awesome-lightbox
@@ -12,11 +12,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import Lightbox from "react-awesome-lightbox";
 import "react-awesome-lightbox/build/style.css";
 import { useParams } from "react-router-dom";
-import { toast ,ToastContainer} from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 function UserPersonalInfo({ userData, kycData }) {
   const [isOpen, setIsOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
-  const images = [kycData.front, kycData.back,kycData.selfie,kycData.pan];
+  const images = [kycData.front, kycData.back, kycData.selfie, kycData.pan];
 
   const { _id } = useParams();
 
@@ -62,7 +62,7 @@ function UserPersonalInfo({ userData, kycData }) {
           },
         }
       );
-      toast.error("Rejected Successfully")
+      toast.error("Rejected Successfully");
       console.log("The Response of KYC Reject" + res?.data);
     } catch (err) {
       console.log("Error" + err.res?.data || err.message);
@@ -78,54 +78,96 @@ function UserPersonalInfo({ userData, kycData }) {
           </h2>
           <div className="bg-[#fff] p-6">
             <ul>
-              <li className="flex justify-between py-2">
-                <span>Name </span>
-                <span>{userData.username}</span>
+            <li className="flex justify-between items-center py-3 border-b border-gray-100">
+            <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span className="font-semibold text-gray-700">Name</span></div>
+                <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span className="text-gray-900">
+                  {userData.name || "Not provided"}
+                </span></div>
               </li>
-              <li className="flex justify-between  py-2">
-                <span>Email </span>
-                <span>{userData.email || ""} </span>
+              <li className="flex justify-between items-center py-3 border-b border-gray-100">
+              <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span className="font-semibold text-gray-700">Email</span></div>
+                <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span className="text-gray-900">
+                  {userData.email || "Not provided"}
+                </span></div>
               </li>
-              <li className="flex justify-between  py-2">
-                <span>Date of Birth </span>
-                <span>{userData.dob || ""} </span>
+              <li className="flex justify-between  py-3 items-center border-b border-gray-100">
+              <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span className="font-semibold text-gray-700">
+                  Date of Birth{" "}
+                </span></div>
+                <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span>{userData.dob || "Not provided"} </span></div>
               </li>
-              <li className="flex justify-between  py-2">
-                <span>Age </span>
-                <span>{userData.age || ""} </span>
+              <li className="flex justify-between  py-3 items-center border-b border-gray-100">
+                <div className="flex w-1/2 xs:w-1/2 items-start">
+                  <span className="font-semibold text-gray-700">Age </span>
+                </div>
+                <div className="flex w-1/2 xs:w-1/2 items-start">
+                  <span>{userData.age || "Not provided"} </span>
+                </div>
               </li>
-              <li className="flex justify-between  py-2">
-                <span>Gender </span>
-                <span>{userData.gender || ""} </span>
+              <li className="flex justify-between  py-3 items-center border-b border-gray-100">
+                <div className="xs:w-1/2 w-1/2 justify-start flex">
+                  <span className="font-semibold text-gray-700">Gender </span>
+                </div>
+                <div className="xs:w-1/2 w-1/2 justify-start flex">
+                  <span>{userData.gender || "Not provided"} </span>
+                </div>
               </li>
-              <li className="flex justify-between  py-2">
-                <span>Phone no</span>
-                <span>{userData.phone || ""} </span>
+              <li className="flex justify-between  py-3 items-center  border-b border-gray-100">
+                <div className="flex justify-start xs:w-1/2 w-1/2">
+                  <span className="font-semibold text-gray-700">Phone no</span>
+                </div>
+                <div className="flex justify-start xs:w-1/2 w-1/2">
+                  <span>{userData.phone || "Not provided"} </span>
+                </div>
               </li>
-              <li className="flex justify-between  py-2">
-                <span>Address </span>
-                <span>{userData.address || ""} </span>
+              <li className="flex justify-between  py-3 items-center border-b border-gray-100">
+                <div className="xs:w-1/2 w-1/2 justify-start flex">
+                  {" "}
+                  <span className="font-semibold text-gray-700">Address </span>
+                </div>
+                <div className="xs:w-1/2 w-1/2 justify-start flex"> 
+                  <span>{userData.address || "Not provided"} </span>
+                </div>
               </li>
-              <li className="flex justify-between  py-2">
-                <span>City </span>
-                <span>{userData.city || ""} </span>
+              <li className="flex justify-between  py-3 items-center border-b border-gray-100">
+                <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span className="font-semibold text-gray-700">City </span>
+                </div><div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span>{userData.city || "Not provided"} </span>
+                </div>
               </li>
-              <li className="flex justify-between  py-2">
-                <span>State </span>
-                <span>{userData.state || ""} </span>
+              <li className="flex justify-between  py-3 items-center border-b border-gray-100">
+              <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span className="font-semibold text-gray-700">State </span></div> 
+                <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span>{userData.state || "Not provided"} </span></div>
               </li>
-              <li className="flex justify-between  py-2">
-                <span>Pincode </span>
-                <span>{userData.pincode || ""} </span>
+              <li className="flex justify-between   py-3 items-center border-b border-gray-100">
+              <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span className="font-semibold text-gray-700">Pincode </span></div>
+                <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span>{userData.pincode || "Not provided"} </span></div>
               </li>
-              <li className="flex justify-between  py-2">
-                <span>Country </span>
-                <span>{userData.country || ""} </span>
+              <li className="flex justify-between  py-3 items-center border-b border-gray-100">
+              <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span className="font-semibold text-gray-700">Country </span></div>
+                <div className="xs:w-1/2 w-1/2 justify-start flex">
+
+                <span>{userData.country || "Not provided"} </span></div>
               </li>
 
-              <li className="flex justify-between  py-2">
-                <span>Referred By</span>
-                <span>{userData.referrals || ""}</span>
+              <li className="flex justify-between  py-3 items-center border-b border-gray-100">
+              <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span className="font-semibold text-gray-700">Referred By</span></div>
+                <div className="xs:w-1/2 w-1/2 justify-start flex">
+                
+                <span>{userData.referrals || "Not provided"}</span></div>
               </li>
             </ul>
           </div>
@@ -149,16 +191,24 @@ function UserPersonalInfo({ userData, kycData }) {
             <p className="text-[16px] font-bold mb-2">Document Information</p>
             <ul>
               {/* <li>Proof Name&nbsp;&nbsp;&nbsp;&nbsp;{kycData.proofname}</li> */}
-              <li className="flex justify-between py-1">
-                <span>Proof Name</span>
-                <span>{kycData.proofname || ""}</span>
+              <li className="flex justify-between py-3 items-center border-b border-gray-200">
+              <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span className="font-semibold text-gray-700">Proof Name</span></div>
+                <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span>{kycData.proofname || "Not provided"}</span></div>
               </li>
-              <li className="flex justify-between py-1">
-                <span>Proof Number</span>
-                <span> {kycData.proofnumber || ""} </span>
+              <li className="flex justify-between py-3 items-center border-b border-gray-100 ">
+              <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span className="font-semibold text-gray-700">
+                  Proof Number
+                </span></div>
+                <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span> {kycData.proofnumber || "Not provided"} </span></div>
               </li>
-              <li className="flex justify-between mt-2 mb-2 ">
-                <span>Front</span>
+              <li className="flex justify-between py-3 items-center border-b border-gray-100 ">
+              <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span className="font-semibold text-gray-700">Front</span></div>
+                <div className="xs:w-1/2 w-1/2 justify-start flex">
                 <span>
                   <img
                     className="w-[500px] h-[100px] bg-slate-50 shadow-lg rounded p-2"
@@ -171,10 +221,12 @@ function UserPersonalInfo({ userData, kycData }) {
                     loading="lazy"
                     style={{ cursor: "pointer", width: "100px" }}
                   />
-                </span>
+                </span></div>
               </li>
-              <li className="flex justify-between mb-2">
-                <span>Back</span>
+              <li className="flex justify-between py-3 items-center border-b border-gray-100">
+              <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span className="font-semibold text-gray-700">Back</span></div>
+                <div className="xs:w-1/2 w-1/2 justify-start flex">
                 <span className="bg-slate-50 shadow-lg p-1">
                   <img
                     className="w-[500px] h-[100px] "
@@ -187,7 +239,7 @@ function UserPersonalInfo({ userData, kycData }) {
                     loading="lazy"
                     style={{ cursor: "pointer", width: "100px" }}
                   />
-                </span>
+                </span></div>
               </li>
               {isOpen && (
                 <Lightbox
@@ -216,8 +268,12 @@ function UserPersonalInfo({ userData, kycData }) {
               <span>Proof Status</span>
               <span>{kycData.proofstatus}</span>
             </li> */}
-              <li className="flex justify-between mb-2 py-1">
-                <span>Proof Status</span>
+              <li className="flex justify-between py-3 items-center border-b border-gray-100">
+              <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span className="font-semibold text-gray-700">
+                  Proof Status
+                </span></div>
+                <div className="xs:w-1/2 w-1/2 justify-start flex">
                 <span className="flex gap-2">
                   <button
                     className={`p-2 rounded ${
@@ -238,15 +294,16 @@ function UserPersonalInfo({ userData, kycData }) {
                       "Not Provided"
                     ) : kycData.proofstatus === 2 ? (
                       <div className="flex justify-between gap-2">
-                        <button className="bg-green-500 p-2 rounded "
-                        onClick={()=>approveKyc("proof")
-                         
-                        }
+                        <button
+                          className="bg-green-500 p-2 rounded "
+                          onClick={() => approveKyc("proof")}
                         >
                           Approve
                         </button>
-                        <button className="bg-red-500 p-2 rounded"
-                        onClick={()=>KYCReject("proof")}>
+                        <button
+                          className="bg-red-500 p-2 rounded"
+                          onClick={() => KYCReject("proof")}
+                        >
                           Reject
                         </button>
                       </div>
@@ -254,14 +311,21 @@ function UserPersonalInfo({ userData, kycData }) {
                       "Unknown Status"
                     )}
                   </button>
-                </span>
+                </span></div>
               </li>
-              <li className="flex justify-between mb-2 py-1">
-                <span> Proof Verified By </span>
-                <span> {kycData.proofVerifiedBy || ""} </span>
+              <li className="flex justify-between py-3 items-center border-b border-gray-100">
+              <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span className="font-semibold text-gray-700">
+                  {" "}
+                  Proof Verified By{" "}
+                </span></div>
+                <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span> {kycData.proofVerifiedBy || ""} </span></div>
               </li>
-              <li className="flex justify-between mb-2">
-                <span> Selfie </span>
+              <li className="flex justify-between py-3 items-center border-b border-gray-100">
+              <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span  className="font-semibold text-gray-700"> Selfie </span></div>
+                <div className="xs:w-1/2 w-1/2 justify-start flex">
                 <span>
                   <img
                     className="w-[500px] h-[100px] bg-slate-50 shadow-lg rounded p-2 "
@@ -274,7 +338,7 @@ function UserPersonalInfo({ userData, kycData }) {
                     loading="lazy"
                     style={{ cursor: "pointer", width: "100px" }}
                   />
-                </span>
+                </span></div>
               </li>
               {isOpen && (
                 <Lightbox
@@ -284,8 +348,12 @@ function UserPersonalInfo({ userData, kycData }) {
                 />
               )}
 
-              <li className="flex justify-between mb-2 py-1">
-                <span>Selfie Status</span>
+              <li className="flex justify-between py-3 items-center border-b border-gray-100">
+              <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span className="font-semibold text-gray-700">
+                  Selfie Status
+                </span></div>
+                <div className="xs:w-1/2 w-1/2 justify-start flex">
                 <span className="flex gap-2">
                   <button
                     className={`p-2 rounded ${
@@ -306,12 +374,16 @@ function UserPersonalInfo({ userData, kycData }) {
                       "Not Provided"
                     ) : kycData.selfiestatus === 2 ? (
                       <div className="flex justify-between gap-2">
-                        <button className="bg-green-500 p-2 rounded"
-                        onClick={()=>approveKyc("selfie")}>
+                        <button
+                          className="bg-green-500 p-2 rounded"
+                          onClick={() => approveKyc("selfie")}
+                        >
                           Approve
                         </button>
-                        <button className="bg-red-500 p-2 rounded"
-                        onClick={()=>KYCReject("selfie")}>
+                        <button
+                          className="bg-red-500 p-2 rounded"
+                          onClick={() => KYCReject("selfie")}
+                        >
                           Reject
                         </button>
                       </div>
@@ -319,15 +391,18 @@ function UserPersonalInfo({ userData, kycData }) {
                       "Unknown Status"
                     )}
                   </button>
-                </span>
+                </span></div>
               </li>
-              <li className="flex justify-between mb-2">
-                <span> Selfie VerifiedBy </span>
-                <span> {kycData.selfieVerifiedBy || ""}</span>
+              <li className="flex justify-between py-3 items-center border-b border-gray-100">
+              <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span> Selfie VerifiedBy </span></div>
+                <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span> {kycData.selfieVerifiedBy || "Not provided"}</span></div>
               </li>
-              <li className="flex justify-between mb-2">
-                <span>Pancard</span>
-
+              <li className="flex justify-between py-3 items-center border-b border-gray-100">
+              <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span className="font-semibold text-gray-700">Pancard</span></div>
+                <div className="xs:w-1/2 w-1/2 justify-start flex">
                 <span>
                   <img
                     className="w-[500px] h-[100px] bg-slate-50 shadow-lg rounded p-2 "
@@ -340,7 +415,7 @@ function UserPersonalInfo({ userData, kycData }) {
                     loading="lazy"
                     style={{ cursor: "pointer", width: "100px" }}
                   />
-                </span>
+                </span></div>
               </li>
               {isOpen && (
                 <Lightbox
@@ -350,8 +425,12 @@ function UserPersonalInfo({ userData, kycData }) {
                 />
               )}
 
-              <li className="flex justify-between items-center mb-2">
-                <span> Pancard status</span>
+              <li className="flex justify-between items-center py-3 border-b border-gray-100">
+              <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span className="font-semibold text-gray-700">
+                  {" "}
+                  Pancard status
+                </span></div><div className="xs:w-1/2 w-1/2 justify-start flex"><span>
                 <button
                   className={`p-2 rounded ${
                     kycData.proofstatus === 0
@@ -373,7 +452,7 @@ function UserPersonalInfo({ userData, kycData }) {
                     <div className="flex justify-between gap-2">
                       <button
                         className="bg-green-500 p-2 rounded"
-                        onClick={()=>approveKyc("pan")}
+                        onClick={() => approveKyc("pan")}
                         // onClick={async () => {
                         //   try {
                         //     await approveKyc("pan");
@@ -394,15 +473,18 @@ function UserPersonalInfo({ userData, kycData }) {
                       >
                         Reject
                       </button>
+                      
                     </div>
                   ) : (
                     "Unknown Status"
                   )}
-                </button>
+                </button></span></div>
               </li>
-              <li className="flex justify-between mb-2">
-                <span> Date</span>
-                <span> {kycData.Date || ""} </span>
+              <li className="flex justify-between py-3 items-center ">
+              <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span className="font-semibold text-gray-700"> Date</span></div>
+                <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span> {kycData.Date || "Not provided"} </span></div>
               </li>
             </ul>
           </div>

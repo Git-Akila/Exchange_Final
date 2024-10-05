@@ -27,7 +27,7 @@ function UserSecurity({ userData, kycData }) {
                     type="text"
                     className="p-2 border-2 border-slate-300 mt-2 mb-2 bg-slate-200 rounded w-[500px]"
                   >
-                    {BankInfo.holder || "N/A"}
+                    {BankInfo.holder || "Not provided"}
                   </p>
                 </li>
                 <li className="gap-2">
