@@ -6,27 +6,45 @@ import { useEffect } from "react";
 // https://demoback.kairaaexchange.com/get_graph_data
 const token = localStorage.getItem("token");
 
-export const fetchUser = createAsyncThunk("fetchUser", async () => {
-  try {
-    const response = await axios.post(
-      "https://demoback.kairaaexchange.com/api/v1/user/list",
-      {},
-      {
-        headers: {
-          Authorization: `${token}`,
-          "Content-Type": "application/json",
-          Tag: "admin",
-        },
-      }
-    );
-    // console.log("API Response:", response.data);
-    return response.data;
-  } catch (error) {
-    throw new Error(
-      error.response?.data?.message || "Failed to fetch user data"
-    );
+// export const fetchUser = createAsyncThunk("fetchUser", async () => {
+//   try {
+//     const response = await axios.post(
+//       "https://demoback.kairaaexchange.com/api/v1/user/list",
+//       {},
+//       {
+//         headers: {
+//           Authorization: `${token}`,
+//           "Content-Type": "application/json",
+//           Tag: "admin",
+//         },
+//       }
+//     );
+//     // console.log("API Response:", response.data);
+//     return response.data;
+//   } catch (error) {
+//     throw new Error(
+//       error.response?.data?.message || "Failed to fetch user data"
+//     );
+//   }
+// });
+
+export const fetchUser=createAsyncThunk("fetchUser",async()=>{
+  const res=await fetch("https://demoback.kairaaexchange.com/api/v1/user/list",
+    {
+      method:"POST",
+      headers:{
+        Authorization:`${token}`,
+        "Content-Type":"application/json",
+        Tag:"admin",
+      },
+    }
+  );
+  if(!res.ok){
+    throw new Error("Failed to fetch user data");
   }
-});
+  const data=await res.json();
+  return data;
+})
 //-----------------------------------------LoginUser--------------------------------------------------------------------------------
 export const loginUser = createAsyncThunk(
   "loginUser",

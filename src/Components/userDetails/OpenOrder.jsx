@@ -206,10 +206,17 @@ function OpenOrder({ TradehistoryData }) {
           <h2 className=" font-bold text-blue-800 text-[18px] mb-2 mt-2">
             Open History
           </h2>
-          <button className="p-2 bg-blue-200 flex text-center items-center gap-2 rounded-md"
+          {/* <button className="p-2 bg-blue-200 flex text-center items-center gap-2 rounded-md"
           onClick={handleExport}>
             Download
           <MdOutlineCloudDownload />
+          </button> */}
+          <button
+            onClick={handleExport}
+            className="flex gap-2 text-[18px] font-semibold bg-white rounded-lg p-2 border-2 border-gray-300 shadow-sm hover:bg-gray-100 hover:shadow-md transition-all duration-300 mb-3 justify-center items-center"
+          >
+            Export
+            <MdOutlineCloudDownload className="text-[22px]" />
           </button>
         </div>
         <div className="grid grid-cols-5 gap-10 mb-3   justify-between">

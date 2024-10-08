@@ -43,26 +43,34 @@ const Login = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const expirationTime = localStorage.getItem("expirationTime");
-    const currentTime = new Date().getTime();
+    
 
     if (token && expirationTime) {
-      if (currentTime < expirationTime) {
-        navigate("/");
+      const currentTime = new Date().getTime();
+      if (currentTime >= expirationTime) {
+        // Token has expired
+        localStorage.removeItem("token");
+        localStorage.removeItem("expirationTime");
+        toast.error("Session expired. Please log in again.");
+        navigate("/login");
       } else {
-        localStorage.removeItem("token");
-        localStorage.removeItem("expirationTime");
-        toast.error("Session expired. Please log in again.");
-        navigate("/login");
+        // Token is still valid
+        const timeLeft = expirationTime - currentTime;
+
+        // Set a timeout to automatically log out when time runs out
+        const timeout = setTimeout(() => {
+          localStorage.removeItem("token");
+          localStorage.removeItem("expirationTime");
+          toast.error("Session expired. Please log in again.");
+          navigate("/login");
+        }, timeLeft);
+
+        // Clear the timeout when the component unmounts or dependencies change
+        return () => clearTimeout(timeout);
       }
-      const timeLeft = expirationTime - currentTime;
-      const timeout = setTimeout(() => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("expirationTime");
-        toast.error("Session expired. Please log in again.");
-        navigate("/login");
-       
-      }, timeLeft);
-      return () => clearTimeout(timeout);
+    } else {
+      // No token or expiration time in localStorage
+      navigate("/login");
     }
   }, [navigate]);
 

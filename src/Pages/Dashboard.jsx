@@ -26,11 +26,12 @@ function Dashboard() {
     isError: isError1,
   } = useSelector((state) => state.graph_data);
 
-  useLayoutEffect(() => {
-    dispatch(fetchUser());
-  }, [dispatch]);
+  // useLayoutEffect(() => {
+  //   dispatch(fetchUser());
+  // }, [dispatch]);
 
   useEffect(() => {
+    dispatch(fetchUser());
     dispatch(graphData());
   }, [dispatch]);
   if (isLoading || isLoading1) {

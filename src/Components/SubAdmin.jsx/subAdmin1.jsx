@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   TextField,
   Button,
@@ -9,6 +9,7 @@ import {
   Grid,
 } from "@mui/material";
 import { FaArrowLeft } from "react-icons/fa";
+import EmailIcon from '@mui/icons-material/Email';
 
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
@@ -19,67 +20,88 @@ import { subAdmin } from "../../Data/fetchUserData";
 import { toast, ToastContainer } from "react-toastify";
 
 const SubLoginPage = () => {
-  const dispatch=useDispatch();
-  const navigate=useNavigate();
-  const {isLoading,isError,data}=useSelector((state)=>state.subadmin);
-const [formData,setFormData]=useState({
-  name:'',
-  email:'',
-  password:'',
-  confirmPassword:'',
-  pattern:'',
-  confirmPattern:'',
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [userId,setUserId]=useState("");
+  const token=localStorage.getItem('token')
+  const a = async () => {
+    try {
+      const response = await axios.get("https://demoback.kairaaexchange.com/api/v1/unique_id", {
+        headers: {
+          Authorization: `${token}`, // Ensure token is formatted correctly
+          'Content-Type': 'application/json',
+        },
+      });
+      // return response.data
+      setUserId(response.data); // Set the user ID from the response
+      console.log("SSSs"+response)
+    } catch (err) {
+      console.error(err); // Log any errors that occur
+    }
+  };
   
-});
+ useEffect(()=>{
+  a();
+ },[]);
 
-const handleInputChange=(e)=>{
-  const {name,value}=e.target;
-  setFormData({
-    ...formData,
-    [name]:value,
+  const { isLoading, isError, data } = useSelector((state) => state.subadmin);
+  const [formData, setFormData] = useState({
+    name: "",
+    userId: setUserId,
+    email: "",
+    password: "",
+    confirmPassword: "",
+    pattern: "",
+    confirmPattern: "",
   });
-};
 
-const handleSubmit=async(e)=>{
-  e.preventDefault();
+  console.log("formData" + JSON.stringify(formData));
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword1, setShowPassword1] = useState(false);
+  const [permissions, setPermissions] = useState([]);
 
-  const {name,email,password,confirmPassword,pattern,confirmPattern}=formData;
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
 
-  if(password!==confirmPassword){
-    toast.error("Password does not match...")
-    
-  }
+   
+
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handlePermissionChange = (e) => {
+    const { name, checked } = e.target;
+    setPermissions({
+      ...Permissions,
+      [name]: checked,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+const emailRegex=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+if(!emailRegex.text(formData.email)){
+  toast.error("Invalid email format");
+  return;
 }
 
+    const { name, email, password, confirmPassword, pattern, confirmPattern } =
+      formData;
 
+    if (password !== confirmPassword) {
+      toast.error("Password does not match...");
+      return;
+    }
+    if (pattern !== confirmPattern) {
+      toast.error("Pattern does not match...");
+      return;
+    }
 
-//   const [name,setName]=useState("");
-
-//   const [userid,setUserId]=useState("");
-
-//   const [email, setEmail] = useState("");
-
-//   const [password, setPassword] = useState("");
-//   const [showPassword, setShowPassword] = useState(false);
-
-//   const [password1,setPassword1]=useState("");
-   const [showPassword1, setShowPassword1] = useState(false);
-
-//   const [pattern, setPattern] = useState([]);
-  const [isPatternLocked, setIsPatternLocked] = useState(false);
- 
-
-//   const [pattern1,setPattern1]=useState([]);
-//   const [isPatternLocked1, setIsPatternLocked1] = useState(false);
- 
-// const [message,setMessage]=useState("")
-// const [message1,setMessage1]=useState("")
-  
-
-
-
-
-
+    dispatch(subAdmin({ name, email, password, pattern, Permissions }));
+  };
 
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
@@ -88,103 +110,65 @@ const handleSubmit=async(e)=>{
     setShowPassword1(!showPassword1);
   };
 
-//   const handlePatternChange = (newPattern) => {
-//     setPattern(newPattern);
-//   };
-//   const handlePatternChange1 = (newPattern1) => {
-//     setPattern1(newPattern1);
-//   };
-
-//   const handleSubmit = () => {
-//     if (pattern.length > 0) {
-//       setIsPatternLocked(true);
-//       setMessage(`Pattern entered: ${pattern.join("-")}`);
-//     } else {
-//       setMessage("Please draw a pattern!");
-//     }
-//   };
-//   const handleSubmit1 = () => {
-//     if (pattern1.length > 0) {
-//       setIsPatternLocked1(true);
-//       setMessage1(`Pattern entered: ${pattern1.join("-")}`);
-//     } else {
-//       setMessage1("Please draw a pattern!");
-//     }
-//   };
-
-//   const handleOverallSubmit = async (e) => {
-//     e.preventDefault();
-//     if (!isPatternLocked || !isPatternLocked1) {
-//       toast.error("Please set a pattern first!");
-//       return;
-//     }
-  
-  //   try {
-  //     const result = await dispatch(
-  //       subAdmin({
-  //         username: name,
-  //         email,
-  //         password,
-  //         pattern: pattern.join(""),
-  //         pattern1: pattern1.join(""),
-  //       })
-  //     ).unwrap();
-  
-  //     if (result?.token) {
-  //       toast.success("Login successful");
-  //       navigate("/");
-  //     } else {
-  //       toast.error("Invalid token");
-  //     }
-  
-  //     // Clear fields after successful submission
-  //     setEmail("");
-  //     setPassword("");
-  //     setPattern([]);
-  //     setPattern1([]);
-  //     setIsPatternLocked(false);
-  //     setIsPatternLocked1(false);
-  //   } catch (error) {
-  //     toast.error(error.message || "An error occurred during login.");
-  //     setIsPatternLocked(false);
-  //   }
-  // };
-  
   const handlePatternChange = (pattern) => {
     setFormData({
       ...formData,
       pattern,
     });
   };
-  
+
+  const handlePatternFinish = () => {
+    if (formData.pattern.length < 3) {
+      toast.error("Pattern must be at least 4 paoints long");
+      return;
+    }
+    toast.success("Pattern set successfully!");
+  };
+
   const handlePatternChange1 = (pattern1) => {
     setFormData({
       ...formData,
       confirmPattern: pattern1,
     });
   };
+
+  const handleConfirmPatternFinish = () => {
+    if (formData.confirmPattern.length < 3) {
+      toast.error("Confirm Pattern must be at least 4 points long..");
+      return;
+    }
+    if (formData.pattern !== formData.confirmPattern) {
+      toast.error("Patterns do not match!");
+    } else {
+      toast.success("Patterns match!");
+    }
+  };
   return (
     <form>
-    <div className="w-full h-full mx-auto container m-10 p-1">
-      <div className="justify-between flex border-2 p-5">
-     
-        <Typography
-          variant="h4"
-          sx={{
-            marginBottom: "5px",
-            fontWeight: "400px",
-            color: "#2563EB",
-            fontSize: "22px",
-          }}
-        >
-          SubAdmin Details
-        </Typography>
-        <Link to="/"><Button className="bg-gray-100 font-bold p-2 gap-2"><FaArrowLeft />Back</Button></Link>
-      </div>
-      
-      <div className="grid grid-cols-2 gap-5 justify-center  border-l border-r border-b p-2">
-        <div className="">
-         
+      <div className="w-full h-full mx-auto container m-10 p-1">
+        <div className="justify-between flex border-2 p-5">
+          <Typography
+            variant="h4"
+            sx={{
+              marginBottom: "5px",
+              fontWeight: "400px",
+              color: "#2563EB",
+              fontSize: "22px",
+            }}
+          >
+            SubAdmin Details
+          </Typography>
+          <Link to="/">
+            <Button className="bg-gray-100 font-bold p-2 gap-2">
+              <FaArrowLeft />
+              Back
+            </Button>
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-2 gap-5 justify-center  border-l border-r border-b p-2">
+          <div className="">
+            {/* username */}
             <Typography
               variant="h4"
               sx={{
@@ -201,12 +185,13 @@ const handleSubmit=async(e)=>{
               placeholder="Enter Email"
               name="name"
               type="text"
-                            value={formData.name}
+              value={formData.name}
               onChange={handleInputChange}
               fullWidth
               required
               sx={{ marginBottom: "7px", backgroundColor: "white" }}
             />
+            {/* UniqueId */}
             <Typography
               variant="h4"
               sx={{
@@ -219,31 +204,35 @@ const handleSubmit=async(e)=>{
               Unique Id <span className="text-red-600">*</span>
             </Typography>
             <TextField
-              placeholder="Enter Email"
-              name="email"
+              placeholder={userId}
+              name="userId"
               type="text"
-              value={formData.email}
-              onChange={handleInputChange}
+              value={formData.userId}
+              // onChange={(e)=>setFormData({...formData,userId:e.target.value})}
               fullWidth
               required
               sx={{ marginBottom: "7px", backgroundColor: "white" }}
             />
+
+            {/* ---------------------------------------------------------------------------------- */}
+            {/* Password Field */}
             <Typography
               variant="h4"
               sx={{
                 marginBottom: "5px",
                 fontWeight: "500px",
-                color: "",
                 fontSize: "18px",
               }}
             >
-              Password<span className="text-red-600">*</span>
+              Password <span className="text-red-600">*</span>
             </Typography>
+
             <TextField
               type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={formData.password}
               onChange={handleInputChange}
+              name="password"
               fullWidth
               required
               sx={{ marginBottom: "7px", backgroundColor: "white" }}
@@ -287,20 +276,12 @@ const handleSubmit=async(e)=>{
                   lineColor="#3f51b5"
                   activePointColor="#3f51b5"
                   allowRepeat={false}
-                  onFinish={handleSubmit }
+                  onFinish={handlePatternFinish}
                 />
               </div>
             </Box>
-
-            {/* <div className="justify-center items-center flex">
-            <Button type="submit" variant="contained" color="primary">
-              Login
-            </Button>
-          </div> */}
-          
-        </div>
-        <div className="">
-         
+          </div>
+          <div className="">
             <Typography
               variant="h4"
               sx={{
@@ -314,29 +295,43 @@ const handleSubmit=async(e)=>{
               Email <span className="text-red-600">*</span>
             </Typography>
             <TextField
-              placeholder="Enter Email"
+              type="email" // Ensures proper email input
+              placeholder="Email"
               value={formData.email}
               onChange={handleInputChange}
+              name="email"
               fullWidth
               required
               sx={{ marginBottom: "7px", backgroundColor: "white" }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton edge="end">
+                      <EmailIcon /> 
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
+
+            {/* Confirm Password Field */}
             <Typography
               variant="h4"
               sx={{
                 marginBottom: "5px",
                 fontWeight: "500px",
-                color: "",
                 fontSize: "18px",
               }}
             >
               Confirm Password <span className="text-red-600">*</span>
             </Typography>
+
             <TextField
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
+              type={showPassword1 ? "text" : "password"}
+              placeholder="Confirm Password"
               value={formData.confirmPassword}
               onChange={handleInputChange}
+              name="confirmPassword"
               fullWidth
               required
               sx={{ marginBottom: "7px", backgroundColor: "white" }}
@@ -344,7 +339,7 @@ const handleSubmit=async(e)=>{
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton onClick={handleTogglePassword1} edge="end">
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                      {showPassword1 ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
                 ),
@@ -380,301 +375,374 @@ const handleSubmit=async(e)=>{
                   lineColor="#3f51b5"
                   activePointColor="#3f51b5"
                   allowRepeat={false}
-                  onFinish={handleSubmit1}
+                  onFinish={handleConfirmPatternFinish}
                 />
               </div>
             </Box>
-         
+          </div>
         </div>
+
+        <div className="mt-5 ">
+          <h2 className="text-blue-800 text-[20px] font-bold">Permission</h2>
+
+          <div className="grid grid-cols-3 p-4 mt-2  border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+
+                font: "bold",
+                fontSize: "18px",
+                color: "#2563EB",
+              }}
+            >
+              User Details
+            </Typography>
+            <div className="flex gap-10">
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} /> Read
+              </span>
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} /> Write
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 p-4  border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+
+                font: "bold",
+                fontSize: "18px",
+                color: "#2563EB",
+              }}
+            >
+              Assets Management
+            </Typography>
+            <div className="flex gap-10">
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} />
+                Read
+              </span>
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} />
+                Write
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 p-4  border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+
+                font: "bold",
+                fontSize: "18px",
+                color: "#2563EB",
+              }}
+            >
+              Order History Management
+            </Typography>
+            <div className="flex gap-10">
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} />
+                Read
+              </span>
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} />
+                Write
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 p-4 border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+
+                font: "bold",
+                fontSize: "18px",
+                color: "#2563EB",
+              }}
+            >
+              Ticket Management
+            </Typography>
+            <div className="flex gap-10">
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} />
+                Read
+              </span>
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} />
+                Write
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 p-4 mt-2 mb-2 border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+
+                font: "bold",
+                fontSize: "18px",
+                color: "#2563EB",
+              }}
+            >
+              Block Management
+            </Typography>
+            <div className="flex gap-10">
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} />
+                Read
+              </span>
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} />
+                Write
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 p-4  border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+
+                font: "bold",
+                fontSize: "18px",
+                color: "#2563EB",
+              }}
+            >
+              Category Management
+            </Typography>
+            <div className="flex gap-10">
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} />
+                Read
+              </span>
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} />
+                Write
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 p-4 border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+
+                font: "bold",
+                fontSize: "18px",
+                color: "#2563EB",
+              }}
+            >
+              Email Template Management
+            </Typography>
+            <div className="flex gap-10">
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} />
+                Read
+              </span>
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} />
+                Write
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 p-4  border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+
+                font: "bold",
+                fontSize: "18px",
+                color: "#2563EB",
+              }}
+            >
+              Markets
+            </Typography>
+            <div className="flex gap-10">
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} />
+                Read
+              </span>
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} />
+                Write
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 p-4  border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+
+                font: "bold",
+                fontSize: "18px",
+                color: "#2563EB",
+              }}
+            >
+              Site Settings
+            </Typography>
+            <div className="flex gap-10">
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} />
+                Read
+              </span>
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} />
+                Write
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 p-4  border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+
+                font: "bold",
+                fontSize: "18px",
+                color: "#2563EB",
+              }}
+            >
+              Admin Banks Management
+            </Typography>
+            <div className="flex gap-10">
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} />
+                Read
+              </span>
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} />
+                Write
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 p-4  border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+
+                font: "bold",
+                fontSize: "18px",
+                color: "#2563EB",
+              }}
+            >
+              Career Management
+            </Typography>
+            <div className="flex gap-10">
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} />
+                Read
+              </span>
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} />
+                Write
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 p-4  border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+
+                font: "bold",
+                fontSize: "18px",
+                color: "#2563EB",
+              }}
+            >
+              P2P Order Management
+            </Typography>
+            <div className="flex gap-10">
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} />
+                Read
+              </span>
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} />
+                Write
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 p-4  border">
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "5px",
+                marginTop: "5px",
+                fontWeight: "500px",
+
+                font: "bold",
+                fontSize: "18px",
+                color: "#2563EB",
+              }}
+            >
+              P2P Payment
+            </Typography>
+            <div className="flex gap-10">
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} preventDefault />
+                Read
+              </span>
+              <span>
+                <CheckBox sx={{ backgroundColor: "white" }} />
+                Write
+              </span>
+            </div>
+          </div>
+        </div>
+        <div className="gap-6 flex m-3">
+          <button className="p-2 rounded bg-blue-400" onClick={handleSubmit}>
+            Submit
+          </button>
+          <button className="p-2 rounded bg-red-600">Cancel</button>
+        </div>
+
+        <ToastContainer />
       </div>
-
-
-      <div className="mt-5 ">
-        <h2 className="text-blue-800 text-[20px] font-bold">Permission</h2>
-      
-        <div className="grid grid-cols-3 p-4 mt-2  border">
-            <Typography
-              variant="h4"
-              sx={{
-                marginBottom: "5px",
-                marginTop: "5px",
-                fontWeight: "500px",
-                
-                font:"bold",
-                fontSize: "18px",
-                color:"#2563EB"
-              }}
-            >
-             User Details
-            </Typography>
-            <div className="flex gap-10">
-            <span><CheckBox sx={{backgroundColor:"white"}}/> Read</span>
-            <span><CheckBox sx={{backgroundColor:"white"}}/> Write</span>
-            </div>
-            </div>
-
-            <div className="grid grid-cols-3 p-4  border">
-            <Typography
-              variant="h4"
-              sx={{
-                marginBottom: "5px",
-                marginTop: "5px",
-                fontWeight: "500px",
-                
-                font:"bold",
-                fontSize: "18px",
-                color:"#2563EB"
-              }}
-            >
-            Assets Management
-            </Typography>
-            <div className="flex gap-10">
-            <span><CheckBox sx={{backgroundColor:"white"}}/>Read</span>
-            <span><CheckBox sx={{backgroundColor:"white"}}/>Write</span>
-            </div>
-            </div>
-
-            <div className="grid grid-cols-3 p-4  border">
-            <Typography
-              variant="h4"
-              sx={{
-                marginBottom: "5px",
-                marginTop: "5px",
-                fontWeight: "500px",
-                
-                font:"bold",
-                fontSize: "18px",
-                color:"#2563EB"
-              }}
-            >
-            Order History Management
-            </Typography>
-            <div className="flex gap-10">
-            <span><CheckBox sx={{backgroundColor:"white"}}/>Read</span>
-            <span><CheckBox sx={{backgroundColor:"white"}}/>Write</span>
-            </div>
-            </div>
-
-
-            <div className="grid grid-cols-3 p-4 border">
-            <Typography
-              variant="h4"
-              sx={{
-                marginBottom: "5px",
-                marginTop: "5px",
-                fontWeight: "500px",
-                
-                font:"bold",
-                fontSize: "18px",
-                color:"#2563EB"
-              }}
-            >
-            Ticket Management
-            </Typography>
-            <div className="flex gap-10">
-            <span><CheckBox sx={{backgroundColor:"white"}}/>Read</span>
-            <span><CheckBox sx={{backgroundColor:"white"}}/>Write</span>
-            </div>
-            </div>
-
-            <div className="grid grid-cols-3 p-4 mt-2 mb-2 border">
-            <Typography
-              variant="h4"
-              sx={{
-                marginBottom: "5px",
-                marginTop: "5px",
-                fontWeight: "500px",
-                
-                font:"bold",
-                fontSize: "18px",
-                color:"#2563EB"
-              }}
-            >
-            Block Management
-            </Typography>
-            <div className="flex gap-10">
-            <span><CheckBox sx={{backgroundColor:"white"}}/>Read</span>
-            <span><CheckBox sx={{backgroundColor:"white"}}/>Write</span>
-            </div>
-            </div>
-
-            <div className="grid grid-cols-3 p-4  border">
-            <Typography
-              variant="h4"
-              sx={{
-                marginBottom: "5px",
-                marginTop: "5px",
-                fontWeight: "500px",
-                
-                font:"bold",
-                fontSize: "18px",
-                color:"#2563EB"
-              }}
-            >
-            Category Management
-            </Typography>
-            <div className="flex gap-10">
-            <span><CheckBox sx={{backgroundColor:"white"}}/>Read</span>
-            <span><CheckBox sx={{backgroundColor:"white"}}/>Write</span>
-            </div>
-            </div>
-
-            <div className="grid grid-cols-3 p-4 border">
-            <Typography
-              variant="h4"
-              sx={{
-                marginBottom: "5px",
-                marginTop: "5px",
-                fontWeight: "500px",
-                
-                font:"bold",
-                fontSize: "18px",
-                color:"#2563EB"
-              }}
-            >
-            Email Template Management
-            </Typography>
-            <div className="flex gap-10">
-            <span><CheckBox sx={{backgroundColor:"white"}}/>Read</span>
-            <span><CheckBox sx={{backgroundColor:"white"}}/>Write</span>
-            </div>
-            </div>
-
-            <div className="grid grid-cols-3 p-4  border">
-            <Typography
-              variant="h4"
-              sx={{
-                marginBottom: "5px",
-                marginTop: "5px",
-                fontWeight: "500px",
-                
-                font:"bold",
-                fontSize: "18px",
-                color:"#2563EB"
-              }}
-            >
-           Markets
-            </Typography>
-            <div className="flex gap-10">
-            <span><CheckBox sx={{backgroundColor:"white"}}/>Read</span>
-            <span><CheckBox sx={{backgroundColor:"white"}}/>Write</span>
-            </div>
-            </div>
-
-            <div className="grid grid-cols-3 p-4  border">
-            <Typography
-              variant="h4"
-              sx={{
-                marginBottom: "5px",
-                marginTop: "5px",
-                fontWeight: "500px",
-                
-                font:"bold",
-                fontSize: "18px",
-                color:"#2563EB"
-              }}
-            >
-            Site Settings
-            </Typography>
-            <div className="flex gap-10">
-            <span><CheckBox sx={{backgroundColor:"white"}}/>Read</span>
-            <span><CheckBox sx={{backgroundColor:"white"}}/>Write</span>
-            </div>
-            </div>
-
-            <div className="grid grid-cols-3 p-4  border">
-            <Typography
-              variant="h4"
-              sx={{
-                marginBottom: "5px",
-                marginTop: "5px",
-                fontWeight: "500px",
-                
-                font:"bold",
-                fontSize: "18px",
-                color:"#2563EB"
-              }}
-            >
-            Admin Banks Management
-            </Typography>
-            <div className="flex gap-10">
-            <span><CheckBox sx={{backgroundColor:"white"}}/>Read</span>
-            <span><CheckBox sx={{backgroundColor:"white"}}/>Write</span>
-            </div>
-            </div>
-
-            <div className="grid grid-cols-3 p-4  border">
-            <Typography
-              variant="h4"
-              sx={{
-                marginBottom: "5px",
-                marginTop: "5px",
-                fontWeight: "500px",
-                
-                font:"bold",
-                fontSize: "18px",
-                color:"#2563EB"
-              }}
-            >
-            Career Management
-            </Typography>
-            <div className="flex gap-10">
-            <span><CheckBox sx={{backgroundColor:"white"}}/>Read</span>
-            <span><CheckBox sx={{backgroundColor:"white"}}/>Write</span>
-            </div>
-            </div>
-
-            <div className="grid grid-cols-3 p-4  border">
-            <Typography
-              variant="h4"
-              sx={{
-                marginBottom: "5px",
-                marginTop: "5px",
-                fontWeight: "500px",
-                
-                font:"bold",
-                fontSize: "18px",
-                color:"#2563EB"
-              }}
-            >
-            P2P Order Management
-            </Typography>
-            <div className="flex gap-10">
-            <span><CheckBox sx={{backgroundColor:"white"}}/>Read</span>
-            <span><CheckBox sx={{backgroundColor:"white"}}/>Write</span>
-            </div>
-            </div>
-
-            <div className="grid grid-cols-3 p-4  border">
-            <Typography
-              variant="h4"
-              sx={{
-                marginBottom: "5px",
-                marginTop: "5px",
-                fontWeight: "500px",
-                
-                font:"bold",
-                fontSize: "18px",
-                color:"#2563EB"
-              }}
-            >
-            P2P Payment
-            </Typography>
-            <div className="flex gap-10">
-            <span><CheckBox sx={{backgroundColor:"white"}} preventDefault/>Read</span>
-            <span><CheckBox sx={{backgroundColor:"white"}}/>Write</span>
-            </div>
-            </div>
-      
-      </div>
-      <div className="gap-6 flex m-3">
-        <button className="p-2 rounded bg-blue-400" onClick={handleOverallSubmit}>Submit</button>
-        <button className="p-2 rounded bg-red-600">Cancel</button>
-        
-      </div>
-
-      <ToastContainer/>
-    </div>
     </form>
   );
 };

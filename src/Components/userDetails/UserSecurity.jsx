@@ -19,18 +19,21 @@ function UserSecurity({ userData, kycData }) {
           {userData1?.bank_info && userData1.bank_info.length > 0 ? (
             userData1.bank_info.map((BankInfo, i) => (
               <ul key={i || BankInfo.id}>
-                <li className="gap-2">
-                  <span className="bg-slate-50 p-2 border-2 border-gray-50">
-                    Account Holder Name
-                  </span>
-                  <p
-                    type="text"
-                    className="p-2 border-2 border-slate-300 mt-2 mb-2 bg-slate-200 rounded w-[500px]"
-                  >
-                    {BankInfo.holder || "Not provided"}
-                  </p>
+                
+                <li className="flex-col flex-wrap justify-between py-4 items-center">
+                  <div className="w-full md:w-1/2 flex justify-start mb-2">
+                    <span className="font-semibold text-gray-800">
+                      Account Holder Name
+                    </span>
+                  </div>
+                  <div className="w-full  flex justify-start">
+                    <span className="p-3 border border-gray-300 bg-gray-100 rounded-lg w-full ">
+                      {BankInfo.holder || "Not provided"}
+                    </span>
+                  </div>
                 </li>
-                <li className="gap-2">
+
+                {/* <li className="gap-2">
                   <span className="bg-slate-50 p-2 border-2 border-gray-50">
                     Bank Name
                   </span>
@@ -38,10 +41,22 @@ function UserSecurity({ userData, kycData }) {
                     type="text"
                     className="p-2 border-2 border-slate-300 mt-2 mb-2 rounded bg-slate-200 w-[500px]"
                   >
-                    {BankInfo.bankname || "N/A"}
+                    {BankInfo.bankname || "Not provided"}
                   </p>
+                </li> */}
+                <li className="flex-col flex-wrap justify-between py-4 items-center ">
+                  <div className="w-full md:w-1/2 flex justify-start mb-2">
+                    <span className="font-semibold text-gray-800">
+                      Bank Name
+                    </span>
+                  </div>
+                  <div className="w-full md:w-full flex justify-start">
+                    <span className="p-3 border border-gray-300 bg-gray-100 rounded-lg w-full ">
+                      {BankInfo.bankname || "Not provided"}
+                    </span>
+                  </div>
                 </li>
-                <li className="gap-2">
+                {/* <li className="gap-2">
                   <span className="bg-slate-50 p-2 border-2 border-gray-50">
                     Branch
                   </span>
@@ -51,8 +66,19 @@ function UserSecurity({ userData, kycData }) {
                   >
                     {BankInfo.branch || "N/A"}
                   </p>
+                </li> */}
+
+                <li className="flex-col flex-wrap justify-between py-4 items-center ">
+                  <div className="w-full md:w-1/2 flex justify-start mb-2">
+                    <span className="font-semibold text-gray-800">Branch</span>
+                  </div>
+                  <div className="w-full md:w-full flex justify-start">
+                    <span className="p-3 border border-gray-300 bg-gray-100 rounded-lg w-full">
+                      {BankInfo.branch || "Not provided"}
+                    </span>
+                  </div>
                 </li>
-                <li className="gap-2">
+                {/* <li className="gap-2">
                   <span className="bg-slate-50 p-2 border-2 border-gray-50">
                     IFSC Code
                   </span>
@@ -62,8 +88,22 @@ function UserSecurity({ userData, kycData }) {
                   >
                     {BankInfo.ibancode || "N/A"}
                   </p>
+                </li> */}
+
+                <li className="flex-col flex-wrap justify-between py-4 items-center">
+                  <div className="w-full md:w-1/2 flex justify-start mb-2">
+                    <span className="font-semibold text-gray-800">
+                      IFSC Code
+                    </span>
+                  </div>
+                  <div className="w-full md:w-full flex justify-start">
+                    <span className="p-3 border border-gray-300 bg-gray-100 rounded-lg w-full">
+                      {BankInfo.ibancode || "Not provided"}
+                    </span>
+                  </div>
                 </li>
-                <li className="gap-2">
+
+                {/* <li className="gap-2">
                   <span className="bg-slate-50 p-2 border-2 border-gray-50">
                     Account Type
                   </span>
@@ -73,33 +113,48 @@ function UserSecurity({ userData, kycData }) {
                   >
                     {BankInfo.account_type || "N/A"}
                   </p>
+                </li> */}
+                <li className="flex-col flex-wrap justify-between py-4 items-center ">
+                  <div className="w-full md:w-1/2 flex justify-start mb-2">
+                    <span className="font-semibold text-gray-800">
+                      Account Type
+                    </span>
+                  </div>
+                  <div className="w-full md:w-full flex justify-start">
+                    <span className="p-3 border border-gray-300 bg-gray-100 rounded-lg w-full">
+                      {BankInfo.account_type || "Not provided"}
+                    </span>
+                  </div>
                 </li>
-                <li className="gap-2">
-                  <span className="bg-slate-50 p-2 border-2 border-gray-50">
-                    UPI Id
-                  </span>
-                  <p
-                    type="text"
-                    className="p-2 border-2 rounded border-slate-300 mt-2 mb-2 bg-slate-200 w-[500px]"
-                  >
-                    {BankInfo.Upi_id || "N/A"}
-                  </p>
+
+                <li className="flex-col flex-wrap justify-between py-4 items-center">
+                  <div className="w-full md:w-1/2 flex justify-start mb-2">
+                    <span className="font-semibold text-gray-800">UPI Id</span>
+                  </div>
+                  <div className="w-full md:w-full flex justify-start">
+                    <span className="p-3 border border-gray-300 bg-gray-100 rounded-lg w-full">
+                      {BankInfo.Upi_id || "Not provided"}
+                    </span>
+                  </div>
                 </li>
               </ul>
             ))
           ) : (
-            <div className="flex justify-center items-center h-full text-center">
+            <div className="flex justify-center  items-center items-center h-full text-center">
               <p>No Bank Details Available</p>
             </div>
           )}
         </div>
         <div className="md:w-1/2 w-full bg-slate-50 text-[16px] p-5">
           <ul className="mb-4 mt-4 border-b border-gray-200 pb-4">
-            <li className="flex items-center justify-between gap-4 mb-4">
-              <span className="bg-slate-50 text-lg px-3 py-2 rounded-md">
-                Account is Activated/ Tab to block account
-              </span>
-              <div className="flex justify-center items-center w-1/3">
+           
+            <li className="flex flex-wrap justify-between py-4 items-center">
+              <div className="w-full md:w-1/2 flex justify-start mb-2">
+                <span className="font-semibold text-gray-800">
+                  Account is Activated/ Tab to block account
+                </span>
+              </div>
+              <div className="xs:w-1/2 w-1/2 justify-center flex">
                 <label className="switch">
                   <input
                     checked={isActive}
@@ -111,11 +166,14 @@ function UserSecurity({ userData, kycData }) {
               </div>
             </li>
 
-            <li className="flex items-center justify-between gap-4 mb-4">
-              <span className="bg-slate-50 text-lg px-3 py-2 rounded-md">
-                TFA
-              </span>
-              <div className="flex justify-center items-center w-1/3">
+            
+
+            <li className="flex flex-wrap justify-between py-4 items-center">
+              <div className="w-full md:w-1/2 flex justify-start mb-2">
+                <span className="font-semibold text-gray-800">TFA</span>
+              </div>
+             
+              <div className="xs:w-1/2 w-1/2 justify-center flex">
                 <label className="switch">
                   <input
                     checked={tfaVerified}
@@ -141,11 +199,12 @@ function UserSecurity({ userData, kycData }) {
                     </span>
                   </li> */}
 
-            <li className="flex items-center justify-between gap-4 mb-4">
-              <span className="bg-slate-50 text-lg px-3 py-2 rounded-md">
-                KYC
-              </span>
-              <div className="flex justify-center items-center w-1/3">
+           
+             <li className="flex flex-wrap justify-between py-4 items-center border-b border-gray-200">
+              <div className="w-full md:w-1/2 flex justify-start mb-2">
+                <span className="font-semibold text-gray-800">KYC</span>
+              </div>
+              <div className="xs:w-1/2 w-1/2 justify-center flex">
                 <label className="switch">
                   <input
                     checked={kycVerified}
@@ -158,12 +217,12 @@ function UserSecurity({ userData, kycData }) {
               </div>
             </li>
 
-            <li className="flex items-center justify-between gap-4 mb-4">
-              <span className="bg-slate-50 text-lg px-3 py-2 rounded-md">
-                {" "}
-                Funds Passcode is enabled
-              </span>
-              <div className="flex justify-center items-center w-1/3">
+          
+             <li className="flex flex-wrap justify-between py-4 items-center border-b border-gray-200">
+              <div className="w-full md:w-1/2 flex justify-start mb-2">
+                <span className="font-semibold text-gray-800">Funds Passcode is enabled</span>
+              </div>
+              <div className="xs:w-1/2 w-1/2 justify-center flex">
                 <label className="switch">
                   <input
                     checked={passcodeStatus}
@@ -180,14 +239,20 @@ function UserSecurity({ userData, kycData }) {
               userData1.bank_info.map((BankInfo, i) => (
                 <ul
                   key={i || BankInfo.id}
-                  className="mb-4 mt-4 px-3 border-b border-gray-200 pb-4"
+                  className="mb-4 mt-4 px-3 pb-4"
                 >
-                  <li className="flex  items-center justify-between gap-4">
-                    <span className="bg-slate-50 text-lg py-2 rounded-md">
-                      Bank Proof
-                    </span>
+                  
+                     <li className="flex justify-between py-3 items-center border-b border-gray-100">
+              <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span className="font-semibold text-gray-700">
+                 Bank Proof
+                </span></div>
+                {/* <div className="xs:w-1/2 w-1/2 justify-start flex">
+                <span> {kycData.proofVerifiedBy || ""} </span></div>
+              </li> 
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4">*/}
+                    <div className="xs:w-1/2 w-1/2 justify-center flex">
                       {BankInfo.verifystatus === 2 && BankInfo.proof ? (
                         <>
                           <img

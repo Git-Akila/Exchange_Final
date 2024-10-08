@@ -6,25 +6,21 @@ import {
   TableContainer,
   TableHead,
   TableRow,
- 
   Paper,
-  
 } from "@mui/material";
 import { IoMdCloudDownload } from "react-icons/io";
-import * as XLSX from 'xlsx';
+import * as XLSX from "xlsx";
 //npm install xlsx
 
-const ExportHistory= ({ userData }) => {
-  const data1 = userData ||  {};
+const ExportHistory = ({ userData }) => {
+  const data1 = userData || {};
   const data = data1?.export || [];
   console.log("Ariiaaa" + JSON.stringify(userData));
-  
 
   const handleExport = () => {
-    if(data.length === 0){
-        console.log("No Data Available to Export");
-        return;
-
+    if (data.length === 0) {
+      console.log("No Data Available to Export");
+      return;
     }
 
     const worksheet = XLSX.utils.json_to_sheet(data); // Converts JSON data to Excel sheet format
@@ -35,15 +31,16 @@ const ExportHistory= ({ userData }) => {
   return (
     <div className="mx-auto bg-white container w-full h-full">
       <div className=" bg-slate-50 rounded text-center  items-center p-5 justify-center">
-       {/* Export Button */}
-       <div className="justify-end flex">
-       <button 
-        onClick={handleExport} 
-        className="flex gap-2 text-[18px] bg-white rounded-lg p-2 border-2 mb-3 justify-end items-end"
-      >
-        Export
-        <IoMdCloudDownload />
-      </button></div>
+        {/* Export Button */}
+        <div className="justify-end  flex">
+          <button
+            onClick={handleExport}
+            className="flex gap-2 text-[18px] font-semibold bg-white rounded-lg p-2 border-2 border-gray-300 shadow-sm hover:bg-gray-100 hover:shadow-md transition-all duration-300 mb-3 justify-center items-center"
+          >
+            Export
+            <IoMdCloudDownload className="text-[22px]" />
+          </button>
+        </div>
         <Paper sx={{ width: "100%", overflow: "hidden", padding: "20px" }}>
           {/* Table */}
           <TableContainer>
@@ -64,7 +61,7 @@ const ExportHistory= ({ userData }) => {
                     align="center"
                     sx={{ fontSize: "17px", fontWeight: "bold" }}
                   >
-                   Email
+                    Email
                   </TableCell>
                   <TableCell
                     align="center"
@@ -106,22 +103,24 @@ const ExportHistory= ({ userData }) => {
               </TableHead>
               <TableBody>
                 {data.map((row) => (
-                    <TableRow key={row.id}>
-                      <TableCell align="center">{row.Name || ''}</TableCell>
-                      <TableCell align="center">{row.email || ''}</TableCell>
-                      <TableCell align="center">{row.dateofbirth || ''}</TableCell>
-                      <TableCell align="center">{row.Age || ''}</TableCell>
-                      <TableCell align="center">{row.Gender || ''}</TableCell>
-                      <TableCell align="center">{row.Phonenumber || ''}</TableCell>
-                      <TableCell align="center">{row.Address || ''}</TableCell>
-                      <TableCell align="center">{row.City || ''}</TableCell>
-                    </TableRow>
-                  ))}
+                  <TableRow key={row.id}>
+                    <TableCell align="center">{row.Name || ""}</TableCell>
+                    <TableCell align="center">{row.email || ""}</TableCell>
+                    <TableCell align="center">
+                      {row.dateofbirth || ""}
+                    </TableCell>
+                    <TableCell align="center">{row.Age || ""}</TableCell>
+                    <TableCell align="center">{row.Gender || ""}</TableCell>
+                    <TableCell align="center">
+                      {row.Phonenumber || ""}
+                    </TableCell>
+                    <TableCell align="center">{row.Address || ""}</TableCell>
+                    <TableCell align="center">{row.City || ""}</TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </TableContainer>
-
-         
         </Paper>
       </div>
     </div>

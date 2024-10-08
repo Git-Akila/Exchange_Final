@@ -2,7 +2,8 @@ import React from "react";
 import Login from "../src/Pages/Login/Login";
 import Dashboard from "../src/Pages/Dashboard";
 import KycUserDetails from "../src/Components/KycUserDetails";
-import SubAdmin from "./Components/SubAdmin.jsx/SubAdmin";
+//import SubAdmin from "./Components/SubAdmin.jsx/SubAdmin";
+import SubLoginPage from "../src/Components/SubAdmin.jsx/subAdmin1";
 // import ProtectedRoute from "./ProtectedRoute";
 import PrivateRoute from "./ProtectedRoute";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -38,7 +39,7 @@ function Navigation() {
               path="/subadmin"
               element={
                 <PrivateRoute>
-                  <SubAdmin />
+                  <SubLoginPage />
                 </PrivateRoute>
               }
             />
