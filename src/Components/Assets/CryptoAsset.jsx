@@ -224,7 +224,7 @@ function CryptoAsset({ cryptoAssetData }) {
                               />
                             </div>
                             <div className="justify-center items-center flex">
-                              <button className="bg-blue-700 font-bold p-2 rounded">
+                              <button className="bg-blue-700 text-white font-bold p-2 rounded">
                                 Confirm Withdrawal
                               </button>
                             </div>

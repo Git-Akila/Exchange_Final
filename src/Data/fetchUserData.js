@@ -28,23 +28,24 @@ const token = localStorage.getItem("token");
 //   }
 // });
 
-export const fetchUser=createAsyncThunk("fetchUser",async()=>{
-  const res=await fetch("https://demoback.kairaaexchange.com/api/v1/user/list",
+export const fetchUser = createAsyncThunk("fetchUser", async () => {
+  const res = await fetch(
+    "https://demoback.kairaaexchange.com/api/v1/user/list",
     {
-      method:"POST",
-      headers:{
-        Authorization:`${token}`,
-        "Content-Type":"application/json",
-        Tag:"admin",
+      method: "POST",
+      headers: {
+        Authorization: `${token}`,
+        "Content-Type": "application/json",
+        Tag: "admin",
       },
     }
   );
-  if(!res.ok){
+  if (!res.ok) {
     throw new Error("Failed to fetch user data");
   }
-  const data=await res.json();
+  const data = await res.json();
   return data;
-})
+});
 //-----------------------------------------LoginUser--------------------------------------------------------------------------------
 export const loginUser = createAsyncThunk(
   "loginUser",
@@ -95,208 +96,292 @@ export const loginUser = createAsyncThunk(
   }
 );
 //__________________________________________________SubAdmin__________________________________
-export const subAdmin = createAsyncThunk(
-  "subAdmin",
-  async ({
-    username,
-    email,
-    password,
-    confirm_password,
-    pattern,
-    confirm_pattern,
-  }) => {
-    try {
-      let data = JSON.stringify({
-        permission: [
-          {
-            module: "user_details",
-            module_name: "User Details",
-            read: true,
-            write: true,
-            submodule: [
-              {
-                submodule: "personal_info",
-                submodule_name: "Personal Info",
-                read: false,
-                write: false,
-              },
-              {
-                submodule: "security",
-                submodule_name: "Security",
-                read: false,
-                write: false,
-              },
-              {
-                submodule: "assets",
-                submodule_name: "Assets",
-                read: false,
-                write: false,
-              },
-              {
-                submodule: "asset_history",
-                submodule_name: "Asset History",
-                read: false,
-                write: false,
-              },
-              {
-                submodule: "open_orders",
-                submodule_name: "Open Orders",
-                read: false,
-                write: false,
-              },
-              {
-                submodule: "orders_history",
-                submodule_name: "Orders History",
-                read: false,
-                write: false,
-              },
-              {
-                submodule: "user_activity",
-                submodule_name: "User Activity",
-                read: false,
-                write: false,
-              },
-              {
-                submodule: "referral",
-                submodule_name: "Referral",
-                read: false,
-                write: false,
-              },
-              {
-                submodule: "tickets",
-                submodule_name: "Tickets",
-                read: false,
-                write: false,
-              },
-              {
-                submodule: "airdrop",
-                submodule_name: "Airdrop",
-                read: false,
-                write: false,
-              },
-              {
-                submodule: "p2p_wallet",
-                submodule_name: "P2P Wallet",
-                read: false,
-                write: false,
-              },
-              {
-                submodule: "swap_history",
-                submodule_name: "Swap History",
-                read: false,
-                write: false,
-              },
-            ],
-          },
-          {
-            module: "assets_management",
-            module_name: "Assets Management",
-            read: true,
-            write: true,
-          },
-          {
-            module: "assets_transactions",
-            module_name: "Assets Transactions",
-            read: false,
-            write: false,
-          },
-          {
-            module: "order_history_management",
-            module_name: "Order History Management",
-            read: false,
-            write: false,
-          },
-          {
-            module: "tickets_management",
-            module_name: "Tickets Management",
-            read: false,
-            write: false,
-          },
-          {
-            module: "block_management",
-            module_name: "Block Management",
-            read: false,
-            write: false,
-          },
-          {
-            module: "category_management",
-            module_name: "Category Management",
-            read: false,
-            write: false,
-          },
-          {
-            module: "email_template_management",
-            module_name: "Email Template Management",
-            read: false,
-            write: false,
-          },
-          {
-            module: "markets",
-            module_name: "Markets",
-            read: false,
-            write: false,
-          },
-          {
-            module: "site_settings",
-            module_name: "Site Settings",
-            read: false,
-            write: false,
-          },
-          {
-            module: "admin_banks",
-            module_name: "Admin Banks",
-            read: false,
-            write: false,
-          },
-          {
-            module: "career_mgmt",
-            module_name: " career_mgmt",
-            read: false,
-            write: false,
-          },
-          {
-            module: "p2porder_management",
-            module_name: "P2P Order Management",
-            read: false,
-            write: false,
-          },
-          {
-            module: "p2p_payments",
-            module_name: "P2P Payment",
-            read: false,
-            write: false,
-          },
-        ],
-        password: password,
-        email: email,
-        username: username,
-        confirm_password: confirm_password,
-        pattern: pattern,
-        confirm_pattern: confirm_pattern,
-      });
+// export const subAdmin = createAsyncThunk("subAdmin",  async () => {
+//     console.log("sdasdafdsafsa");
 
-      let config = {
-        method: "post",
-        maxBodyLength: Infinity,
-        url: "https://demoback.kairaaexchange.com/api/v1/subadmin/add-new",
-        headers: {
-          Authorization:
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcHRpb24iOiJhZG1pbl9sb2dpbiIsImlkIjoiNjM0YTllODRjMzlhYzJlZWZhN2ZkNTY1Iiwic3RhdHVzIjp0cnVlLCJpYXQiOjE3MjgwMzU0MzksImV4cCI6MTcyODA0MjYzOX0.QOirbnTHm90m5rMbrCBPraHeozgV7t3nxfecWFO7REo",
-          "Content-Type": "application/json",
-          Tag: "admin",
-        },
-        data: data,
-      };
+//     try {
+//       console.log("mydata,asdfas");
+// // Preparing data for request
+//       let data = JSON.stringify({
+//         permission: [
+//           {
+//             module: "user_details",
+//             module_name: "User Details",
+//             read: true,
+//             write: true,
+//             submodule: [
+//               {
+//                 submodule: "personal_info",
+//                 submodule_name: "Personal Info",
+//                 read: false,
+//                 write: false,
+//               },
+//               {
+//                 submodule: "security",
+//                 submodule_name: "Security",
+//                 read: false,
+//                 write: false,
+//               },
+//               {
+//                 submodule: "assets",
+//                 submodule_name: "Assets",
+//                 read: false,
+//                 write: false,
+//               },
+//               {
+//                 submodule: "asset_history",
+//                 submodule_name: "Asset History",
+//                 read: false,
+//                 write: false,
+//               },
+//               {
+//                 submodule: "open_orders",
+//                 submodule_name: "Open Orders",
+//                 read: false,
+//                 write: false,
+//               },
+//               {
+//                 submodule: "orders_history",
+//                 submodule_name: "Orders History",
+//                 read: false,
+//                 write: false,
+//               },
+//               {
+//                 submodule: "user_activity",
+//                 submodule_name: "User Activity",
+//                 read: false,
+//                 write: false,
+//               },
+//               {
+//                 submodule: "referral",
+//                 submodule_name: "Referral",
+//                 read: false,
+//                 write: false,
+//               },
+//               {
+//                 submodule: "tickets",
+//                 submodule_name: "Tickets",
+//                 read: false,
+//                 write: false,
+//               },
+//               {
+//                 submodule: "airdrop",
+//                 submodule_name: "Airdrop",
+//                 read: false,
+//                 write: false,
+//               },
+//               {
+//                 submodule: "p2p_wallet",
+//                 submodule_name: "P2P Wallet",
+//                 read: false,
+//                 write: false,
+//               },
+//               {
+//                 submodule: "swap_history",
+//                 submodule_name: "Swap History",
+//                 read: false,
+//                 write: false,
+//               },
+//             ],
+//           },
+//           {
+//             module: "assets_management",
+//             module_name: "Assets Management",
+//             read: true,
+//             write: true,
+//           },
+//           {
+//             module: "assets_transactions",
+//             module_name: "Assets Transactions",
+//             read: false,
+//             write: false,
+//           },
+//           {
+//             module: "order_history_management",
+//             module_name: "Order History Management",
+//             read: false,
+//             write: false,
+//           },
+//           {
+//             module: "tickets_management",
+//             module_name: "Tickets Management",
+//             read: false,
+//             write: false,
+//           },
+//           {
+//             module: "block_management",
+//             module_name: "Block Management",
+//             read: false,
+//             write: false,
+//           },
+//           {
+//             module: "category_management",
+//             module_name: "Category Management",
+//             read: false,
+//             write: false,
+//           },
+//           {
+//             module: "email_template_management",
+//             module_name: "Email Template Management",
+//             read: false,
+//             write: false,
+//           },
+//           {
+//             module: "markets",
+//             module_name: "Markets",
+//             read: false,
+//             write: false,
+//           },
+//           {
+//             module: "site_settings",
+//             module_name: "Site Settings",
+//             read: false,
+//             write: false,
+//           },
+//           {
+//             module: "admin_banks",
+//             module_name: "Admin Banks",
+//             read: false,
+//             write: false,
+//           },
+//           {
+//             module: "career_mgmt",
+//             module_name: " career_mgmt",
+//             read: false,
+//             write: false,
+//           },
+//           {
+//             module: "p2porder_management",
+//             module_name: "P2P Order Management",
+//             read: false,
+//             write: false,
+//           },
+//           {
+//             module: "p2p_payments",
+//             module_name: "P2P Payment",
+//             read: false,
+//             write: false,
+//           },
+//         ],
+//         password: "Test@123",
+//         email: "kairaadev@gmail.com",
+//         username: "kairaadev",
+//         confirm_password: "Test@123",
+//         pattern: "321",
+//         confirm_pattern: "321",
+//       });
 
-      const response = await axios.request(config);
-      return response.data;
-    } catch (error) {
-      throw new Error(
-        error.response?.data?.message || "Failed to fetch user data"
-      );
+//       console.log("mydata,asdfas");
+//       let config = {
+//         method: "post",
+//         maxBodyLength: Infinity,
+//         url: "https://demoback.kairaaexchange.com/api/v1/subadmin/add-new",
+//         headers: {
+//           Authorization: `${token}`,
+//           "Content-Type": "application/json",
+//           Tag: "admin",
+//         },
+//         data: data,
+//       };
+//       // Making Request to Api
+//       console.log("sdasdafdsafsa");
+//       const response = await axios.request(config);
+//       console.log("....aDSA" + response.data);
+//       return response.data;
+//     } 
+//     catch (error) {
+//       console.log("sdasdafdsafsa", error);
+//       if (error.response) {
+//         console.log("Error Response Data", error.response.data);
+//         console.log("Error Response Status:" + error.response.status);
+//         console.log("Error Response Headers" + error.response.headers);
+//       } else if (error.request) {
+//         console.log("No Response Received" + error.request);
+//       } else {
+//         console.error("Error" + error.message);
+//       }
+//       throw new Error(
+//         error.response?.data?.message || "Failed to fetch user data"
+//       );
+//     }
+//   }
+// );
+
+
+
+const BASE_URL = "https://demoback.kairaaexchange.com/api/v1/subadmin/add-new";
+
+const subAdminData = {
+  permission: [
+    {
+      module: "user_details",
+      module_name: "User Details",
+      read: true,
+      write: true,
+      submodule: [
+        { submodule: "personal_info", submodule_name: "Personal Info", read: false, write: false },
+        { submodule: "security", submodule_name: "Security", read: false, write: false },
+        { submodule: "assets", submodule_name: "Assets", read: false, write: false },
+        { submodule: "asset_history", submodule_name: "Asset History", read: false, write: false },
+        { submodule: "open_orders", submodule_name: "Open Orders", read: false, write: false },
+        { submodule: "orders_history", submodule_name: "Orders History", read: false, write: false },
+        { submodule: "user_activity", submodule_name: "User Activity", read: false, write: false },
+        { submodule: "referral", submodule_name: "Referral", read: false, write: false },
+        { submodule: "tickets", submodule_name: "Tickets", read: false, write: false },
+        { submodule: "airdrop", submodule_name: "Airdrop", read: false, write: false },
+        { submodule: "p2p_wallet", submodule_name: "P2P Wallet", read: false, write: false },
+        { submodule: "swap_history", submodule_name: "Swap History", read: false, write: false },
+      ],
+    },
+    {
+      module: "assets_management",
+      module_name: "Assets Management",
+      read: true,
+      write: true,
+    },
+    // Additional modules...
+  ],
+  password: "Test@123",
+  email: "kairaadev@gmail.com",
+  username: "kairaadev",
+  confirm_password: "Test@123",
+  pattern: "321",
+  confirm_pattern: "321",
+};
+
+export const subAdmin = createAsyncThunk("subAdmin", async (token) => {
+  console.log("hhhh");
+  try {
+    console.log("PReparing Data")
+    const config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: BASE_URL,
+      headers: {
+        Authorization: `${token}`,
+        "Content-Type": "application/json",
+        Tag: "admin",
+      },
+      data: JSON.stringify(subAdminData),
+    };
+console.log("making Request to Api")
+    const response = await axios.request(config);
+    return response.data;
+  } catch (error) {
+    console.error("Error occurred while creating sub-admin:", error);
+    if (error.response) {
+      console.error("Error Response Data:", error.response.data);
+      console.error("Error Response Status:", error.response.status);
+      console.error("Error Response Headers:", error.response.headers);
+    } else if (error.request) {
+      console.error("No Response Received:", error.request);
+    } else {
+      console.error("Error:", error.message);
     }
+    throw new Error(error.response?.data?.message || "Failed to fetch user data");
   }
-);
+});
+
 
 //-----------------------------------------------kycUserDetails----------------------------------------------------
 export const kycUserDetails = createAsyncThunk(

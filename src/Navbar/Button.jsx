@@ -7,10 +7,10 @@ import { Point } from "highcharts";
 const Button = () => {
   return (
     <>
-    {/* Notifications */}
+      {/* Notifications */}
       {/* <Link to="/login"><button className="bg-blue-700 text-white  px-6 py-2 rounded-full">
   Login
-  </button></Link> */}
+  </button></Link> */}<div className="w-full flex gap-10 justify-center items-center ">
       <div className="flex gap-4  ">
         <MdNotificationsActive
           size={30}
@@ -30,7 +30,13 @@ const Button = () => {
           onMouseOver={(e) => (e.target.style.color = "black")}
           onMouseOut={(e) => (e.target.style.color = ["#FDFDFD"])}
         />
+        
       </div>
+      <div className="flex items-center justify-center">
+         <Link to="/logout"> <button className="p-2 bg-white cursor-pointer border text-lg font-bold rounded-lg">
+            Logout
+          </button></Link>
+        </div></div>
     </>
   );
 };

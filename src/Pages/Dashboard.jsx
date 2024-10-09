@@ -48,7 +48,7 @@ function Dashboard() {
   // console.log("graphdata"+graph1);
   const graph2 = Array.isArray(graphUser?.message) ? graphUser.message : [];
   const user = data?.data || [];
-
+console.log("User"+JSON.stringify(user));
   const users = (data && data.data && data?.data) || [];
   // console.log("users" + JSON.stringify(users));
   const totalUsers = users;
@@ -537,7 +537,7 @@ function Dashboard() {
       </div>
 
       <Chart1 graph={graph1} />
-      <div ref={tableWrapperRef}>
+      <div ref={tableWrapperRef} >
         <DataTable ref={dataTableRef} initialData={users} />
       </div>
     </>

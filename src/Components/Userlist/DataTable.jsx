@@ -84,9 +84,9 @@ const DataTable = forwardRef(({ initialData }, ref) => {
       setCellProps: () => ({ style: { textAlign: "start" } }),
     },
     {
-      name: "emailVerified",
+      name: "isActive",
       label: "Status",
-      options: { customBodyRender: (value) => value || "Not provided" },
+      options: { customBodyRender: (value) => (value?"Active":"Inactive" )|| "Not provided" },
       setCellProps: () => ({ style: {textAlign: "start" } }),
     },
     {
@@ -95,10 +95,11 @@ const DataTable = forwardRef(({ initialData }, ref) => {
       options: {
         customBodyRender: (value, tableMeta) => (
           <StyledButton onClick={() => {/* Add edit functionality here */}}>
-            <FaRegEdit />
+            <FaRegEdit color="black" fontWeight="500px"/>
           </StyledButton>
         ),
       },
+      setCellProps: () => ({ style: {textAlign: "start" } }),
     },
   ];
 
@@ -137,8 +138,9 @@ const DataTable = forwardRef(({ initialData }, ref) => {
               fontSize: "16px !important",
               fontWeight: "700 !important",
               //  backgroundColor: "#007bff", // Header background color
-               backgroundColor:"#f5f5f5",
-              // backgroundColor:"#F8FAFC",
+              //  backgroundColor:"#f5f5f5",
+               backgroundColor:"#F8FAFC",
+              //  backgroundColor:"#BFDBFE",
               // backgroundColor:"#BFDBFE",
               textAlign: "center",
             },
@@ -147,10 +149,12 @@ const DataTable = forwardRef(({ initialData }, ref) => {
               color: "#333",
               fontSize: "14px",
               textAlign: "start",
-              backgroundColor:"#F8FAFC",
+              // backgroundColor:"#F8FAFC",
+              backgroundColor:"white",
               "&:hover": {
                 // backgroundColor: "#f7f7f7", // Hover effect for rows
                 backgroundColor:"#F8FAFC"
+               
               },
             },
           },
@@ -196,8 +200,8 @@ const DataTable = forwardRef(({ initialData }, ref) => {
     });
 
   return (
-    <div className="bg-whitesmoke py-16 min-h-screen grid place-items-center">
-      <HideScrollbarDiv className="w-[95%] max-w-6xl">
+    <div className="bg-whitesmoke w-full  py-16 grid place-items-center">
+      <HideScrollbarDiv className="w-[95%] max-w-6xl ">
         <ThemeProvider theme={getMuiTheme()}>
           <Paper
             elevation={3}

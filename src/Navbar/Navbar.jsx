@@ -22,16 +22,18 @@ const Navbar = () => {
             </Link>
           </li>
          
-          <NavLinks />
+          {/* <NavLinks />                               =========it's the Master Wallet */}
           <li>
             <Link to="/subadmin" className="py-7 px-3 inline-block">
             Subadmin
             </Link>
           </li>
+          
         </ul>
         <div className="md:block hidden">
           <Button />
         </div>
+       
         {/* Mobile nav */}
         <ul
           className={`
@@ -45,7 +47,7 @@ const Navbar = () => {
             </Link>
           </li>
           
-          <NavLinks />
+          {/* <NavLinks /> */}
           <li>
             <Link to="/subadmin" className="py-7 px-3 inline-block">
               Subadmin
@@ -54,6 +56,7 @@ const Navbar = () => {
           <div className="py-5">
           <Button />
           </div>
+        
         </ul>
       </div>
     </nav>
