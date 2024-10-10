@@ -12,16 +12,15 @@ import { FaArrowLeft } from "react-icons/fa";
 import EmailIcon from "@mui/icons-material/Email";
 
 import axios from "axios";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CheckBox, Visibility, VisibilityOff } from "@mui/icons-material";
 import PatternLock from "react-pattern-lock";
 import { useDispatch, useSelector } from "react-redux";
 import { subAdmin } from "../../Data/fetchUserData";
 import { toast, ToastContainer } from "react-toastify";
 
-const SubLoginPage = () => {
+const SubAdminAdding = () => {
   const dispatch = useDispatch();
-const {_id}=useParams();
   const navigate = useNavigate();
   const [userId, setUserId] = useState("");
   const token = localStorage.getItem("token");
@@ -50,72 +49,60 @@ const {_id}=useParams();
     a();
   }, []);
 
-  const { isLoading, isError, data } = useSelector((state) => state.subadmin);
-  console.log("..." + data);
-  
-  useEffect(()=>{
-    if(_id){
-      dispatch(subAdmin(_id));
-    }
-  },[dispatch,_id]);
-  console.log("Da"+data);
+  // const { isLoading, isError, data } = useSelector((state) => state.subadmin);
+  // console.log("..." + data);
   const [formData, setFormData] = useState({
     name: "",
     userId: "",
     email: "",
     password: "",
     confirmPassword: "",
-    pattern: "",
-    user_deatils_read:false,
-    user_details_write:false,
-    userId:"",
-    confirmPattern: "",
+    pattern: [],
+    user_details_read: false,
+    user_details_write: false,
+
+    confirmPattern: [],
+    permissions: {
+      user_details: { read: false, write: false },
+      assets_management: { read: false, write: false },
+    },
   });
+
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
+    });
+  };
 
   console.log("formData" + JSON.stringify(formData));
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword1, setShowPassword1] = useState(false);
   const [permissions, setPermissions] = useState([]);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handlePermissionChange = (e) => {
-    const { name, checked } = e.target;
-    setPermissions({
-      ...Permissions,
-      [name]: checked,
-    });
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.text(formData.email)) {
+    if (!emailRegex.test(formData.email)) {
       toast.error("Invalid email format");
       return;
     }
-
-    const { name, email, password, confirmPassword, pattern, confirmPattern } =
-      formData;
-
-    if (password !== confirmPassword) {
-      toast.error("Password does not match...");
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
       return;
     }
-    if (pattern !== confirmPattern) {
-      toast.error("Pattern does not match...");
+    if (formData.pattern !== formData.confirmPattern) {
+      toast.error("Patterns do not match");
       return;
     }
-
-    dispatch(subAdmin());
+    const permissionData = {
+      module: "user_details",
+      module_name: "User Details",
+      read: formData.user_details_read,
+      write: formData.user_details_write,
+    };
+    dispatch(subAdmin(permissionData));
   };
 
   const handleTogglePassword = () => {
@@ -126,16 +113,66 @@ const {_id}=useParams();
   };
 
   const handlePatternChange = (pattern) => {
-    setFormData({
-      ...formData,
-      pattern: pattern,
-    });
+    if (Array.isArray(pattern)) {
+      setFormData((prev) => ({
+        ...prev,
+        pattern: pattern,
+      }));
+    } else {
+      console.log("Pattern is not an array", pattern);
+    }
   };
 
-  
-  
+  const handlePatternChange1 = (pattern1) => {
+    if (Array.isArray(pattern1)) {
+      setFormData((prev) => ({
+        ...prev,
+        confirmPattern: pattern1,
+      }));
+    } else {
+      console.log("Confirm PAttern is not an array" + pattern1);
+    }
+  };
+  const handlePatternFinish = () => {
+    if (Array.isArray(formData.pattern)) {
+      if (formData.pattern.length < 3) {
+        toast.error("Pattern must be at least 4 points long");
+        return;
+      }
+      const patternString = formData.pattern.join("");
+      setFormData((prev) => ({
+        ...prev,
+        pattern: patternString,
+      }));
+      toast.success("Pattern set successfully!");
+    } 
+    // else {
+    //   toast.error("Pattern data is not valid");
+    // }
+  };
 
-  
+  const handleConfirmPatternFinish = () => {
+    if (Array.isArray(formData.confirmPattern)) {
+      const confirmPatternString = formData.confirmPattern.join("");
+      setFormData((prevState) => ({
+        ...prevState,
+        confirmPattern: confirmPatternString, // Store as a string
+      }));
+    } 
+    // else {
+    //   toast.error("Confirm pattern data is not valid");
+    // }
+
+    // if (formData.confirmPattern.length < 4) {
+    //   toast.error("Confirm Pattern must be at least 4 points long..");
+    //   return;
+    // }
+    // if (formData.pattern !== formData.confirmPattern) {
+    //   toast.error("Patterns do not match!");
+    // } else {
+    //   toast.success("Patterns match!");
+    // }
+  };
   return (
     <form>
       <div className="w-full h-full mx-auto container ">
@@ -176,7 +213,7 @@ const {_id}=useParams();
                 Username <span className="text-red-600">*</span>
               </Typography>
               <TextField
-                placeholder="Enter Email"
+                placeholder="Enter name"
                 name="name"
                 type="text"
                 value={formData.name}
@@ -210,8 +247,8 @@ const {_id}=useParams();
                 sx={{ marginBottom: "7px", backgroundColor: "white" }}
               />
 
-            
-              {/* Password Field 
+              {/* ---------------------------------------------------------------------------------- */}
+              {/* Password Field */}
               <Typography
                 variant="h4"
                 sx={{
@@ -236,16 +273,46 @@ const {_id}=useParams();
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton onClick={handleTogglePassword} edge="end">
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
                       </IconButton>
                     </InputAdornment>
                   ),
                 }}
-              /> */}
+              />
 
-              
-              
-             
+              {/* Pattern lock for drawing */}
+              <Typography
+                variant="h4"
+                sx={{
+                  marginBottom: "5px",
+                  fontWeight: "500px",
+                  color: "",
+                  fontSize: "18px",
+                }}
+              >
+                Pattern <span className="text-red-600">*</span>
+              </Typography>
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <div className="bg-gradient-to-t to-blue-500 from-blue-700 m-4">
+                  <PatternLock
+                    width={300}
+                    height={300}
+                    pointSize={20}
+                    path={formData.pattern}
+                    onChange={handlePatternChange}
+                    size={3}
+                    lineColor="#3f51b5"
+                    activePointColor="#3f51b5"
+                    allowRepeat={false}
+                    onFinish={handlePatternFinish}
+                  />
+                </div>
+              </Box>
             </div>
             <div className="">
               <Typography
@@ -280,8 +347,71 @@ const {_id}=useParams();
                 }}
               />
 
-             
-             
+              {/* Confirm Password Field */}
+              <Typography
+                variant="h4"
+                sx={{
+                  marginBottom: "5px",
+                  fontWeight: "500px",
+                  fontSize: "18px",
+                }}
+              >
+                Confirm Password <span className="text-red-600">*</span>
+              </Typography>
+
+              <TextField
+                type={showPassword1 ? "text" : "password"}
+                placeholder="Confirm Password"
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                name="confirmPassword"
+                fullWidth
+                required
+                sx={{ marginBottom: "7px", backgroundColor: "white" }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleTogglePassword1} edge="end">
+                        {showPassword1 ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+
+              {/* Pattern lock for drawing */}
+              <Typography
+                variant="h4"
+                sx={{
+                  marginBottom: "5px",
+                  fontWeight: "500px",
+                  color: "",
+                  fontSize: "18px",
+                }}
+              >
+                Confirm Pattern <span className="text-red-600">*</span>
+              </Typography>
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <div className="bg-gradient-to-t to-blue-500 from-blue-700 m-4">
+                  <PatternLock
+                    width={300}
+                    height={300}
+                    pointSize={20}
+                    path={formData.confirmPattern}
+                    onChange={handlePatternChange1}
+                    size={3}
+                    lineColor="#3f51b5"
+                    activePointColor="#3f51b5"
+                    allowRepeat={false}
+                    onFinish={handleConfirmPatternFinish}
+                  />
+                </div>
+              </Box>
             </div>
           </div>
 
@@ -651,4 +781,4 @@ const {_id}=useParams();
   );
 };
 
-export default SubLoginPage;
+export default SubAdminAdding;

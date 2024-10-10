@@ -4,7 +4,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import styled from "styled-components";
 import { FaRegEdit } from "react-icons/fa";
 import Paper from "@mui/material/Paper";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const HideScrollbarDiv = styled.div`
   overflow-x: hidden;
@@ -23,7 +23,7 @@ const StyledButton = styled.button`
   cursor: pointer;
   color: #007bff;
   transition: color 0.3s ease;
-  
+
   &:hover {
     color: #0056b3;
   }
@@ -36,6 +36,9 @@ const DataTable = forwardRef(({ initialData }, ref) => {
   const handleRowClick = (rowData) => {
     const userId = rowData[0];
     navigate(`/userdetails/${userId}`);
+  };
+  const subAdminClick = (userId) => {
+    navigate(`/subadmin/${userId}`);
   };
 
   useImperativeHandle(ref, () => ({
@@ -86,22 +89,50 @@ const DataTable = forwardRef(({ initialData }, ref) => {
     {
       name: "isActive",
       label: "Status",
-      options: { customBodyRender: (value) => (value?"Active":"Inactive" )|| "Not provided" },
-      setCellProps: () => ({ style: {textAlign: "start" } }),
+      options: {
+        customBodyRender: (value) =>
+          (value ? "Active" : "Inactive") || "Not provided",
+      },
+      setCellProps: () => ({ style: { textAlign: "start" } }),
     },
     {
       name: "Manage",
       label: "Manage",
       options: {
-        customBodyRender: (value, tableMeta) => (
-          <StyledButton onClick={() => {/* Add edit functionality here */}}>
-            <FaRegEdit color="black" fontWeight="500px"/>
-          </StyledButton>
-        ),
+        customBodyRender: (value, tableMeta) => {
+          // const userId = tableMeta.rowData[0]; // Assuming userId is in the first column
+          return (
+            <StyledButton
+              // onClick={(e) => {
+              //   e.stopPropagation(); // Prevent triggering row click
+              //   subAdminClick(userId); // Navigate to subadmin page
+              // }}
+            >
+              <FaRegEdit color="black" fontWeight="500px" />
+            </StyledButton>
+          );
+        },
+        setCellProps: () => ({ style: { textAlign: "start" } }),
       },
-      setCellProps: () => ({ style: {textAlign: "start" } }),
     },
   ];
+
+  // const CustomToolbar = () => {
+  //   return (
+  //     <div className="">
+  //       {/* Add your button here */}
+  //       <Link to="/subadminadding"><button
+  //         className="p-2 m-1 rounded bg-gray-200 font-bold  hover:bg-blue-400"
+  //         onClick={() => {
+  //           alert("You Want to Add!");
+  //         }}
+  //       >
+  //         Add Admin
+  //       </button></Link>
+  //     </div>
+  //   );
+  // };
+
 
   const options = {
     onRowClick: handleRowClick,
@@ -117,6 +148,7 @@ const DataTable = forwardRef(({ initialData }, ref) => {
     customStyles: {
       backgroundColor: "black",
     },
+    // customToolbar: () => <CustomToolbar />,
   };
 
   const getMuiTheme = () =>
@@ -139,7 +171,7 @@ const DataTable = forwardRef(({ initialData }, ref) => {
               fontWeight: "700 !important",
               //  backgroundColor: "#007bff", // Header background color
               //  backgroundColor:"#f5f5f5",
-               backgroundColor:"#F8FAFC",
+              backgroundColor: "#F8FAFC",
               //  backgroundColor:"#BFDBFE",
               // backgroundColor:"#BFDBFE",
               textAlign: "center",
@@ -150,11 +182,10 @@ const DataTable = forwardRef(({ initialData }, ref) => {
               fontSize: "14px",
               textAlign: "start",
               // backgroundColor:"#F8FAFC",
-              backgroundColor:"white",
+              backgroundColor: "white",
               "&:hover": {
                 // backgroundColor: "#f7f7f7", // Hover effect for rows
-                backgroundColor:"#F8FAFC"
-               
+                backgroundColor: "#F8FAFC",
               },
             },
           },
@@ -212,9 +243,18 @@ const DataTable = forwardRef(({ initialData }, ref) => {
           >
             <MUIDataTable
               title={
-                <span style={{ color: "black", fontSize: "22px", fontWeight: "bold" }}>
-                  User List
-                </span>
+                <>
+                  <span
+                    style={{
+                      color: "black",
+                      fontSize: "22px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    User List
+                  </span>
+                 
+                </>
               }
               data={tableData}
               columns={columns}

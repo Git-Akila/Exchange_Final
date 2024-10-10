@@ -6,9 +6,10 @@ const Layout = ({ children }) => {
   const location = useLocation();
 
   
-  const showNavbarPaths = ['/', '/subadmin'];
+  const showNavbarPaths = ['/'];
   const shouldShowNavbar = showNavbarPaths.includes(location.pathname) || 
-                           location.pathname.startsWith('/userdetails/');
+                           location.pathname.startsWith('/userdetails/')||
+                           location.pathname.startsWith('/subadmin/');
 
   return (
     <div>

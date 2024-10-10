@@ -3,13 +3,14 @@ import Login from "../src/Pages/Login/Login";
 import Dashboard from "../src/Pages/Dashboard";
 import KycUserDetails from "../src/Components/KycUserDetails";
 //import SubAdmin from "./Components/SubAdmin.jsx/SubAdmin";
-import SubLoginPage from "../src/Components/SubAdmin.jsx/subAdmin1";
+import SubAdminList from "../src/Components/SubAdmin.jsx/SubAdminList";
 // import ProtectedRoute from "./ProtectedRoute";
 import PrivateRoute from "./ProtectedRoute";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "../src/Navbar/Layout";
 import FourNotFour from "../src/FourNotFour";
 import Logout from "../src/Pages/Login/Logout";
+import SubAdminAdding from '../src/Components/SubAdmin.jsx/SubAdminAdding'
 function Navigation() {
   return (
     <>
@@ -35,14 +36,24 @@ function Navigation() {
                 </PrivateRoute>
               }
             />
-            <Route
-              path="/subadmin"
+            {/* <Route
+              path="/subadmin/:_id"
               element={
                 <PrivateRoute>
                   <SubLoginPage />
                 </PrivateRoute>
               }
-            />
+            /> */}
+            <Route
+              path="/subadmin"
+              element={
+                <PrivateRoute>
+                  <SubAdminList />
+                </PrivateRoute>
+              }/>
+            <Route path="/subadminadding" element={<PrivateRoute>
+              <SubAdminAdding/>
+            </PrivateRoute>}  />
             <Route
               path="/logout"
               element={
