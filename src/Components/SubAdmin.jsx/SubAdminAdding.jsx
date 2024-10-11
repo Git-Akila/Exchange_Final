@@ -18,6 +18,7 @@ import PatternLock from "react-pattern-lock";
 import { useDispatch, useSelector } from "react-redux";
 import { subAdmin } from "../../Data/fetchUserData";
 import { toast, ToastContainer } from "react-toastify";
+import PermissionforSubAdminAdd from "../SubAdmin.jsx/PermissionforSubAdminAdd";
 
 const SubAdminAdding = () => {
   const dispatch = useDispatch();
@@ -49,8 +50,6 @@ const SubAdminAdding = () => {
     a();
   }, []);
 
-  // const { isLoading, isError, data } = useSelector((state) => state.subadmin);
-  // console.log("..." + data);
   const [formData, setFormData] = useState({
     name: "",
     userId: "",
@@ -58,22 +57,38 @@ const SubAdminAdding = () => {
     password: "",
     confirmPassword: "",
     pattern: [],
-    user_details_read: false,
-    user_details_write: false,
-
     confirmPattern: [],
     permissions: {
       user_details: { read: false, write: false },
       assets_management: { read: false, write: false },
-    },
+      orderhistory_management:{read:false,write:false},
+      ticket_management:{read:false,write:false},
+      block_management:{read:false,write:false},
+      category_management:{read:false,write:false},
+      emailtemplate_management:{read:false,write:false},
+      market:{read:false,write:false},
+      site_settings:{read:false,write:false},
+      adminbank_management:{read:false,write:false},
+      career_management:{read:false,write:false},
+      p2porder_management:{read:false,write:false},
+    p2p_payment:{read:false,write:false},    },
   });
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    });
+    const { name, checked } = e.target;
+    const [module, action] = name.split("."); // Split the name attribute to get module and action
+
+    // Update the permissions dynamically
+    setFormData((prevState) => ({
+      ...prevState,
+      permissions: {
+        ...prevState.permissions,
+        [module]: {
+          ...prevState.permissions[module],
+          [action]: checked, // Update the specific read/write permission
+        },
+      },
+    }));
   };
 
   console.log("formData" + JSON.stringify(formData));
@@ -92,17 +107,20 @@ const SubAdminAdding = () => {
       toast.error("Passwords do not match");
       return;
     }
-    if (formData.pattern !== formData.confirmPattern) {
+    if (formData.pattern.toString() !== formData.confirmPattern.toString()) {
       toast.error("Patterns do not match");
       return;
     }
-    const permissionData = {
-      module: "user_details",
-      module_name: "User Details",
-      read: formData.user_details_read,
-      write: formData.user_details_write,
-    };
-    dispatch(subAdmin(permissionData));
+
+    // // Permissions will now be stored in formData.permissions
+    // const permissions = Object.keys(formData.permissions).map((module) => ({
+    //   module,
+    //   ...formData.permissions[module],
+    // }));
+    const { permissions } = formData;
+
+    // Dispatch formData including permissions
+    dispatch(subAdmin(permissions));
   };
 
   const handleTogglePassword = () => {
@@ -145,7 +163,7 @@ const SubAdminAdding = () => {
         pattern: patternString,
       }));
       toast.success("Pattern set successfully!");
-    } 
+    }
     // else {
     //   toast.error("Pattern data is not valid");
     // }
@@ -158,7 +176,7 @@ const SubAdminAdding = () => {
         ...prevState,
         confirmPattern: confirmPatternString, // Store as a string
       }));
-    } 
+    }
     // else {
     //   toast.error("Confirm pattern data is not valid");
     // }
@@ -414,7 +432,10 @@ const SubAdminAdding = () => {
               </Box>
             </div>
           </div>
-
+          {/* <div className="mt-5">
+            <h2 className="text-blue-800 text-[20px] font-bold">Permission</h2>
+            <PermissionforSubAdminAdd permissions={permissions} />
+          </div> */}
           <div className="mt-5 ">
             <h2 className="text-blue-800 text-[20px] font-bold">Permission</h2>
 
@@ -434,12 +455,24 @@ const SubAdminAdding = () => {
                 User Details
               </Typography>
               <div className="flex gap-10">
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} /> Read
-                </span>
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} /> Write
-                </span>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="user_details.read" // Name refers to the module and action
+                    checked={formData.permissions.user_details.read} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
+                  Read
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="user_details.write" // Name refers to the module and action
+                    checked={formData.permissions.user_details.write} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
+                  Write
+                </label>
               </div>
             </div>
 
@@ -459,14 +492,24 @@ const SubAdminAdding = () => {
                 Assets Management
               </Typography>
               <div className="flex gap-10">
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} />
+                <label>
+                  <input
+                    type="checkbox"
+                    name="assets_management.read" // Name refers to the module and action
+                    checked={formData.permissions.assets_management.read} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
                   Read
-                </span>
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} />
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="assets_management.write" // Name refers to the module and action
+                    checked={formData.permissions.assets_management.write} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
                   Write
-                </span>
+                </label>
               </div>
             </div>
 
@@ -485,15 +528,40 @@ const SubAdminAdding = () => {
               >
                 Order History Management
               </Typography>
+
+
+              {/* user_details: { read: false, write: false },
+      assets_management: { read: false, write: false },
+      orderhistory_management:{read:false,write:false},
+      ticket_management:{read:false,write:false},
+      block_management:{read:false,write:false},
+      category_management:{read:false,write:false},
+      emailtemplate_managemnet:{read:false,write:false},
+      market:{read:false,write:false},
+      site_settings:{read:false,write:false},
+      adminbank_management:{read:false,write:false},
+      career_management:{read:false,write:false},
+      p2porder_management:{read:false,write:false},
+    p2p_payment:{ */}
               <div className="flex gap-10">
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} />
+              <label>
+                  <input
+                    type="checkbox"
+                    name="assets_management.read" // Name refers to the module and action
+                    checked={formData.permissions.orderhistory_management.read} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
                   Read
-                </span>
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} />
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="assets_management.write" // Name refers to the module and action
+                    checked={formData.permissions.orderhistory_management.write} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
                   Write
-                </span>
+                </label>
               </div>
             </div>
 
@@ -513,14 +581,24 @@ const SubAdminAdding = () => {
                 Ticket Management
               </Typography>
               <div className="flex gap-10">
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} />
+              <label>
+                  <input
+                    type="checkbox"
+                    name="assets_management.read" // Name refers to the module and action
+                    checked={formData.permissions.ticket_management.read} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
                   Read
-                </span>
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} />
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="assets_management.write" // Name refers to the module and action
+                    checked={formData.permissions.ticket_management.write} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
                   Write
-                </span>
+                </label>
               </div>
             </div>
 
@@ -540,14 +618,24 @@ const SubAdminAdding = () => {
                 Block Management
               </Typography>
               <div className="flex gap-10">
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} />
+              <label>
+                  <input
+                    type="checkbox"
+                    name="assets_management.read" // Name refers to the module and action
+                    checked={formData.permissions.block_management.read} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
                   Read
-                </span>
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} />
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="assets_management.write" // Name refers to the module and action
+                    checked={formData.permissions.block_management.write} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
                   Write
-                </span>
+                </label>
               </div>
             </div>
 
@@ -567,14 +655,24 @@ const SubAdminAdding = () => {
                 Category Management
               </Typography>
               <div className="flex gap-10">
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} />
+              <label>
+                  <input
+                    type="checkbox"
+                    name="assets_management.read" // Name refers to the module and action
+                    checked={formData.permissions.category_management.read} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
                   Read
-                </span>
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} />
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="assets_management.write" // Name refers to the module and action
+                    checked={formData.permissions.category_management.write} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
                   Write
-                </span>
+                </label>
               </div>
             </div>
 
@@ -594,14 +692,24 @@ const SubAdminAdding = () => {
                 Email Template Management
               </Typography>
               <div className="flex gap-10">
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} />
+              <label>
+                  <input
+                    type="checkbox"
+                    name="assets_management.read" // Name refers to the module and action
+                    checked={formData.permissions.emailtemplate_management.read} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
                   Read
-                </span>
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} />
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="assets_management.write" // Name refers to the module and action
+                    checked={formData.permissions.emailtemplate_management.write} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
                   Write
-                </span>
+                </label>
               </div>
             </div>
 
@@ -729,14 +837,24 @@ const SubAdminAdding = () => {
                 P2P Order Management
               </Typography>
               <div className="flex gap-10">
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} />
+              <label>
+                  <input
+                    type="checkbox"
+                    name="assets_management.read" // Name refers to the module and action
+                    checked={formData.permissions.p2porder_management.read} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
                   Read
-                </span>
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} />
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="assets_management.write" // Name refers to the module and action
+                    checked={formData.permissions.p2porder_management.write} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
                   Write
-                </span>
+                </label>
               </div>
             </div>
 
@@ -756,14 +874,24 @@ const SubAdminAdding = () => {
                 P2P Payment
               </Typography>
               <div className="flex gap-10">
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} preventDefault />
+              <label>
+                  <input
+                    type="checkbox"
+                    name="assets_management.read" // Name refers to the module and action
+                    checked={formData.permissions.p2p_payment.read} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
                   Read
-                </span>
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} />
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="assets_management.write" // Name refers to the module and action
+                    checked={formData.permissions.p2p_payment.write} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
                   Write
-                </span>
+                </label>
               </div>
             </div>
           </div>
