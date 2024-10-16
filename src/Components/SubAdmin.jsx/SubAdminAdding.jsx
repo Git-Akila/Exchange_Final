@@ -33,7 +33,7 @@ const SubAdminAdding = () => {
         "https://demoback.kairaaexchange.com/api/v1/unique_id",
         {
           headers: {
-            Authorization: `${token}`, // Ensure token is formatted correctly
+            Authorization: `${token}`, 
             "Content-Type": "application/json",
           },
         }
@@ -42,7 +42,7 @@ const SubAdminAdding = () => {
       setUserId(fetchUserId);
       setFormData((prevData) => ({ ...prevData, userId: fetchUserId }));
     } catch (err) {
-      console.error(err); // Log any errors that occur
+      console.error(err); 
     }
   };
 
@@ -85,7 +85,7 @@ const SubAdminAdding = () => {
         ...prevState.permissions,
         [module]: {
           ...prevState.permissions[module],
-          [action]: checked, // Update the specific read/write permission
+          [action]: checked, 
         },
       },
     }));
@@ -529,25 +529,11 @@ const SubAdminAdding = () => {
                 Order History Management
               </Typography>
 
-
-              {/* user_details: { read: false, write: false },
-      assets_management: { read: false, write: false },
-      orderhistory_management:{read:false,write:false},
-      ticket_management:{read:false,write:false},
-      block_management:{read:false,write:false},
-      category_management:{read:false,write:false},
-      emailtemplate_managemnet:{read:false,write:false},
-      market:{read:false,write:false},
-      site_settings:{read:false,write:false},
-      adminbank_management:{read:false,write:false},
-      career_management:{read:false,write:false},
-      p2porder_management:{read:false,write:false},
-    p2p_payment:{ */}
-              <div className="flex gap-10">
+          <div className="flex gap-10">
               <label>
                   <input
                     type="checkbox"
-                    name="assets_management.read" // Name refers to the module and action
+                    name="orderhistory_management.read" // Name refers to the module and action
                     checked={formData.permissions.orderhistory_management.read} // Checked state from formData
                     onChange={handleInputChange} // Change handler
                   />
@@ -556,7 +542,7 @@ const SubAdminAdding = () => {
                 <label>
                   <input
                     type="checkbox"
-                    name="assets_management.write" // Name refers to the module and action
+                    name="orderhistory_management.write" // Name refers to the module and action
                     checked={formData.permissions.orderhistory_management.write} // Checked state from formData
                     onChange={handleInputChange} // Change handler
                   />
@@ -584,7 +570,7 @@ const SubAdminAdding = () => {
               <label>
                   <input
                     type="checkbox"
-                    name="assets_management.read" // Name refers to the module and action
+                    name="ticket_management.read" // Name refers to the module and action
                     checked={formData.permissions.ticket_management.read} // Checked state from formData
                     onChange={handleInputChange} // Change handler
                   />
@@ -593,7 +579,7 @@ const SubAdminAdding = () => {
                 <label>
                   <input
                     type="checkbox"
-                    name="assets_management.write" // Name refers to the module and action
+                    name="ticket_management.write" // Name refers to the module and action
                     checked={formData.permissions.ticket_management.write} // Checked state from formData
                     onChange={handleInputChange} // Change handler
                   />
@@ -621,7 +607,7 @@ const SubAdminAdding = () => {
               <label>
                   <input
                     type="checkbox"
-                    name="assets_management.read" // Name refers to the module and action
+                    name="block_management.read" // Name refers to the module and action
                     checked={formData.permissions.block_management.read} // Checked state from formData
                     onChange={handleInputChange} // Change handler
                   />
@@ -630,7 +616,7 @@ const SubAdminAdding = () => {
                 <label>
                   <input
                     type="checkbox"
-                    name="assets_management.write" // Name refers to the module and action
+                    name="block_management.write" // Name refers to the module and action
                     checked={formData.permissions.block_management.write} // Checked state from formData
                     onChange={handleInputChange} // Change handler
                   />
@@ -658,7 +644,7 @@ const SubAdminAdding = () => {
               <label>
                   <input
                     type="checkbox"
-                    name="assets_management.read" // Name refers to the module and action
+                    name="category_management.read" // Name refers to the module and action
                     checked={formData.permissions.category_management.read} // Checked state from formData
                     onChange={handleInputChange} // Change handler
                   />
@@ -667,7 +653,7 @@ const SubAdminAdding = () => {
                 <label>
                   <input
                     type="checkbox"
-                    name="assets_management.write" // Name refers to the module and action
+                    name="category_management.write" // Name refers to the module and action
                     checked={formData.permissions.category_management.write} // Checked state from formData
                     onChange={handleInputChange} // Change handler
                   />
@@ -695,7 +681,7 @@ const SubAdminAdding = () => {
               <label>
                   <input
                     type="checkbox"
-                    name="assets_management.read" // Name refers to the module and action
+                    name="emailtemplate_management.read" // Name refers to the module and action
                     checked={formData.permissions.emailtemplate_management.read} // Checked state from formData
                     onChange={handleInputChange} // Change handler
                   />
@@ -704,7 +690,7 @@ const SubAdminAdding = () => {
                 <label>
                   <input
                     type="checkbox"
-                    name="assets_management.write" // Name refers to the module and action
+                    name="emailtemplate_management.write" // Name refers to the module and action
                     checked={formData.permissions.emailtemplate_management.write} // Checked state from formData
                     onChange={handleInputChange} // Change handler
                   />
@@ -729,14 +715,24 @@ const SubAdminAdding = () => {
                 Markets
               </Typography>
               <div className="flex gap-10">
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} />
+              <label>
+                  <input
+                    type="checkbox"
+                    name="market_management.read" // Name refers to the module and action
+                    checked={formData.permissions.market.read} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
                   Read
-                </span>
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} />
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="market_management.write" // Name refers to the module and action
+                    checked={formData.permissions.market.write} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
                   Write
-                </span>
+                </label>
               </div>
             </div>
 
@@ -756,14 +752,24 @@ const SubAdminAdding = () => {
                 Site Settings
               </Typography>
               <div className="flex gap-10">
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} />
+              <label>
+                  <input
+                    type="checkbox"
+                    name="site_settings.read" // Name refers to the module and action
+                    checked={formData.permissions.site_settings.read} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
                   Read
-                </span>
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} />
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="site_settings.write" // Name refers to the module and action
+                    checked={formData.permissions.site_settings.write} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
                   Write
-                </span>
+                </label>
               </div>
             </div>
 
@@ -783,14 +789,24 @@ const SubAdminAdding = () => {
                 Admin Banks Management
               </Typography>
               <div className="flex gap-10">
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} />
+              <label>
+                  <input
+                    type="checkbox"
+                    name="adminbank_management.read" // Name refers to the module and action
+                    checked={formData.permissions.adminbank_management.read} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
                   Read
-                </span>
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} />
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="adminbank_management.write" // Name refers to the module and action
+                    checked={formData.permissions.adminbank_management.write} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
                   Write
-                </span>
+                </label>
               </div>
             </div>
 
@@ -810,14 +826,24 @@ const SubAdminAdding = () => {
                 Career Management
               </Typography>
               <div className="flex gap-10">
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} />
+              <label>
+                  <input
+                    type="checkbox"
+                    name="career_management.read" // Name refers to the module and action
+                    checked={formData.permissions.career_management.read} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
                   Read
-                </span>
-                <span>
-                  <CheckBox sx={{ backgroundColor: "white" }} />
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="career_management.write" // Name refers to the module and action
+                    checked={formData.permissions.career_management.write} // Checked state from formData
+                    onChange={handleInputChange} // Change handler
+                  />
                   Write
-                </span>
+                </label>
               </div>
             </div>
 
@@ -840,7 +866,7 @@ const SubAdminAdding = () => {
               <label>
                   <input
                     type="checkbox"
-                    name="assets_management.read" // Name refers to the module and action
+                    name="p2porder_management.read" // Name refers to the module and action
                     checked={formData.permissions.p2porder_management.read} // Checked state from formData
                     onChange={handleInputChange} // Change handler
                   />
@@ -849,7 +875,7 @@ const SubAdminAdding = () => {
                 <label>
                   <input
                     type="checkbox"
-                    name="assets_management.write" // Name refers to the module and action
+                    name="p2porder_management.write" // Name refers to the module and action
                     checked={formData.permissions.p2porder_management.write} // Checked state from formData
                     onChange={handleInputChange} // Change handler
                   />
@@ -877,7 +903,7 @@ const SubAdminAdding = () => {
               <label>
                   <input
                     type="checkbox"
-                    name="assets_management.read" // Name refers to the module and action
+                    name="p2p_payment.read" // Name refers to the module and action
                     checked={formData.permissions.p2p_payment.read} // Checked state from formData
                     onChange={handleInputChange} // Change handler
                   />
@@ -886,7 +912,7 @@ const SubAdminAdding = () => {
                 <label>
                   <input
                     type="checkbox"
-                    name="assets_management.write" // Name refers to the module and action
+                    name="p2p_payment.write" // Name refers to the module and action
                     checked={formData.permissions.p2p_payment.write} // Checked state from formData
                     onChange={handleInputChange} // Change handler
                   />

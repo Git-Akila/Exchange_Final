@@ -3,7 +3,7 @@ import axios from 'axios'
 import { Table, TableBody,TablePagination, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { IoMdCloudDownload } from "react-icons/io";
 import { Link } from "react-router-dom";
-
+import {formData} from '../SubAdmin.jsx/SubAdminAdding' 
 
 function SubAdminList() {
     const [page,setPage]=useState(0);
@@ -13,6 +13,7 @@ function SubAdminList() {
     { id: 2, name: 'Jane Smith', age: 30, city: 'Los Angeles' },
     { id: 3, name: 'Alice Johnson', age: 28, city: 'Chicago' },
     { id: 4, name: 'Bob Brown', age: 32, city: 'Houston' },];
+  // const rows=formData;
 
 const handleChangePage=(e,newPage)=>{
     setPage(newPage);
